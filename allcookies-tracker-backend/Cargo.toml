@@ -7,6 +7,9 @@ publish = false
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-refinery = { version= "0.7.0", features = ["tokio-postgres"] }
-tokio = { version = "1.14.0", features = ["macros", "sync"] }
-tokio-postgres = "0.7.5"
+async-trait="0.1"
+ormx = { version = "0.10", features = ["postgres"] }
+refinery = { version= "0.7", features = ["tokio-postgres"] }
+sqlx = { version = "0.5",  features = ["runtime-actix-rustls", "postgres", "macros"] }
+tokio = { version = "1.14", features = ["macros", "sync"] }
+tokio-postgres = "0.7"
