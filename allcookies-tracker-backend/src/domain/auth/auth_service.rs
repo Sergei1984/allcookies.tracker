@@ -1,5 +1,6 @@
 use super::contract::{AuthRepository, AuthService};
 use crate::domain::UserAccount;
+use crate::AnError;
 use crate::AppError;
 use async_trait::async_trait;
 
@@ -25,24 +26,24 @@ impl<TAuthRepo> AuthService for AuthServiceImpl<TAuthRepo>
 where
     TAuthRepo: AuthRepository + Send + Sync,
 {
-    async fn login(&self, login: &str, password: &str) -> Result<UserAccount, AppError> {
+    async fn login(&self, login: &str, password: &str) -> Result<UserAccount, AnError> {
         if login.is_empty() {
-            return Err(AppError::new("Login is required"));
+            return Err(AppError::new_an_err("Login is required"));
         }
         if password.is_empty() {
-            return Err(AppError::new("Password is required"));
+            return Err(AppError::new_an_err("Password is required"));
         }
 
-        let account_opt = self.auth_repo.find_account_by_login(login).await;
+        let account_opt = self.auth_repo.find_account_by_login(login).await?;
 
         if let Some(account) = account_opt {
             if account.is_blocked {
-                return Err(AppError::new(AUHT_GENERIC_ERROR));
+                return Err(AppError::new_an_err(AUHT_GENERIC_ERROR));
             }
 
             return Ok(account);
         } else {
-            return Err(AppError::new(AUHT_GENERIC_ERROR));
+            return Err(AppError::new_an_err(AUHT_GENERIC_ERROR));
         }
     }
 }

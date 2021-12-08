@@ -1,6 +1,6 @@
 use ormx::Table;
 
-#[derive(Debug, Table)]
+#[derive(Debug, Table, Clone)]
 #[ormx(table = "user_account", id = id, insertable, deletable)]
 pub struct UserAccount {
     pub id: i64,

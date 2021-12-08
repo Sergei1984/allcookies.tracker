@@ -11,6 +11,12 @@ impl AppError {
             description: String::from(description),
         }
     }
+
+    pub fn new_an_err(description: &str) -> AnError {
+        Box::new(AppError {
+            description: String::from(description),
+        })
+    }
 }
 
 impl std::error::Error for AppError {
