@@ -4,14 +4,13 @@ version = "0.1.0"
 edition = "2021"
 publish = false
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
 [dependencies]
-actix-web = { version = "3" }
-actix-rt="2"
+actix-web = { version = "4.0.0-beta.13" }
 async-trait="0.1"
 bcrypt = "0.10"
 ormx = { version = "0.10", features = ["postgres"] }
-postgres="0.19"
+
 refinery = { version= "0.7", features = ["postgres"] }
-sqlx = { version = "0.5",  features = ["runtime-actix-rustls", "postgres", "macros"] }
+serde="1"
+serde_json="1"
+sqlx = { version = "0.5",  features =  ["runtime-actix-native-tls", "postgres", "macros"] }

@@ -2,3 +2,12 @@
 
 ###
 GET {{server}}/ping
+
+###
+POST {{server}}/auth/sign-in
+Content-Type: application/json
+
+{
+    "login": "seregat1984@gmail.com",
+    "password": "123456"
+}

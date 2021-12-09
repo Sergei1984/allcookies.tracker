@@ -1,8 +1,10 @@
 mod auth_service;
 mod contract;
 mod persistent_auth_repository;
+mod route;
 mod test_integration;
 mod test_unit;
 
 pub use auth_service::*;
 pub use contract::*;
+pub use route::*;
