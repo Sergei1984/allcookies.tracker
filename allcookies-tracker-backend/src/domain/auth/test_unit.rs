@@ -39,6 +39,40 @@ mod unit_test {
         assert!(acc.is_err());
     }
 
+    #[tokio::test]
+    async fn login_should_success_for_correct_password() {
+        let service = AuthServiceImpl::new(MockAuthRepository::new(Some(UserAccount {
+            id: 1,
+            account_role: "user".to_string(),
+            is_blocked: false,
+            name: "test user".to_string(),
+            login: "test".to_string(),
+            password_hash: "$2a$11$OOnDtwxLZ4IDRc6EmUiPmuT1axjSQdo0Yk6ne5D.GFbHdBLMIct2O"
+                .to_string(),
+        })));
+
+        let acc = service.login("test", "123456").await;
+
+        assert!(acc.is_ok());
+    }
+
+    #[tokio::test]
+    async fn login_should_fail_for_incorrect_password() {
+        let service = AuthServiceImpl::new(MockAuthRepository::new(Some(UserAccount {
+            id: 1,
+            account_role: "user".to_string(),
+            is_blocked: false,
+            name: "test user".to_string(),
+            login: "test".to_string(),
+            password_hash: "$2a$11$OOnDtwxLZ4IDRc6EmUiPmuT1axjSQdo0Yk6ne5D.GFbHdBLMIct2O"
+                .to_string(),
+        })));
+
+        let acc = service.login("test", "654321").await;
+
+        assert!(acc.is_err());
+    }
+
     struct MockAuthRepository {
         account: Option<UserAccount>,
     }

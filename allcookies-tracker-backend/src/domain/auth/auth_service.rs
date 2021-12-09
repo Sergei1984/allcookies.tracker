@@ -3,6 +3,7 @@ use crate::domain::UserAccount;
 use crate::AnError;
 use crate::AppError;
 use async_trait::async_trait;
+use bcrypt::verify;
 
 pub struct AuthServiceImpl<TAuthRepo: AuthRepository + Send + Sync> {
     auth_repo: TAuthRepo,
@@ -38,6 +39,11 @@ where
 
         if let Some(account) = account_opt {
             if account.is_blocked {
+                return Err(AppError::new_an_err(AUHT_GENERIC_ERROR));
+            }
+
+            let is_password_valid = verify(password, &account.password_hash)?;
+            if !is_password_valid {
                 return Err(AppError::new_an_err(AUHT_GENERIC_ERROR));
             }
 

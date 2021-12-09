@@ -17,6 +17,13 @@ mod integration_test {
             .await
             .expect("No error due getting account by email");
 
-        assert!(user.is_some(), "User must be found");
+        if let Some(user) = user {
+            assert_eq!(user.login, "seregat1984@gmail.com");
+            assert_eq!(user.name, "Serhii");
+            assert_eq!(user.is_blocked, false);
+            assert_eq!(user.account_role, "admin");
+        } else {
+            panic!("User must be found");
+        }
     }
 }
