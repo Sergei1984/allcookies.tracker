@@ -85,7 +85,10 @@ mod unit_test {
 
     #[async_trait]
     impl AuthRepository for MockAuthRepository {
-        async fn find_account_by_login(&self, login: &str) -> Result<Option<UserAccount>, AnError> {
+        async fn find_account_by_login(
+            &self,
+            _login: &str,
+        ) -> Result<Option<UserAccount>, AnError> {
             Ok(self.account.clone())
         }
     }
