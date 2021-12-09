@@ -1,24 +1,18 @@
 use crate::config::Config;
 use crate::error::AnError;
-use tokio_postgres::NoTls;
+use postgres::{Client, NoTls};
 
 mod embedded {
     use refinery::embed_migrations;
     embed_migrations!("migrations");
 }
 
-pub async fn migrate() -> Result<(), AnError> {
-    let (mut client, con) = tokio_postgres::connect(&Config::connection_string(), NoTls).await?;
+pub fn migrate() -> Result<(), AnError> {
+    println!("Run migrations...");
 
-    tokio::spawn(async move {
-        if let Err(e) = con.await {
-            eprintln!("connection error: {}", e);
-        }
-    });
+    let mut client = Client::connect(&Config::connection_string(), NoTls)?;
 
-    let migration_report = embedded::migrations::runner()
-        .run_async(&mut client)
-        .await?;
+    let migration_report = embedded::migrations::runner().run(&mut client)?;
     for migration in migration_report.applied_migrations() {
         println!(
             "Migration Applied -  Name: {}, Version: {}",

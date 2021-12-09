@@ -7,10 +7,11 @@ publish = false
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+actix-web = { version = "3" }
+actix-rt="2"
 async-trait="0.1"
 bcrypt = "0.10"
 ormx = { version = "0.10", features = ["postgres"] }
-refinery = { version= "0.7", features = ["tokio-postgres"] }
+postgres="0.19"
+refinery = { version= "0.7", features = ["postgres"] }
 sqlx = { version = "0.5",  features = ["runtime-actix-rustls", "postgres", "macros"] }
-tokio = { version = "1.14", features = ["macros", "sync"] }
-tokio-postgres = "0.7"

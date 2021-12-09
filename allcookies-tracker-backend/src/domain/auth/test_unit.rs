@@ -5,7 +5,7 @@ mod unit_test {
     use crate::AnError;
     use async_trait::async_trait;
 
-    #[tokio::test]
+    #[actix_rt::test]
     async fn login_should_fail_for_empty_login() {
         let service = AuthServiceImpl::new(MockAuthRepository::new(None));
 
@@ -14,7 +14,7 @@ mod unit_test {
         assert!(acc.is_err());
     }
 
-    #[tokio::test]
+    #[actix_rt::test]
     async fn login_should_fail_for_empty_password() {
         let service = AuthServiceImpl::new(MockAuthRepository::new(None));
 
@@ -23,7 +23,7 @@ mod unit_test {
         assert!(acc.is_err());
     }
 
-    #[tokio::test]
+    #[actix_rt::test]
     async fn login_should_fail_for_blocked_account() {
         let service = AuthServiceImpl::new(MockAuthRepository::new(Some(UserAccount {
             id: 1,
@@ -39,7 +39,7 @@ mod unit_test {
         assert!(acc.is_err());
     }
 
-    #[tokio::test]
+    #[actix_rt::test]
     async fn login_should_success_for_correct_password() {
         let service = AuthServiceImpl::new(MockAuthRepository::new(Some(UserAccount {
             id: 1,
@@ -56,7 +56,7 @@ mod unit_test {
         assert!(acc.is_ok());
     }
 
-    #[tokio::test]
+    #[actix_rt::test]
     async fn login_should_fail_for_incorrect_password() {
         let service = AuthServiceImpl::new(MockAuthRepository::new(Some(UserAccount {
             id: 1,
