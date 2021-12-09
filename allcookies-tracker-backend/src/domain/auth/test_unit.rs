@@ -1,5 +1,5 @@
 #[cfg(test)]
-mod test {
+mod unit_test {
     use crate::domain::auth::*;
     use crate::domain::UserAccount;
     use crate::AnError;
