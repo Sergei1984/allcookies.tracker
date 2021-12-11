@@ -1,4 +1,4 @@
-use super::AuthRepository;
+use crate::domain::auth::contract::AuthRepository;
 use crate::domain::UserAccount;
 use crate::AnError;
 use async_trait::async_trait;

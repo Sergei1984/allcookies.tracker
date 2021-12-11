@@ -1,6 +1,8 @@
 #[cfg(test)]
 mod unit_test {
-    use crate::domain::auth::*;
+    use crate::domain::auth::contract::AuthRepository;
+    use crate::domain::auth::svcs::AuthServiceImpl;
+    use crate::domain::auth::contract::AuthService;
     use crate::domain::UserAccount;
     use crate::AnError;
     use async_trait::async_trait;

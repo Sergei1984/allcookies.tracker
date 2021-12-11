@@ -1,5 +1,6 @@
+use crate::domain::auth::svcs::AuthServiceImpl;
+use crate::domain::auth::contract::AuthService;
 use crate::domain::auth::repos::PersistentAuthRepository;
-use crate::domain::{AuthService, AuthServiceImpl};
 use actix_web::{error, post, web, Scope};
 use serde::{Deserialize, Serialize};
 
