@@ -1,3 +1,4 @@
+use crate::domain::current_user::CurrentUser;
 use crate::domain::auth::svcs::AuthServiceImpl;
 use crate::domain::auth::contract::AuthService;
 use crate::domain::auth::repos::PersistentAuthRepository;
@@ -32,8 +33,12 @@ pub async fn login(
         .await
         .map_err(|e| error::ErrorBadRequest(e))?;
 
+    let current_user: CurrentUser = (&user).into();
+
+    let jwt = current_user.to_jwt();
+
     Ok(web::Json(LoginResponse {
         ok: true,
-        jwt: format!("{} :: {}", &user.login, &user.name),
+        jwt: jwt,
     }))
 }
