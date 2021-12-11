@@ -1,8 +1,6 @@
-use crate::domain::auth::persistent_auth_repository::PersistentAuthRepository;
+use crate::domain::auth::repos::PersistentAuthRepository;
 use crate::domain::{AuthService, AuthServiceImpl};
-use crate::AnError;
-use crate::Config;
-use actix_web::{error, post, web, Responder, Scope};
+use actix_web::{error, post, web, Scope};
 use serde::{Deserialize, Serialize};
 
 pub fn auth_route() -> Scope {

@@ -2,7 +2,7 @@
 mod integration_test {
     use crate::config::Config;
     use crate::domain::auth::contract::AuthRepository;
-    use crate::domain::auth::persistent_auth_repository::PersistentAuthRepository;
+    use crate::domain::auth::repos::PersistentAuthRepository;
 
     #[actix_rt::test]
     async fn persisten_auth_repo_should_find_user_by_login() {
