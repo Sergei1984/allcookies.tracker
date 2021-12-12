@@ -4,6 +4,7 @@
 GET {{server}}/ping
 
 ###
+# @name auth
 POST {{server}}/auth/sign-in
 Content-Type: application/json
 
@@ -11,3 +12,7 @@ Content-Type: application/json
     "login": "seregat1984@gmail.com",
     "password": "123456"
 }
+
+###
+GET {{server}}/profile/me
+Authorization: {{auth.response.body.jwt}}

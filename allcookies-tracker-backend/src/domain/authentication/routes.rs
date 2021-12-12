@@ -5,7 +5,7 @@ use crate::domain::authentication::repos::PersistentAuthRepository;
 use actix_web::{error, post, web, Scope};
 use serde::{Deserialize, Serialize};
 
-pub fn auth_route() -> Scope {
+pub fn authentication_route() -> Scope {
     web::scope("/auth").service(login)
 }
 

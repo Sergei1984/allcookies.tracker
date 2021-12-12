@@ -3,8 +3,9 @@ mod domain;
 mod error;
 mod routes;
 
+use crate::domain::profile_route;
 use crate::config::Config;
-use crate::domain::auth_route;
+use crate::domain::authentication_route;
 use actix_web::{middleware, web, App, HttpServer};
 pub use error::*;
 
@@ -22,7 +23,8 @@ async fn main() -> std::io::Result<()> {
         App::new()
             .app_data(web::Data::new(pool.clone()))
             .wrap(middleware::Logger::new("%t %a %r %s %b %T"))
-            .service(auth_route())
+            .service(authentication_route())
+            .service(profile_route())
             .route("/ping", web::get().to(routes::ping))
     })
     .bind(Config::server_url())?

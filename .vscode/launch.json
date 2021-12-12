@@ -1,0 +1,21 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "lldb",
+      "request": "launch",
+      "name": "Debug",
+      "program": "${workspaceFolder}/allcookies-tracker-backend/target/debug/allcookies-tracker-backend",
+      "args": [],
+      "cwd": "${workspaceFolder}",
+      "env": {
+        "DATABASE_URL": "postgresql://postgres@localhost:5432/allcookies_backend",
+        "SERVER_URL": "0.0.0.0:8088",
+        "RUST_LOG": "debug"
+      }
+    }
+  ]
+}
