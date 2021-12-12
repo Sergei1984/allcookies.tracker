@@ -1,12 +1,11 @@
 mod config;
 mod domain;
 mod error;
-// mod migrations;
 mod routes;
 
 use crate::config::Config;
 use crate::domain::auth_route;
-use actix_web::{web, App, HttpServer};
+use actix_web::{middleware, web, App, HttpServer};
 pub use error::*;
 
 #[actix_web::main]
@@ -17,10 +16,13 @@ async fn main() -> std::io::Result<()> {
         .await
         .expect("Error connecting database");
 
+    env_logger::Builder::from_default_env().init();
+
     HttpServer::new(move || {
         App::new()
             .app_data(web::Data::new(pool.clone()))
             .service(auth_route())
+            .wrap(middleware::Logger::new("%t %a %r %s %b %T"))
             .route("/ping", web::get().to(routes::ping))
     })
     .bind(Config::server_url())?
