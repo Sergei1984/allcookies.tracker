@@ -1,7 +1,7 @@
-use crate::domain::current_user::CurrentUser;
-use crate::domain::auth::svcs::AuthServiceImpl;
-use crate::domain::auth::contract::AuthService;
-use crate::domain::auth::repos::PersistentAuthRepository;
+use crate::domain::authorization::CurrentUser;
+use crate::domain::authentication::svcs::AuthServiceImpl;
+use crate::domain::authentication::contract::AuthService;
+use crate::domain::authentication::repos::PersistentAuthRepository;
 use actix_web::{error, post, web, Scope};
 use serde::{Deserialize, Serialize};
 

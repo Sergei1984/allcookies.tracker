@@ -1,6 +1,7 @@
-mod auth;
-mod current_user;
+mod authentication;
+mod authorization;
 mod entities;
 
-pub use auth::*;
+pub use authentication::*;
+pub use authorization::*;
 pub use entities::*;

@@ -1,6 +1,6 @@
 #[cfg(test)]
 mod unit_test {
-    use crate::domain::current_user::CurrentUser;
+    use crate::domain::authorization::CurrentUser;
 
     #[actix_rt::test]
     async fn current_user_should_produce_correct_token() {

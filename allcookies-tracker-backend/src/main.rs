@@ -21,8 +21,8 @@ async fn main() -> std::io::Result<()> {
     HttpServer::new(move || {
         App::new()
             .app_data(web::Data::new(pool.clone()))
-            .service(auth_route())
             .wrap(middleware::Logger::new("%t %a %r %s %b %T"))
+            .service(auth_route())
             .route("/ping", web::get().to(routes::ping))
     })
     .bind(Config::server_url())?
