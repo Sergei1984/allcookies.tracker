@@ -7,7 +7,10 @@ use sha2::Sha256;
 
 use serde::{Deserialize, Serialize};
 
+mod middlewares;
 mod test;
+
+pub use middlewares::*;
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct CurrentUser {

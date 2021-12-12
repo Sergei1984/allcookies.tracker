@@ -1,7 +1,7 @@
 mod svcs;
 mod contract;
 mod repos;
-mod route;
+mod routes;
 mod test;
 
-pub use route::*;
+pub use routes::*;
