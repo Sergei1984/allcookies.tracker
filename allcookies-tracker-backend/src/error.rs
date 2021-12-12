@@ -3,19 +3,31 @@ pub type AnError = Box<dyn std::error::Error + Send + Sync + 'static>;
 #[derive(Debug)]
 pub struct AppError {
     description: String,
+    status_code: actix_web::http::StatusCode
 }
 
 impl AppError {
-    pub fn new(description: &str) -> Self {
+    pub fn new(description: &str, status_code: actix_web::http::StatusCode) -> Self {
         AppError {
             description: String::from(description),
+            status_code: status_code
         }
     }
 
-    pub fn new_an_err(description: &str) -> AnError {
-        Box::new(AppError {
-            description: String::from(description),
-        })
+    pub fn new_an_err(description: &str, status_code: actix_web::http::StatusCode) -> AnError {
+        Box::new(AppError::new(description, status_code))
+    }
+}
+
+impl actix_web::error::ResponseError for AppError {
+    fn error_response(&self) -> actix_web::HttpResponse {
+        actix_web::HttpResponseBuilder::new(self.status_code())
+            .insert_header((actix_web::http::header::CONTENT_TYPE, "text/html; charset=utf-8"))
+            .body(self.to_string())
+    }
+
+    fn status_code(&self) -> actix_web::http::StatusCode {
+        self.status_code
     }
 }
 

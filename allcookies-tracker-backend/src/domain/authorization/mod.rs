@@ -1,16 +1,19 @@
 use crate::domain::UserAccount;
 use crate::AnError;
+use crate::AppError;
 use crate::Config;
+use actix_web::dev::Payload;
+use actix_web::FromRequest;
+use actix_web::HttpRequest;
 use hmac::*;
 use jwt::*;
 use sha2::Sha256;
+use std::future::ready;
+use std::future::Ready;
 
 use serde::{Deserialize, Serialize};
 
-mod middlewares;
 mod test;
-
-pub use middlewares::*;
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct CurrentUser {
@@ -38,6 +41,18 @@ impl CurrentUser {
         let key: Hmac<Sha256> = Hmac::new_from_slice(Config::jwt_secret()).unwrap();
 
         unsigned_token.sign_with_key(&key).unwrap().into()
+    }
+}
+
+impl FromRequest for CurrentUser {
+    type Error = AppError;
+    type Future = Ready<Result<Self, Self::Error>>;
+
+    fn from_request(req: &HttpRequest, payload: &mut Payload) -> Self::Future {
+        ready(Err(AppError::new(
+            "Not authorizer",
+            actix_web::http::StatusCode::UNAUTHORIZED,
+        )))
     }
 }
 

@@ -29,27 +29,27 @@ where
 {
     async fn login(&self, login: &str, password: &str) -> Result<UserAccount, AnError> {
         if login.is_empty() {
-            return Err(AppError::new_an_err("Login is required"));
+            return Err(AppError::new_an_err("Login is required", actix_web::http::StatusCode::BAD_REQUEST));
         }
         if password.is_empty() {
-            return Err(AppError::new_an_err("Password is required"));
+            return Err(AppError::new_an_err("Password is required", actix_web::http::StatusCode::BAD_REQUEST));
         }
 
         let account_opt = self.auth_repo.find_account_by_login(login).await?;
 
         if let Some(account) = account_opt {
             if account.is_blocked {
-                return Err(AppError::new_an_err(AUHT_GENERIC_ERROR));
+                return Err(AppError::new_an_err(AUHT_GENERIC_ERROR, actix_web::http::StatusCode::BAD_REQUEST));
             }
 
             let is_password_valid = verify(password, &account.password_hash)?;
             if !is_password_valid {
-                return Err(AppError::new_an_err(AUHT_GENERIC_ERROR));
+                return Err(AppError::new_an_err(AUHT_GENERIC_ERROR, actix_web::http::StatusCode::BAD_REQUEST));
             }
 
             return Ok(account);
         } else {
-            return Err(AppError::new_an_err(AUHT_GENERIC_ERROR));
+            return Err(AppError::new_an_err(AUHT_GENERIC_ERROR, actix_web::http::StatusCode::BAD_REQUEST));
         }
     }
 }
