@@ -1,3 +1,4 @@
+use chrono::{offset::Utc, DateTime};
 use ormx::Table;
 
 #[derive(Debug, Table, Clone)]
@@ -18,6 +19,10 @@ pub struct SellingPoint {
     pub title: String,
     pub description: Option<String>,
     pub address: Option<String>,
-    pub created_by: i64
-    // pub location: wkb::Decode<geo::geo_types::Geometry<f64>>
+    pub created_by: i64,
+    pub created_at: DateTime<Utc>,
+    pub modified_by: i64,
+    pub modified_at: DateTime<Utc>,
+    pub deleted_by: Option<i64>,
+    pub deleted_at: Option<DateTime<Utc>>,
 }

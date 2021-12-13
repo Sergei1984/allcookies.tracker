@@ -5,7 +5,7 @@ mod integration_test {
     use crate::domain::authentication::repos::PersistentAuthRepository;
 
     #[actix_rt::test]
-    async fn persisten_auth_repo_should_find_user_by_login() {
+    async fn persistent_auth_repo_should_find_user_by_login() {
         let pool = sqlx::PgPool::connect(&Config::connection_string())
             .await
             .unwrap();
