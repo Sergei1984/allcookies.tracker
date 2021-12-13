@@ -10,3 +10,13 @@ pub struct UserAccount {
     pub is_blocked: bool,
     pub account_role: String,
 }
+
+#[derive(Debug, Table, Clone)]
+#[ormx(table = "selling_point", id = id, insertable, deletable)]
+pub struct SellingPoint {
+    pub id: i64,
+    pub title: String,
+    pub description: Option<String>,
+    pub address: Option<String>,
+    
+}

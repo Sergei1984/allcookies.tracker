@@ -11,8 +11,6 @@ pub use error::*;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    // migrations::migrate().expect("Migrations run");
-
     let pool = sqlx::PgPool::connect(&Config::connection_string())
         .await
         .expect("Error connecting database");
