@@ -18,5 +18,6 @@ pub struct SellingPoint {
     pub title: String,
     pub description: Option<String>,
     pub address: Option<String>,
-    
+    pub created_by: i64
+    // pub location: wkb::Decode<geo::geo_types::Geometry<f64>>
 }
