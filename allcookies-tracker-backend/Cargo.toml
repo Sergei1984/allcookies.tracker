@@ -9,7 +9,7 @@ actix-rt = "2"
 actix-web = { version = "4.0.0-beta.13" }
 async-trait = "0.1"
 bcrypt = "0.10"
-chrono = "0"
+chrono = { version = "0", features = ["serde"] }
 geozero={ version = "0.8", features=["default", "with-postgis-postgres", "with-postgis-sqlx"] }
 geo-types = "0"
 env_logger="0"

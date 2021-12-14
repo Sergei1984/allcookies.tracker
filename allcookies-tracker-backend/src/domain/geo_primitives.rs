@@ -3,9 +3,10 @@ use geozero::wkb::WkbDialect;
 use geozero::CoordDimensions;
 use geozero::GeomProcessor;
 use geozero::GeozeroGeometry;
+use serde::{Deserialize, Serialize};
 use std::io::Read;
 
-#[derive(Debug, PartialEq, Default, Clone)]
+#[derive(Debug, PartialEq, Default, Clone, Serialize, Deserialize)]
 pub struct LatLonPoint {
     pub lat: f64,
     pub lon: f64,
@@ -36,7 +37,7 @@ impl GeomProcessor for LatLonPoint {
         &mut self,
         x: f64,
         y: f64,
-        z: Option<f64>,
+        _z: Option<f64>,
         _m: Option<f64>,
         _t: Option<f64>,
         _tm: Option<u64>,
@@ -47,7 +48,6 @@ impl GeomProcessor for LatLonPoint {
         Ok(())
     }
 }
-
 
 impl FromWkb for LatLonPoint {
     fn from_wkb<R: Read>(rdr: &mut R, dialect: WkbDialect) -> geozero::error::Result<Self> {
@@ -62,4 +62,3 @@ mod postgis_sqlx_macros {
     geozero::impl_sqlx_postgis_decode!(super::LatLonPoint);
     geozero::impl_sqlx_postgis_encode!(super::LatLonPoint);
 }
-

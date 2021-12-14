@@ -1,6 +1,7 @@
 use crate::domain::geo_primitives::LatLonPoint;
 use chrono::{offset::Utc, DateTime};
 use ormx::*;
+use serde::{Deserialize, Serialize};
 
 
 #[derive(Debug, Table, Clone)]
@@ -14,7 +15,7 @@ pub struct UserAccount {
     pub account_role: String,
 }
 
-#[derive(Debug, Table)]
+#[derive(Debug, Table, Serialize, Deserialize)]
 #[ormx(table = "selling_point", id = id, insertable, deletable)]
 pub struct SellingPoint {
     pub id: i64,

@@ -16,3 +16,7 @@ Content-Type: application/json
 ###
 GET {{server}}/profile/me
 Authorization: {{auth.response.body.jwt}}
+
+###
+GET {{server}}/admin/selling-point
+Authorization: {{auth.response.body.jwt}}
