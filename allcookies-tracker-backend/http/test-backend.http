@@ -1,9 +1,6 @@
 @server=http://localhost:8088
 
 ###
-GET {{server}}/ping
-
-###
 # @name auth
 POST {{server}}/auth/sign-in
 Content-Type: application/json

@@ -1,7 +1,6 @@
 mod config;
 mod domain;
 mod error;
-mod routes;
 
 use crate::config::Config;
 use crate::domain::authentication_route;
@@ -26,7 +25,6 @@ async fn main() -> std::io::Result<()> {
             .service(authentication_route())
             .service(profile_route())
             .service(selling_point_admin_route())
-            .route("/ping", web::get().to(routes::ping))
     })
     .bind(Config::server_url())?
     .run()
