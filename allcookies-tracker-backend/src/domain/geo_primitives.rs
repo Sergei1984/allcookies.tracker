@@ -20,7 +20,7 @@ impl GeozeroGeometry for LatLonPoint {
         processor: &mut P,
     ) -> std::result::Result<(), geozero::error::GeozeroError> {
         processor.point_begin(0)?;
-        processor.coordinate(self.lat, self.lon, None, None, None, None, 0)?;
+        processor.coordinate(self.lon, self.lat, None, None, None, None, 0)?;
         processor.point_end(0)
     }
 
@@ -43,8 +43,8 @@ impl GeomProcessor for LatLonPoint {
         _tm: Option<u64>,
         _idx: usize,
     ) -> geozero::error::Result<()> {
-        self.lat = x;
-        self.lon = y;
+        self.lon = x;
+        self.lat = y;
         Ok(())
     }
 }
