@@ -22,6 +22,7 @@ async fn main() -> std::io::Result<()> {
         App::new()
             .app_data(web::Data::new(pool.clone()))
             .wrap(middleware::Logger::new("%t %a %r %s %b %T"))
+            .wrap(middleware::NormalizePath::trim())
             .service(authentication_route())
             .service(profile_route())
             .service(selling_point_admin_route())
