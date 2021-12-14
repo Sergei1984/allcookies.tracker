@@ -24,7 +24,7 @@ impl<'a> SellingPointRepository for PersistentSellingPointRepository<'a> {
     async fn get_all(&self, skip: i64, take: i64) -> Result<PagedResult<SellingPoint>, AnError> {
         let accounts = sqlx::query_as!(
             SellingPoint,
-            "select id, title, description, address, created_by, created_at, modified_by, modified_at, deleted_by, deleted_at from selling_point offset $1 limit $2",
+            r#"select id, title, description, address, location as "location!: _", created_by, created_at, modified_by, modified_at, deleted_by, deleted_at from selling_point offset $1 limit $2"#,
             skip,
             take
         )

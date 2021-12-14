@@ -1,5 +1,7 @@
+use crate::domain::geo_primitives::LatLonPoint;
 use chrono::{offset::Utc, DateTime};
-use ormx::Table;
+use ormx::*;
+
 
 #[derive(Debug, Table, Clone)]
 #[ormx(table = "user_account", id = id, insertable, deletable)]
@@ -12,13 +14,15 @@ pub struct UserAccount {
     pub account_role: String,
 }
 
-#[derive(Debug, Table, Clone)]
+#[derive(Debug, Table)]
 #[ormx(table = "selling_point", id = id, insertable, deletable)]
 pub struct SellingPoint {
     pub id: i64,
     pub title: String,
     pub description: Option<String>,
     pub address: Option<String>,
+    #[ormx(custom_type)]
+    pub location: Option<LatLonPoint>, // https://github.com/georust/geozero
     pub created_by: i64,
     pub created_at: DateTime<Utc>,
     pub modified_by: i64,
