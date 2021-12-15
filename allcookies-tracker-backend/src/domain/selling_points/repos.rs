@@ -1,3 +1,4 @@
+use geo_types::Geometry;
 use crate::domain::NewSellingPoint;
 use crate::domain::{PagedResult, SellingPoint};
 use crate::AnError;
@@ -73,16 +74,19 @@ impl<'a> SellingPointRepository for PersistentSellingPointRepository<'a> {
         entity: NewSellingPoint,
         current_user_id: i64,
     ) -> Result<SellingPoint, AnError> {
+        
+        let p = Geometry::Point(geo_types::Point::new(entity.location.lon, entity.location.lat));
+
         let rec = sqlx::query!(
             r#"
             insert into selling_point(title, description, address, location, created_by, modified_by)
-            values ($1, $2, $3, ST_SetSRID($4::geometry, 4326), $5, $6)
+            values ($1, $2, $3, ST_GeomFromWKB($4, 4326), $5, $6)
             returning id
             "#,
             entity.title,
             entity.description,
             entity.address,
-            geozero::wkb::Encode(entity.location) as _,
+            geozero::wkb::Encode(p) as _,
             current_user_id,
             current_user_id
         ).fetch_one(self.db)
