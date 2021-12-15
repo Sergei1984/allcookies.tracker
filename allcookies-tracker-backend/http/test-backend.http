@@ -17,3 +17,16 @@ Authorization: {{auth.response.body.jwt}}
 ###
 GET {{server}}/admin/selling-point/
 Authorization: {{auth.response.body.jwt}}
+
+###
+POST {{server}}/admin/selling-point/
+Authorization: {{auth.response.body.jwt}}
+Content-Type: application/json
+
+{
+    "title": "Test point",
+    "location": {
+        "lon": 50,
+        "lat": 40
+    }
+}

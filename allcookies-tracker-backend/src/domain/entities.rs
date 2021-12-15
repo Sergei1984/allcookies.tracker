@@ -1,11 +1,8 @@
 use crate::domain::geo_primitives::LatLonPoint;
 use chrono::{offset::Utc, DateTime};
-use ormx::*;
 use serde::{Deserialize, Serialize};
 
-
-#[derive(Debug, Table, Clone)]
-#[ormx(table = "user_account", id = id, insertable, deletable)]
+#[derive(Debug, Clone)]
 pub struct UserAccount {
     pub id: i64,
     pub login: String,
@@ -15,14 +12,12 @@ pub struct UserAccount {
     pub account_role: String,
 }
 
-#[derive(Debug, Table, Serialize, Deserialize)]
-#[ormx(table = "selling_point", id = id, insertable, deletable)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct SellingPoint {
     pub id: i64,
     pub title: String,
     pub description: Option<String>,
     pub address: Option<String>,
-    #[ormx(custom_type)]
     pub location: Option<LatLonPoint>, // https://github.com/georust/geozero
     pub created_by: i64,
     pub created_at: DateTime<Utc>,
@@ -30,4 +25,12 @@ pub struct SellingPoint {
     pub modified_at: DateTime<Utc>,
     pub deleted_by: Option<i64>,
     pub deleted_at: Option<DateTime<Utc>>,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct NewSellingPoint {
+    pub title: String,
+    pub description: Option<String>,
+    pub address: Option<String>,
+    pub location: LatLonPoint,
 }
