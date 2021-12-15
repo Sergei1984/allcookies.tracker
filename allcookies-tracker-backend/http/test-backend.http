@@ -24,9 +24,9 @@ Authorization: {{auth.response.body.jwt}}
 Content-Type: application/json
 
 {
-    "title": "Test point",
+    "title": "Test point2",
     "location": {
         "lon": 50,
-        "lat": 40
+        "lat": 33
     }
 }

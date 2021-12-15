@@ -19,8 +19,7 @@ mod integration_test {
 
         let first = data.data.get(0).unwrap();
         assert!(!first.title.is_empty());
-        assert!(first.location.is_some());
-        assert_ne!(first.location.unwrap().lat, 0.0);
-        assert_ne!(first.location.unwrap().lon, 0.0);
+        assert_ne!(first.location.lat, 0.0);
+        assert_ne!(first.location.lon, 0.0);
     }
 }
