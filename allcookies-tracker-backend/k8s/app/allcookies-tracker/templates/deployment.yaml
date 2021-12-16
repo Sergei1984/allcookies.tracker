@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: allcookies-tracker-api
+  annotations:
+    meta.frever.com/deployed-from-branch: "{{ .Values.deployInfo.branch }}"
+    meta.frever.com/deployed-from-commit: "{{ .Values.deployInfo.commit }}"
+    meta.frever.com/deployed-by-user: "{{ .Values.deployInfo.deployedBy  }}"
+    meta.frever.com/deployed-at: "{{ .Values.deployInfo.deployedAt }}"
+    meta.frever.com/deployed-from-computer: "{{ .Values.deployInfo.deployedFrom}}"
+spec:
+  selector:
+    matchLabels:
+      app: allcookies-tracker-api
+  replicas: 2
+  revisionHistoryLimit: 3
+  template:
+    metadata:
+      labels:
+        app: allcookies-tracker-api
+    spec:
+      imagePullSecrets:
+        - name: docker-private-reg
+      containers:
+        - name: allcookies-tracker-container
+          image: "{{ .Values.repository }}:{{ .Values.imageLabel }}"
+          imagePullPolicy: Always
+          livenessProbe:
+            httpGet:
+              path: "/health"
+              port: http
+            initialDelaySeconds: 20
+            periodSeconds: 30
+            timeoutSeconds: 20
+          readinessProbe:
+            httpGet:
+              path: "/health"
+              port: http
+            initialDelaySeconds: 20
+            periodSeconds: 10
+            timeoutSeconds: 2
+          ports:
+            - name: http
+              containerPort: 80
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: config
+                  key: db.url
+            - name: SERVER_URL
+              value: "0.0.0.0:8088"
+            - name: RUST_LOG
+              value: "debug"

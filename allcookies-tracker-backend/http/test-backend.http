@@ -1,6 +1,9 @@
 @server=http://localhost:8088
 
 ###
+GET {{server}}/health
+
+###
 # @name auth
 POST {{server}}/auth/sign-in
 Content-Type: application/json

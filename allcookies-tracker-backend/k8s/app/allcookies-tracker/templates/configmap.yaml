@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: config
+  annotations:
+    meta.frever.com/deployed-from-branch: "{{ .Values.deployInfo.branch }}"
+    meta.frever.com/deployed-from-commit: "{{ .Values.deployInfo.commit }}"
+    meta.frever.com/deployed-by-user: "{{ .Values.deployInfo.deployedBy  }}"
+    meta.frever.com/deployed-at: "{{ .Values.deployInfo.deployedAt }}"
+    meta.frever.com/deployed-from-computer: "{{ .Values.deployInfo.deployedFrom }}"
+data:
+  db.url: {{ .Values.db.url }}
