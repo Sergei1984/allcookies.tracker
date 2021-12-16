@@ -15,14 +15,9 @@ RUN cargo build --release
 
 
 FROM rust:1.57
-ARG APP=/usr/app
 
-EXPOSE 80
+COPY --from=builder /usr/src/app/target/release/allcookies-tracker-backend /usr/app/allcookies-tracker-backend
 
-ENV TZ=Etc/UTC
-
-COPY --from=builder /usr/src/app/target/release/allcookies-tracker-backend ${APP}/allcookies-tracker-backend
-
-WORKDIR ${APP}
+WORKDIR /usr/app/
 
 CMD ["./allcookies-tracker-backend"]
