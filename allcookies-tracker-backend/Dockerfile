@@ -14,7 +14,7 @@ RUN cargo build --release
 
 
 
-FROM debian:buster-slim
+FROM rust:1.57
 ARG APP=/usr/app
 
 EXPOSE 8088
