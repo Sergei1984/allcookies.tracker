@@ -49,6 +49,6 @@ spec:
                   name: config
                   key: db.url
             - name: SERVER_URL
-              value: "0.0.0.0:8088"
+              value: "0.0.0.0:80"
             - name: RUST_LOG
               value: "debug"
