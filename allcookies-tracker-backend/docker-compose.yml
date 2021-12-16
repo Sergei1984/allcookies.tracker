@@ -4,7 +4,6 @@ version: "3"
 services:
   backend:
     image: docker-registry.a-dev.com/allcookies-tracker:${RELEASE:-latest}
-    platform: linux/amd64
     build:
       context: .
       dockerfile: Dockerfile
