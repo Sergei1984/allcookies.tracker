@@ -1,6 +1,13 @@
 FROM rust:1.57 as builder
 
-WORKDIR /usr/src/app
+WORKDIR /usr/src/
+RUN cargo new app
+COPY Cargo.toml /usr/src/app/
+COPY Cargo.lock /usr/src/app/
+
+WORKDIR /usr/src/app/
+RUN cargo build
+
 COPY . .
-RUN cargo install --path .
-RUN export $(cat .env | xargs) && cargo build
+ENV SQLX_OFFLINE=true
+RUN cargo build
