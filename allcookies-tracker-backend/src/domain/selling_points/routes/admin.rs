@@ -10,12 +10,12 @@ use actix_web::{error, get, post, web, Scope};
 
 pub fn selling_point_admin_route() -> Scope {
     web::scope("/admin/selling-point")
-        .service(get_admin_selling_point)
-        .service(create_admin_selling_point)
+        .service(get_selling_point)
+        .service(create_selling_point)
 }
 
 #[get("")]
-pub async fn get_admin_selling_point(
+pub async fn get_selling_point(
     skip_take: web::Query<SkipTake>,
     current_user: CurrentUser,
     pool: web::Data<sqlx::Pool<sqlx::Postgres>>,
@@ -34,7 +34,7 @@ pub async fn get_admin_selling_point(
 }
 
 #[post("")]
-pub async fn create_admin_selling_point(
+pub async fn create_selling_point(
     selling_point: web::Json<NewSellingPoint>,
     current_user: CurrentUser,
     pool: web::Data<sqlx::Pool<sqlx::Postgres>>,
