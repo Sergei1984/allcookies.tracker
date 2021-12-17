@@ -21,6 +21,10 @@ where
     async fn is_user_active(&self, current_user: CurrentUser) -> Result<ActiveUserInfo, AnError> {
         let account = self.repo.find_user_by_id(current_user.id).await?;
 
-        
+        if let Some(account) = account {
+            return Ok(account.into());
+        }
+
+        Err(AppError::not_authorized())
     }
 }

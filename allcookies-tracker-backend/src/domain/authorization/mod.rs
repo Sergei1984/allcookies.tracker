@@ -9,15 +9,15 @@ use sha2::Sha256;
 use std::future::ready;
 use std::future::Ready;
 
-
 mod contract;
+mod repos;
 mod routes;
 mod svcs;
 mod test;
 
-pub use routes::*;
 pub use contract::*;
-
+pub use routes::*;
+pub use svcs::CurrentUserRepository;
 
 impl CurrentUser {
     pub fn from_jwt(jwt: String) -> Result<Self, AnError> {
