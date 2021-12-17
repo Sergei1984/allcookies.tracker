@@ -1,0 +1,11 @@
+repository: "docker-registry.a-dev.com/allcookies-tracker"
+imageLabel: latest
+host: "allcookies-tracker.a-dev.com"
+deployInfo:
+  branch: "unknown"
+  commit: "undefined"
+  deployedBy: "unknown_user"
+  deployedAt: "unknown"
+  deployedFrom: "unknown_mac"
+db:
+  url: "postgresql://antxdev:Ki87jjHYll@k8s-1.a-dev.com:5432/allcookies_tracker"

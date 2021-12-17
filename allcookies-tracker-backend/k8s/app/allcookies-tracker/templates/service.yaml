@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: allcookies-tracker-api
+spec:
+  selector:
+    app: allcookies-tracker-api
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80

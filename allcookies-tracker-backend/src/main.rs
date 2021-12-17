@@ -2,6 +2,7 @@ mod config;
 mod domain;
 mod error;
 
+use actix_web::HttpResponse;
 use crate::config::Config;
 use crate::domain::authentication_route;
 use crate::domain::profile_route;
@@ -22,6 +23,7 @@ async fn main() -> std::io::Result<()> {
             .app_data(web::Data::new(pool.clone()))
             .wrap(middleware::Logger::new("%t %a %r %s %b %T"))
             .wrap(middleware::NormalizePath::trim())
+            .route("/health", web::to(|| HttpResponse::Ok().body("Healthy")))
             .service(authentication_route())
             .service(profile_route())
             .service(selling_point_admin_route())

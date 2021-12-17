@@ -1,0 +1,249 @@
+{
+  "db": "PostgreSQL",
+  "28b09cc0ac9d698465fdd05ac640ab239415090132890cbbf87c64f9bf6773c3": {
+    "query": "select id, title, description, address, location as \"location!: _\", created_by, created_at, modified_by, modified_at, deleted_by, deleted_at from selling_point offset $1 limit $2",
+    "describe": {
+      "columns": [
+        {
+          "ordinal": 0,
+          "name": "id",
+          "type_info": "Int8"
+        },
+        {
+          "ordinal": 1,
+          "name": "title",
+          "type_info": "Text"
+        },
+        {
+          "ordinal": 2,
+          "name": "description",
+          "type_info": "Text"
+        },
+        {
+          "ordinal": 3,
+          "name": "address",
+          "type_info": "Text"
+        },
+        {
+          "ordinal": 4,
+          "name": "location!: _",
+          "type_info": {
+            "Custom": {
+              "name": "geometry",
+              "kind": "Simple"
+            }
+          }
+        },
+        {
+          "ordinal": 5,
+          "name": "created_by",
+          "type_info": "Int8"
+        },
+        {
+          "ordinal": 6,
+          "name": "created_at",
+          "type_info": "Timestamptz"
+        },
+        {
+          "ordinal": 7,
+          "name": "modified_by",
+          "type_info": "Int8"
+        },
+        {
+          "ordinal": 8,
+          "name": "modified_at",
+          "type_info": "Timestamptz"
+        },
+        {
+          "ordinal": 9,
+          "name": "deleted_by",
+          "type_info": "Int8"
+        },
+        {
+          "ordinal": 10,
+          "name": "deleted_at",
+          "type_info": "Timestamptz"
+        }
+      ],
+      "parameters": {
+        "Left": [
+          "Int8",
+          "Int8"
+        ]
+      },
+      "nullable": [
+        false,
+        false,
+        true,
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        true,
+        true
+      ]
+    }
+  },
+  "571e1673a90b5b06f4d049cdc544a2286b2ab61eb63826678ab1138149622458": {
+    "query": "\n            insert into selling_point(title, description, address, location, created_by, modified_by)\n            values ($1, $2, $3, ST_GeomFromWKB($4, 4326), $5, $6)\n            returning id\n            ",
+    "describe": {
+      "columns": [
+        {
+          "ordinal": 0,
+          "name": "id",
+          "type_info": "Int8"
+        }
+      ],
+      "parameters": {
+        "Left": [
+          "Text",
+          "Text",
+          "Text",
+          "Bytea",
+          "Int8",
+          "Int8"
+        ]
+      },
+      "nullable": [
+        false
+      ]
+    }
+  },
+  "75713048afddbc55e216514e931afd2b2c18d95b90bd5b64bdf3a59e91330009": {
+    "query": "select id, title, description, address, location as \"location!: _\", created_by, created_at, modified_by, modified_at, deleted_by, deleted_at \n               from selling_point where id = $1",
+    "describe": {
+      "columns": [
+        {
+          "ordinal": 0,
+          "name": "id",
+          "type_info": "Int8"
+        },
+        {
+          "ordinal": 1,
+          "name": "title",
+          "type_info": "Text"
+        },
+        {
+          "ordinal": 2,
+          "name": "description",
+          "type_info": "Text"
+        },
+        {
+          "ordinal": 3,
+          "name": "address",
+          "type_info": "Text"
+        },
+        {
+          "ordinal": 4,
+          "name": "location!: _",
+          "type_info": {
+            "Custom": {
+              "name": "geometry",
+              "kind": "Simple"
+            }
+          }
+        },
+        {
+          "ordinal": 5,
+          "name": "created_by",
+          "type_info": "Int8"
+        },
+        {
+          "ordinal": 6,
+          "name": "created_at",
+          "type_info": "Timestamptz"
+        },
+        {
+          "ordinal": 7,
+          "name": "modified_by",
+          "type_info": "Int8"
+        },
+        {
+          "ordinal": 8,
+          "name": "modified_at",
+          "type_info": "Timestamptz"
+        },
+        {
+          "ordinal": 9,
+          "name": "deleted_by",
+          "type_info": "Int8"
+        },
+        {
+          "ordinal": 10,
+          "name": "deleted_at",
+          "type_info": "Timestamptz"
+        }
+      ],
+      "parameters": {
+        "Left": [
+          "Int8"
+        ]
+      },
+      "nullable": [
+        false,
+        false,
+        true,
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        true,
+        true
+      ]
+    }
+  },
+  "a0bf9bd8edcc267fb0efe63ab48cdd2a70d7f416777f13e0ec1c1d339b10ecf2": {
+    "query": "select * from user_account where login = $1",
+    "describe": {
+      "columns": [
+        {
+          "ordinal": 0,
+          "name": "id",
+          "type_info": "Int8"
+        },
+        {
+          "ordinal": 1,
+          "name": "login",
+          "type_info": "Text"
+        },
+        {
+          "ordinal": 2,
+          "name": "password_hash",
+          "type_info": "Text"
+        },
+        {
+          "ordinal": 3,
+          "name": "name",
+          "type_info": "Text"
+        },
+        {
+          "ordinal": 4,
+          "name": "is_blocked",
+          "type_info": "Bool"
+        },
+        {
+          "ordinal": 5,
+          "name": "account_role",
+          "type_info": "Bpchar"
+        }
+      ],
+      "parameters": {
+        "Left": [
+          "Text"
+        ]
+      },
+      "nullable": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ]
+    }
+  }
+}

@@ -43,6 +43,10 @@ impl CurrentUser {
 
         unsigned_token.sign_with_key(&key).unwrap().into()
     }
+
+    pub fn is_admin(&self) -> bool {
+        self.account_role.eq_ignore_ascii_case("admin")
+    }
 }
 
 impl FromRequest for CurrentUser {

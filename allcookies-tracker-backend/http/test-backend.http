@@ -1,4 +1,8 @@
 @server=http://localhost:8088
+@server=https://allcookies-tracker.a-dev.com
+
+###
+GET {{server}}/health
 
 ###
 # @name auth
@@ -17,3 +21,16 @@ Authorization: {{auth.response.body.jwt}}
 ###
 GET {{server}}/admin/selling-point/
 Authorization: {{auth.response.body.jwt}}
+
+###
+POST {{server}}/admin/selling-point/
+Authorization: {{auth.response.body.jwt}}
+Content-Type: application/json
+
+{
+    "title": "Test point2",
+    "location": {
+        "lon": 50,
+        "lat": 33
+    }
+}
