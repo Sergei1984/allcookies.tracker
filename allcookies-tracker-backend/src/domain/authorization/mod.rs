@@ -9,23 +9,15 @@ use sha2::Sha256;
 use std::future::ready;
 use std::future::Ready;
 
-use serde::{Deserialize, Serialize};
 
+mod contract;
 mod routes;
+mod svcs;
 mod test;
 
 pub use routes::*;
+pub use contract::*;
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
-pub struct CurrentUser {
-    pub id: i64,
-    pub email: String,
-    pub name: String,
-    pub account_role: String,
-    pub iss: String,
-    pub sub: String,
-    pub exp: i64,
-}
 
 impl CurrentUser {
     pub fn from_jwt(jwt: String) -> Result<Self, AnError> {
