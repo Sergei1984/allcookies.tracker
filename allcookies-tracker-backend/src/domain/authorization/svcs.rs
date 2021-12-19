@@ -1,30 +1,48 @@
-use super::{ActiveUserInfo, CurrentUser, CurrentUserService};
+use super::ActiveUserService;
+use crate::domain::ActiveUser;
 use crate::domain::UserAccount;
 use crate::AnError;
-use crate::AppError;
 use async_trait::async_trait;
 
-pub struct CurrentUserServiceImpl<TCurrentUserRepo: CurrentUserRepository + Send + Sync> {
-    repo: TCurrentUserRepo,
+pub struct ActiveUserServiceImpl<TActiveUserRepo: ActiveUserRepository + Send + Sync> {
+    repo: TActiveUserRepo,
 }
 
 #[async_trait]
-pub trait CurrentUserRepository {
+pub trait ActiveUserRepository {
     async fn find_user_by_id(&self, user_id: i64) -> Result<Option<UserAccount>, AnError>;
 }
 
-#[async_trait]
-impl<TCurrentUserRepo> CurrentUserService for CurrentUserServiceImpl<TCurrentUserRepo>
+impl<TActiveUserRepo> ActiveUserServiceImpl<TActiveUserRepo>
 where
-    TCurrentUserRepo: CurrentUserRepository + Send + Sync,
+    TActiveUserRepo: ActiveUserRepository + Send + Sync,
 {
-    async fn is_user_active(&self, current_user: CurrentUser) -> Result<ActiveUserInfo, AnError> {
-        let account = self.repo.find_user_by_id(current_user.id).await?;
+    pub fn new(repo: TActiveUserRepo) -> Self {
+        ActiveUserServiceImpl { repo: repo }
+    }
+}
 
-        if let Some(account) = account {
-            return Ok(account.into());
+#[async_trait]
+impl<TCurrentUserRepo> ActiveUserService for ActiveUserServiceImpl<TCurrentUserRepo>
+where
+    TCurrentUserRepo: ActiveUserRepository + Send + Sync,
+{
+    async fn get_active_user(&self, id: i64) -> Result<Option<ActiveUser>, AnError> {
+        let account = self.repo.find_user_by_id(id).await?;
+
+        match account {
+            Some(account) => {
+                if account.is_blocked {
+                    return Ok(None);
+                } else if account.account_role.to_lowercase() == "admin" {
+                    return Ok(Some(ActiveUser::Admin(account.into())));
+                } else {
+                    return Ok(Some(ActiveUser::Manager(account.into())));
+                }
+            }
+            None => {
+                return Ok(None);
+            }
         }
-
-        Err(AppError::not_authorized())
     }
 }

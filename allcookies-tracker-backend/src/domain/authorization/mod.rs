@@ -17,7 +17,7 @@ mod test;
 
 pub use contract::*;
 pub use routes::*;
-pub use svcs::CurrentUserRepository;
+pub use svcs::*;
 
 impl CurrentUser {
     pub fn from_jwt(jwt: String) -> Result<Self, AnError> {

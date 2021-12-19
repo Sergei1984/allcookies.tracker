@@ -15,42 +15,99 @@ pub struct CurrentUser {
 }
 
 #[async_trait]
-pub trait CurrentUserService {
-    async fn is_user_active(&self, current_user: CurrentUser) -> Result<ActiveUserInfo, AnError>;
+pub trait ActiveUserService {
+    async fn get_active_user(&self, id: i64) -> Result<Option<ActiveUser>, AnError>;
+}
+
+pub enum ActiveUser {
+    Manager(ManagerUserInfo),
+    Admin(AdminUserInfo),
 }
 
 #[allow(unused)]
-pub struct ActiveUserInfo {
+pub struct ManagerUserInfo {
     id: i64,
     email: String,
-    account_role: String,
 }
 
 #[allow(unused)]
-impl ActiveUserInfo {
-    pub fn id(&self) -> i64 {
+pub struct AdminUserInfo {
+    id: i64,
+    email: String,
+}
+
+#[allow(unused)]
+pub trait ActiveUserInfo {
+    fn id(&self) -> i64;
+
+    fn email(&self) -> String;
+
+    fn is_admin(&self) -> bool;
+
+    fn is_manager(&self) -> bool;
+}
+
+#[allow(unused)]
+impl ActiveUserInfo for ManagerUserInfo {
+    fn id(&self) -> i64 {
         self.id
     }
 
-    pub fn email(&self) -> String {
+    fn email(&self) -> String {
         self.email.clone()
     }
 
-    pub fn is_admin(&self) -> bool {
-        self.account_role.to_lowercase() == "admin"
+    fn is_admin(&self) -> bool {
+        false
     }
 
-    pub fn is_agent(&self) -> bool {
-        self.account_role.to_lowercase() == "manager"
+    fn is_manager(&self) -> bool {
+        true
     }
 }
 
-impl From<UserAccount> for ActiveUserInfo {
-    fn from(user_account: UserAccount) -> Self {
-        ActiveUserInfo {
-            id: user_account.id,
-            email: user_account.login,
-            account_role: user_account.account_role,
+#[allow(unused)]
+impl ActiveUserInfo for AdminUserInfo {
+    fn id(&self) -> i64 {
+        self.id
+    }
+
+    fn email(&self) -> String {
+        self.email.clone()
+    }
+
+    fn is_admin(&self) -> bool {
+        true
+    }
+
+    fn is_manager(&self) -> bool {
+        false
+    }
+}
+
+impl From<UserAccount> for ManagerUserInfo {
+    fn from(src: UserAccount) -> Self {
+        ManagerUserInfo {
+            id: src.id,
+            email: src.login.clone(),
+        }
+    }
+}
+
+impl From<UserAccount> for AdminUserInfo {
+    fn from(src: UserAccount) -> Self {
+        AdminUserInfo {
+            id: src.id,
+            email: src.login.clone(),
+        }
+    }
+}
+
+impl From<AdminUserInfo> for ManagerUserInfo {
+    fn from(src: AdminUserInfo) -> Self {
+        ManagerUserInfo {
+            id: src.id(),
+            email: src.email(),
         }
     }
 }
