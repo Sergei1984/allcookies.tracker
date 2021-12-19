@@ -11,3 +11,9 @@ pub struct SkipTake {
     pub skip: Option<i64>,
     pub take: Option<i64>,
 }
+
+
+#[derive(Debug, Deserialize)]
+pub struct TitleSearch {
+    pub title: Option<String>
+}

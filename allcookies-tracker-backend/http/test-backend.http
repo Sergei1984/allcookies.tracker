@@ -23,7 +23,7 @@ GET {{server}}/admin/selling-point/
 Authorization: {{auth.response.body.jwt}}
 
 ###
-GET {{server}}/client/selling-point/
+GET {{server}}/client/selling-point
 Authorization: {{auth.response.body.jwt}}
 
 ###
@@ -33,6 +33,21 @@ Content-Type: application/json
 
 {
     "title": "Test point2",
+    "is_disabled": false,
+    "location": {
+        "lon": 50,
+        "lat": 33
+    }
+}
+
+###
+POST {{server}}/client/selling-point/
+Authorization: {{auth.response.body.jwt}}
+Content-Type: application/json
+
+{
+    "title": "Test point2",
+    "is_disabled": false,
     "location": {
         "lon": 50,
         "lat": 33

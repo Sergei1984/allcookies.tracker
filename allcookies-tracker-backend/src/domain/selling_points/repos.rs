@@ -11,7 +11,7 @@ use sqlx::PgPool;
 pub trait SellingPointRepository {
     async fn get_all(&self, skip: i64, take: i64) -> Result<PagedResult<SellingPoint>, AnError>;
 
-    async fn find(
+    async fn find_active(
         &self,
         search_by_name: Option<String>,
         location: Option<LatLonPoint>,
@@ -41,7 +41,7 @@ impl<'a> PersistentSellingPointRepository<'a> {
 
 #[async_trait]
 impl<'a> SellingPointRepository for PersistentSellingPointRepository<'a> {
-    async fn find(
+    async fn find_active(
         &self,
         search_by_name: Option<String>,
         _location: Option<LatLonPoint>,
@@ -49,14 +49,15 @@ impl<'a> SellingPointRepository for PersistentSellingPointRepository<'a> {
         take: i64,
     ) -> Result<PagedResult<SellingPoint>, AnError> {
         let title = search_by_name
-            .map(|v| format!("{}%", v))
+            .map(|v| format!("%{}%", v.replace("%", "")))
             .unwrap_or(String::from("%"));
 
         let points = sqlx::query_as!(
             SellingPoint,
-            r#"select id, title, description, address, location as "location!: _", created_by, created_at, modified_by, modified_at, deleted_by, deleted_at 
+            r#"select id, title, description, address, location as "location!: _", is_disabled, created_by, created_at, modified_by, modified_at, deleted_by, deleted_at 
                from selling_point 
-               where title like $1::text
+               where title ilike $1::text and is_disabled = false
+               order by title
                offset $2::bigint limit $3::bigint"#,
             title,
             skip,
@@ -65,11 +66,12 @@ impl<'a> SellingPointRepository for PersistentSellingPointRepository<'a> {
         .fetch_all(self.db)
         .await?;
 
-        let count: i64 =
-            sqlx::query_scalar("select count(1) from selling_point where title like $1")
-                .bind(title)
-                .fetch_one(self.db)
-                .await?;
+        let count: i64 = sqlx::query_scalar(
+            "select count(1) from selling_point where title ilike $1 and is_disabled = false",
+        )
+        .bind(title)
+        .fetch_one(self.db)
+        .await?;
 
         Ok(PagedResult {
             total: count,
@@ -80,7 +82,7 @@ impl<'a> SellingPointRepository for PersistentSellingPointRepository<'a> {
     async fn get_all(&self, skip: i64, take: i64) -> Result<PagedResult<SellingPoint>, AnError> {
         let points = sqlx::query_as!(
             SellingPoint,
-            r#"select id, title, description, address, location as "location!: _", created_by, created_at, modified_by, modified_at, deleted_by, deleted_at from selling_point offset $1 limit $2"#,
+            r#"select id, title, description, address, location as "location!: _", is_disabled, created_by, created_at, modified_by, modified_at, deleted_by, deleted_at from selling_point offset $1 limit $2"#,
             skip,
             take
         )
@@ -100,7 +102,7 @@ impl<'a> SellingPointRepository for PersistentSellingPointRepository<'a> {
     async fn get_one(&self, id: i64) -> Result<Option<SellingPoint>, AnError> {
         let point = sqlx::query_as!(
             SellingPoint,
-            r#"select id, title, description, address, location as "location!: _", created_by, created_at, modified_by, modified_at, deleted_by, deleted_at 
+            r#"select id, title, description, address, location as "location!: _", is_disabled, created_by, created_at, modified_by, modified_at, deleted_by, deleted_at 
                from selling_point where id = $1"#,
             id
         )
@@ -126,14 +128,15 @@ impl<'a> SellingPointRepository for PersistentSellingPointRepository<'a> {
 
         let rec = sqlx::query!(
             r#"
-            insert into selling_point(title, description, address, location, created_by, modified_by)
-            values ($1, $2, $3, ST_GeomFromWKB($4, 4326), $5, $6)
+            insert into selling_point(title, description, address, location, is_disabled, created_by, modified_by)
+            values ($1, $2, $3, ST_GeomFromWKB($4, 4326), $5, $6, $7)
             returning id
             "#,
             entity.title,
             entity.description,
             entity.address,
             geozero::wkb::Encode(p) as _,
+            entity.is_disabled,
             current_user_id,
             current_user_id
         ).fetch_one(self.db)

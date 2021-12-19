@@ -6,6 +6,7 @@ use crate::domain::NewSellingPoint;
 use crate::domain::PagedResult;
 use crate::domain::SellingPoint;
 use crate::domain::SkipTake;
+use crate::domain::TitleSearch;
 use actix_web::{error, get, post, web, Scope};
 
 pub fn selling_point_client_route() -> Scope {
@@ -16,6 +17,7 @@ pub fn selling_point_client_route() -> Scope {
 
 #[get("")]
 pub async fn find_selling_point(
+    title: web::Query<TitleSearch>,
     skip_take: web::Query<SkipTake>,
     current_user: ManagerUserInfo,
     pool: web::Data<sqlx::Pool<sqlx::Postgres>>,
@@ -27,7 +29,7 @@ pub async fn find_selling_point(
 
     let result = svc
         .find_all(
-            None, // title.into_inner(),
+            title.title.clone(),
             None,
             skip_take.skip.unwrap_or(0),
             skip_take.take.unwrap_or(20),

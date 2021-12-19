@@ -40,13 +40,16 @@ where
         take: i64,
     ) -> Result<PagedResult<SellingPoint>, AnError> {
         self.selling_point_repo
-            .find(search_by_name, location, skip, take)
+            .find_active(search_by_name, location, skip, take)
             .await
     }
 
     async fn create(&self, item: NewSellingPoint) -> Result<SellingPoint, AnError> {
+        let mut new_point = NewSellingPoint { ..item };
+        new_point.is_disabled = false;
+
         self.selling_point_repo
-            .create(item, self.current_user.id())
+            .create(new_point, self.current_user.id())
             .await
     }
 }

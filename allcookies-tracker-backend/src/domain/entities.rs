@@ -19,6 +19,7 @@ pub struct SellingPoint {
     pub description: Option<String>,
     pub address: Option<String>,
     pub location: LatLonPoint, // https://github.com/georust/geozero
+    pub is_disabled: bool,
     pub created_by: i64,
     pub created_at: DateTime<Utc>,
     pub modified_by: i64,
@@ -33,4 +34,5 @@ pub struct NewSellingPoint {
     pub description: Option<String>,
     pub address: Option<String>,
     pub location: LatLonPoint,
+    pub is_disabled: bool
 }
