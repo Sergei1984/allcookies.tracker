@@ -1,7 +1,7 @@
 use crate::domain::selling_points::contract::*;
 use crate::domain::selling_points::repos::PersistentSellingPointRepository;
 use crate::domain::selling_points::svcs::SellingPointAdminServiceImpl;
-use crate::domain::CurrentUser;
+use crate::domain::AdminUserInfo;
 use crate::domain::NewSellingPoint;
 use crate::domain::PagedResult;
 use crate::domain::SellingPoint;
@@ -17,7 +17,7 @@ pub fn selling_point_admin_route() -> Scope {
 #[get("")]
 pub async fn get_selling_point(
     skip_take: web::Query<SkipTake>,
-    current_user: CurrentUser,
+    current_user: AdminUserInfo,
     pool: web::Data<sqlx::Pool<sqlx::Postgres>>,
 ) -> Result<web::Json<PagedResult<SellingPoint>>, actix_web::Error> {
     let svc = SellingPointAdminServiceImpl::new(
@@ -36,7 +36,7 @@ pub async fn get_selling_point(
 #[post("")]
 pub async fn create_selling_point(
     selling_point: web::Json<NewSellingPoint>,
-    current_user: CurrentUser,
+    current_user: AdminUserInfo,
     pool: web::Data<sqlx::Pool<sqlx::Postgres>>,
 ) -> Result<web::Json<SellingPoint>, actix_web::Error> {
     let svc = SellingPointAdminServiceImpl::new(

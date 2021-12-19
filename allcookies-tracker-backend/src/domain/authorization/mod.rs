@@ -19,6 +19,7 @@ pub use contract::*;
 pub use routes::*;
 pub use svcs::*;
 
+#[allow(unused)]
 impl CurrentUser {
     pub fn from_jwt(jwt: String) -> Result<Self, AnError> {
         let key: Hmac<Sha256> = Hmac::new_from_slice(Config::jwt_secret()).unwrap();
