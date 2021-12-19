@@ -48,17 +48,19 @@ impl<'a> SellingPointRepository for PersistentSellingPointRepository<'a> {
         skip: i64,
         take: i64,
     ) -> Result<PagedResult<SellingPoint>, AnError> {
-        let title = search_by_name.map(|v| format!("{}%", v));
+        let title = search_by_name
+            .map(|v| format!("{}%", v))
+            .unwrap_or(String::from("%"));
 
         let points = sqlx::query_as!(
             SellingPoint,
             r#"select id, title, description, address, location as "location!: _", created_by, created_at, modified_by, modified_at, deleted_by, deleted_at 
                from selling_point 
-               where title like $3
-               offset $1 limit $2"#,
+               where title like $1::text
+               offset $2::bigint limit $3::bigint"#,
+            title,
             skip,
-            take,
-            title
+            take
         )
         .fetch_all(self.db)
         .await?;

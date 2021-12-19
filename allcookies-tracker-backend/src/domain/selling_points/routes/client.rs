@@ -16,7 +16,6 @@ pub fn selling_point_client_route() -> Scope {
 
 #[get("")]
 pub async fn find_selling_point(
-    title: web::Query<Option<String>>,
     skip_take: web::Query<SkipTake>,
     current_user: ManagerUserInfo,
     pool: web::Data<sqlx::Pool<sqlx::Postgres>>,
@@ -28,7 +27,7 @@ pub async fn find_selling_point(
 
     let result = svc
         .find_all(
-            title.into_inner(),
+            None, // title.into_inner(),
             None,
             skip_take.skip.unwrap_or(0),
             skip_take.take.unwrap_or(20),

@@ -10,7 +10,6 @@ use actix_web::dev::Payload;
 use actix_web::FromRequest;
 use actix_web::HttpRequest;
 use actix_web::{get, web, Scope};
-use sqlx::PgPool;
 use std::future::Future;
 use std::pin::Pin;
 
@@ -28,13 +27,15 @@ impl FromRequest for AdminUserInfo {
     type Future = Pin<Box<dyn Future<Output = Result<Self, Self::Error>>>>;
 
     fn from_request(req: &HttpRequest, _payload: &mut Payload) -> Self::Future {
+        let db = req
+            .app_data::<web::Data<sqlx::Pool<sqlx::Postgres>>>()
+            .unwrap()
+            .clone();
         let r = req.clone();
         Box::pin(async move {
             let current_user = CurrentUser::from_request(&r, &mut Payload::None).await?;
 
-            let db = r.app_data::<PgPool>().unwrap();
-
-            let svc = ActiveUserServiceImpl::new(PersistentActiveUserRepository::new(db));
+            let svc = ActiveUserServiceImpl::new(PersistentActiveUserRepository::new(&db));
 
             let active_user = svc
                 .get_active_user(current_user.id)
@@ -57,13 +58,15 @@ impl FromRequest for ManagerUserInfo {
     type Future = Pin<Box<dyn Future<Output = Result<Self, Self::Error>>>>;
 
     fn from_request(req: &HttpRequest, _payload: &mut Payload) -> Self::Future {
+        let db = req
+            .app_data::<web::Data<sqlx::Pool<sqlx::Postgres>>>()
+            .unwrap()
+            .clone();
         let r = req.clone();
+
         Box::pin(async move {
             let current_user = CurrentUser::from_request(&r, &mut Payload::None).await?;
-
-            let db = r.app_data::<PgPool>().unwrap();
-
-            let svc = ActiveUserServiceImpl::new(PersistentActiveUserRepository::new(db));
+            let svc = ActiveUserServiceImpl::new(PersistentActiveUserRepository::new(&db));
 
             let active_user = svc
                 .get_active_user(current_user.id)
