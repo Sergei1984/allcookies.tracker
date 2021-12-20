@@ -44,6 +44,10 @@ where
             .await
     }
 
+    async fn get_one(&self, id: i64) -> Result<Option<SellingPoint>, AnError> {
+        todo!()
+    }
+
     async fn create(&self, item: NewSellingPoint) -> Result<SellingPoint, AnError> {
         let mut new_point = NewSellingPoint { ..item };
         new_point.is_disabled = false;
@@ -51,5 +55,9 @@ where
         self.selling_point_repo
             .create(new_point, self.current_user.id())
             .await
+    }
+
+    async fn update(&self, item: SellingPoint) -> Result<SellingPoint, AnError> {
+        todo!()
     }
 }

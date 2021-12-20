@@ -39,4 +39,12 @@ where
             .create(item, self.current_user.id())
             .await
     }
+
+    async fn get_one(&self, id: i64) -> Result<Option<SellingPoint>, AnError> {
+        todo!()
+    }
+
+    async fn update(&self, item: SellingPoint) -> Result<SellingPoint, AnError> {
+        todo!()
+    }
 }

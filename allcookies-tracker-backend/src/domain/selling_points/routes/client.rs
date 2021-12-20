@@ -79,7 +79,12 @@ pub async fn update_selling_point(
         .map_err(|e| error::ErrorBadRequest(e))?;
 
     if let Some(selling_point) = selling_point {
-        todo!()
+        let updated = svc
+            .update(selling_point)
+            .await
+            .map_err(|e| error::ErrorBadRequest(e))?;
+
+        Ok(web::Json(updated))
     } else {
         Err(error::ErrorNotFound("Not found"))
     }
