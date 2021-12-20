@@ -119,6 +119,24 @@
       ]
     }
   },
+  "4af324cef0650005768db9220d4e2ede56a2ff657fcc2feeb758e27d3316de41": {
+    "query": "\n            update selling_point\n            set \n                title = $1,\n                description = $2,\n                address = $3,\n                location = ST_GeomFromWKB($4, 4326),\n                is_disabled = $5,\n                modified_by = $6,\n                modified_at = current_timestamp\n            where\n                id = $7\n            ",
+    "describe": {
+      "columns": [],
+      "parameters": {
+        "Left": [
+          "Text",
+          "Text",
+          "Text",
+          "Bytea",
+          "Bool",
+          "Int8",
+          "Int8"
+        ]
+      },
+      "nullable": []
+    }
+  },
   "772daa019a25f82cfaac75c052ba5f07f247bd1fb8a370e5032478ef01175132": {
     "query": "select id, title, description, address, location as \"location!: _\", is_disabled, created_by, created_at, modified_by, modified_at, deleted_by, deleted_at from selling_point offset $1 limit $2",
     "describe": {
