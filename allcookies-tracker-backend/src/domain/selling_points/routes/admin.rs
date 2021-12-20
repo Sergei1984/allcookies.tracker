@@ -13,6 +13,7 @@ pub fn selling_point_admin_route() -> Scope {
     web::scope("/admin/selling-point")
         .service(get_selling_point)
         .service(create_selling_point)
+        .service(update_selling_point)
 }
 
 #[get("")]

@@ -172,7 +172,7 @@ impl<'a> SellingPointRepository for PersistentSellingPointRepository<'a> {
                 title = $1,
                 description = $2,
                 address = $3,
-                location = $4,
+                location = ST_GeomFromWKB($4, 4326),
                 is_disabled = $5,
                 modified_by = $6,
                 modified_at = current_timestamp

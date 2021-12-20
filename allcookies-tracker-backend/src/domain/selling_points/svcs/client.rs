@@ -77,7 +77,8 @@ where
     async fn update(&self, id: i64, patch: UpdateSellingPoint) -> Result<SellingPoint, AppError> {
         let existing = self.get_one(id).await?;
         if let Some(existing) = existing {
-            let updated = existing.patch(patch);
+            let mut updated = existing.patch(patch);
+            updated.is_disabled = false;
 
             let _ = self
                 .selling_point_repo

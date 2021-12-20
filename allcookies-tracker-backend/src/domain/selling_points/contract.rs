@@ -1,9 +1,9 @@
-use crate::AppError;
 use crate::domain::geo_primitives::LatLonPoint;
 use crate::domain::PagedResult;
 use crate::domain::Patch;
 use crate::domain::SellingPoint;
 use crate::AnError;
+use crate::AppError;
 use async_trait::async_trait;
 use serde::{Deserialize, Serialize};
 
@@ -35,6 +35,7 @@ impl Patch<UpdateSellingPoint> for SellingPoint {
                 .unwrap_or_else(|| self.description.clone()),
             address: patch.address.unwrap_or_else(|| self.address.clone()),
             location: patch.location.unwrap_or_else(|| self.location),
+            is_disabled: patch.is_disabled.unwrap_or_else(|| self.is_disabled),
             ..(*self)
         }
     }
