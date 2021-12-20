@@ -1,3 +1,4 @@
+use crate::AppError;
 use crate::domain::geo_primitives::LatLonPoint;
 use crate::domain::PagedResult;
 use crate::domain::Patch;
@@ -49,20 +50,20 @@ pub trait SellingPointClientService {
         take: i64,
     ) -> Result<PagedResult<SellingPoint>, AnError>;
 
-    async fn get_one(&self, id: i64) -> Result<Option<SellingPoint>, AnError>;
+    async fn get_one(&self, id: i64) -> Result<Option<SellingPoint>, AppError>;
 
     async fn create(&self, item: NewSellingPoint) -> Result<SellingPoint, AnError>;
 
-    async fn update(&self, item: SellingPoint) -> Result<SellingPoint, AnError>;
+    async fn update(&self, id: i64, patch: UpdateSellingPoint) -> Result<SellingPoint, AppError>;
 }
 
 #[async_trait]
 pub trait SellingPointAdminService {
     async fn get_all(&self, skip: i64, take: i64) -> Result<PagedResult<SellingPoint>, AnError>;
 
-    async fn get_one(&self, id: i64) -> Result<Option<SellingPoint>, AnError>;
+    async fn get_one(&self, id: i64) -> Result<Option<SellingPoint>, AppError>;
 
     async fn create(&self, item: NewSellingPoint) -> Result<SellingPoint, AnError>;
 
-    async fn update(&self, item: SellingPoint) -> Result<SellingPoint, AnError>;
+    async fn update(&self, id: i64, patch: UpdateSellingPoint) -> Result<SellingPoint, AppError>;
 }

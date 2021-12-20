@@ -31,11 +31,17 @@ impl AppError {
             actix_web::http::StatusCode::from_u16(401).unwrap(),
         )
     }
-    
-    pub fn internal_server_err() -> AppError {
+    pub fn internal_server_err(desc: Option<&str>) -> AppError {
         Self::new(
-            "Internal server error",
+            desc.unwrap_or("Internal server error"),
             actix_web::http::StatusCode::from_u16(500).unwrap(),
+        )
+    }
+
+    pub fn not_found_err() -> AppError {
+        Self::new(
+            "Not found",
+            actix_web::http::StatusCode::from_u16(404).unwrap(),
         )
     }
 }

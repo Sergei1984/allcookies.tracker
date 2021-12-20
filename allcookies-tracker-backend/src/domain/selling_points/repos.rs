@@ -11,6 +11,8 @@ use sqlx::PgPool;
 pub trait SellingPointRepository {
     async fn get_all(&self, skip: i64, take: i64) -> Result<PagedResult<SellingPoint>, AnError>;
 
+    async fn get_one(&self, id: i64) -> Result<Option<SellingPoint>, AnError>;
+
     async fn find_active(
         &self,
         search_by_name: Option<String>,
@@ -19,13 +21,17 @@ pub trait SellingPointRepository {
         take: i64,
     ) -> Result<PagedResult<SellingPoint>, AnError>;
 
-    async fn get_one(&self, id: i64) -> Result<Option<SellingPoint>, AnError>;
-
     async fn create(
         &self,
         entity: NewSellingPoint,
         current_user_id: i64,
     ) -> Result<SellingPoint, AnError>;
+
+    async fn update(
+        &self,
+        updated: SellingPoint,
+        current_user_id: i64,
+    ) -> Result<(), AnError>;
 }
 
 #[derive(Debug)]
@@ -151,5 +157,46 @@ impl<'a> SellingPointRepository for PersistentSellingPointRepository<'a> {
                 actix_web::http::StatusCode::from_u16(404).unwrap(),
             )),
         }
+    }
+
+    async fn update(&self, entity: SellingPoint, current_user_id: i64) -> Result<(), AnError> {
+        let p = Geometry::Point(geo_types::Point::new(
+            entity.location.lon,
+            entity.location.lat,
+        ));
+
+        let rec = sqlx::query!(
+            r#"
+            update selling_point
+            set 
+                title = $1,
+                description = $2,
+                address = $3,
+                location = $4,
+                is_disabled = $5,
+                modified_by = $6,
+                modified_at = current_timestamp
+            where
+                id = $7
+            "#,
+            entity.title,
+            entity.description,
+            entity.address,
+            geozero::wkb::Encode(p) as _,
+            entity.is_disabled,
+            current_user_id,
+            entity.id
+        )
+        .execute(self.db)
+        .await?;
+
+        if rec.rows_affected() != 1 {
+            return Err(AppError::new_an_err(
+                &format!("Can't update selling point with id {}", entity.id),
+                actix_web::http::StatusCode::from_u16(400).unwrap(),
+            ));
+        }
+
+        Ok(())
     }
 }

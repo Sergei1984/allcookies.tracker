@@ -1,4 +1,5 @@
 use crate::domain::authorization::ActiveUserInfo;
+use crate::domain::contract::Patch;
 use crate::domain::geo_primitives::LatLonPoint;
 use crate::domain::selling_points::repos::SellingPointRepository;
 use crate::domain::ManagerUserInfo;
@@ -6,7 +7,9 @@ use crate::domain::NewSellingPoint;
 use crate::domain::PagedResult;
 use crate::domain::SellingPoint;
 use crate::domain::SellingPointClientService;
+use crate::domain::UpdateSellingPoint;
 use crate::AnError;
+use crate::AppError;
 use async_trait::async_trait;
 
 pub struct SellingPointClientServiceImpl<TSellingPointRepo: SellingPointRepository + Send + Sync> {
@@ -44,8 +47,22 @@ where
             .await
     }
 
-    async fn get_one(&self, id: i64) -> Result<Option<SellingPoint>, AnError> {
-        todo!()
+    async fn get_one(&self, id: i64) -> Result<Option<SellingPoint>, AppError> {
+        let item = self
+            .selling_point_repo
+            .get_one(id)
+            .await
+            .map_err(|e| AppError::internal_server_err(Some(&e.to_string())))?;
+
+        if let Some(item) = item {
+            if item.is_disabled {
+                return Err(AppError::not_found_err());
+            }
+
+            return Ok(Some(item));
+        } else {
+            Err(AppError::not_found_err())
+        }
     }
 
     async fn create(&self, item: NewSellingPoint) -> Result<SellingPoint, AnError> {
@@ -57,7 +74,20 @@ where
             .await
     }
 
-    async fn update(&self, item: SellingPoint) -> Result<SellingPoint, AnError> {
-        todo!()
+    async fn update(&self, id: i64, patch: UpdateSellingPoint) -> Result<SellingPoint, AppError> {
+        let existing = self.get_one(id).await?;
+        if let Some(existing) = existing {
+            let updated = existing.patch(patch);
+
+            let _ = self
+                .selling_point_repo
+                .update(updated, self.current_user.id())
+                .await
+                .map_err(|e| AppError::internal_server_err(Some(&e.to_string())))?;
+
+            self.get_one(id).await?.ok_or(AppError::not_found_err())
+        } else {
+            Err(AppError::not_found_err())
+        }
     }
 }

@@ -72,22 +72,8 @@ pub async fn update_selling_point(
         current_user,
         PersistentSellingPointRepository::new(&pool),
     );
-
-    let existing = svc
-        .get_one(id.id)
+    svc.update(id.id, selling_point.into_inner())
         .await
-        .map_err(|e| error::ErrorBadRequest(e))?;
-
-    if let Some(existing) = existing {
-        let patched = selling_point.patch(selling_point);
-
-        let updated = svc
-            .update(patched)
-            .await
-            .map_err(|e| error::ErrorBadRequest(e))?;
-
-        Ok(web::Json(updated))
-    } else {
-        Err(error::ErrorNotFound("Not found"))
-    }
+        .map(|r| web::Json(r))
+        .map_err(|e| e.into())
 }

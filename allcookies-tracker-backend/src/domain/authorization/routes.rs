@@ -40,7 +40,7 @@ impl FromRequest for AdminUserInfo {
             let active_user = svc
                 .get_active_user(current_user.id)
                 .await
-                .map_err(|_| AppError::internal_server_err())?;
+                .map_err(|_| AppError::internal_server_err(None))?;
 
             match active_user {
                 Some(account) => match account {
@@ -71,7 +71,7 @@ impl FromRequest for ManagerUserInfo {
             let active_user = svc
                 .get_active_user(current_user.id)
                 .await
-                .map_err(|_| AppError::internal_server_err())?;
+                .map_err(|_| AppError::internal_server_err(None))?;
 
             match active_user {
                 Some(account) => match account {

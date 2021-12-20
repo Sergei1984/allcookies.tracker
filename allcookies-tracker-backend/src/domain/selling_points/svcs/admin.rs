@@ -1,11 +1,14 @@
 use crate::domain::authorization::ActiveUserInfo;
+use crate::domain::contract::Patch;
 use crate::domain::selling_points::repos::SellingPointRepository;
 use crate::domain::AdminUserInfo;
 use crate::domain::NewSellingPoint;
 use crate::domain::PagedResult;
 use crate::domain::SellingPoint;
 use crate::domain::SellingPointAdminService;
+use crate::domain::UpdateSellingPoint;
 use crate::AnError;
+use crate::AppError;
 use async_trait::async_trait;
 
 pub struct SellingPointAdminServiceImpl<TSellingPointRepo: SellingPointRepository + Send + Sync> {
@@ -40,11 +43,27 @@ where
             .await
     }
 
-    async fn get_one(&self, id: i64) -> Result<Option<SellingPoint>, AnError> {
-        todo!()
+    async fn get_one(&self, id: i64) -> Result<Option<SellingPoint>, AppError> {
+        self.selling_point_repo
+            .get_one(id)
+            .await
+            .map_err(|e| AppError::internal_server_err(Some(&e.to_string())))
     }
 
-    async fn update(&self, item: SellingPoint) -> Result<SellingPoint, AnError> {
-        todo!()
+    async fn update(&self, id: i64, patch: UpdateSellingPoint) -> Result<SellingPoint, AppError> {
+        let existing = self.get_one(id).await?;
+        if let Some(existing) = existing {
+            let updated = existing.patch(patch);
+
+            let _ = self
+                .selling_point_repo
+                .update(updated, self.current_user.id())
+                .await
+                .map_err(|e| AppError::internal_server_err(Some(&e.to_string())))?;
+
+            self.get_one(id).await?.ok_or(AppError::not_found_err())
+        } else {
+            Err(AppError::not_found_err())
+        }
     }
 }
