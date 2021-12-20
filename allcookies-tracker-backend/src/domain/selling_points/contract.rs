@@ -1,5 +1,6 @@
 use crate::domain::geo_primitives::LatLonPoint;
 use crate::domain::PagedResult;
+use crate::domain::Patch;
 use crate::domain::SellingPoint;
 use crate::AnError;
 use async_trait::async_trait;
@@ -17,10 +18,25 @@ pub struct NewSellingPoint {
 #[derive(Debug, Serialize, Deserialize)]
 pub struct UpdateSellingPoint {
     pub title: Option<String>,
-    pub description: Option<String>,
-    pub address: Option<String>,
+    pub description: Option<Option<String>>,
+    pub address: Option<Option<String>>,
     pub location: Option<LatLonPoint>,
     pub is_disabled: Option<bool>,
+}
+
+impl Patch<UpdateSellingPoint> for SellingPoint {
+    fn patch(&self, patch: UpdateSellingPoint) -> Self {
+        SellingPoint {
+            id: self.id,
+            title: patch.title.unwrap_or_else(|| self.title.clone()),
+            description: patch
+                .description
+                .unwrap_or_else(|| self.description.clone()),
+            address: patch.address.unwrap_or_else(|| self.address.clone()),
+            location: patch.location.unwrap_or_else(|| self.location),
+            ..(*self)
+        }
+    }
 }
 
 #[async_trait]

@@ -73,14 +73,16 @@ pub async fn update_selling_point(
         PersistentSellingPointRepository::new(&pool),
     );
 
-    let selling_point = svc
+    let existing = svc
         .get_one(id.id)
         .await
         .map_err(|e| error::ErrorBadRequest(e))?;
 
-    if let Some(selling_point) = selling_point {
+    if let Some(existing) = existing {
+        let patched = selling_point.patch(selling_point);
+
         let updated = svc
-            .update(selling_point)
+            .update(patched)
             .await
             .map_err(|e| error::ErrorBadRequest(e))?;
 
