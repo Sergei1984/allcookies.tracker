@@ -6,7 +6,11 @@ export interface SignInData {
 export interface IUser {
     id: string;
     name: string;
-    login: string;
+    email: string;
+    account_role: string;
+    iss: string;
+    sub: string;
+    exp: number;
 }
 
 export interface UserState {

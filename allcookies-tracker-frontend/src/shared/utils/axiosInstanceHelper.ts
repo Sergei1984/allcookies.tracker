@@ -3,7 +3,7 @@ import AsyncStorageLib from "@react-native-async-storage/async-storage";
 import { navigate } from "../../navigation/utils/navigationHelper";
 
 const axiosInstance = axios.create({
-  baseURL: "http://localhost:8088/",
+  baseURL: "https://allcookies-tracker.a-dev.com/",
   headers: {
     "Content-Type": "application/json"
   }
@@ -11,9 +11,9 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(
   async (config: AxiosRequestConfig) => {
-    const token = await AsyncStorageLib.getItem('token');
+    const token = await AsyncStorageLib.getItem('token')
     if (token) {
-      config.headers!["Authorization"] = `Bearer ${token}`;
+      config.headers!["Authorization"] = `${token}`;
     }
     return config;
   },
@@ -29,8 +29,8 @@ axiosInstance.interceptors.response.use(
     },
     error => {
       if (error.response.status === 401) {
-        navigate('SignIn', {});
-        AsyncStorageLib.clear();
+        // navigate('SignIn', {});
+        // AsyncStorageLib.clear();
         return Promise.reject(error);
       }
   

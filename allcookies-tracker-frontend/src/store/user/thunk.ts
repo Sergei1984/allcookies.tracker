@@ -8,8 +8,8 @@ import { SignInData } from "./types";
 export const signInThunk = createAsyncThunk('user/signIn', async (data: SignInData, thunkAPI) => {
     try {
         const response = await AuthAPI.signIn(data);
-        console.log(response)
         await AsyncStorageLib.setItem('token', response.jwt);
+        return response;
     } catch (e) {
         console.log(e)
         return thunkAPI.rejectWithValue(e.message)
@@ -19,7 +19,7 @@ export const signInThunk = createAsyncThunk('user/signIn', async (data: SignInDa
 export const getProfileThunk = createAsyncThunk('user/getProfile', async (_, thunkAPI) => {
     try {
         const response = await UserAPI.getProfile();
-        return response.data
+        return response
     } catch (e) {
         console.log(e);
         return thunkAPI.rejectWithValue(e.message)

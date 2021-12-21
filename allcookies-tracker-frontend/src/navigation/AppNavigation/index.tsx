@@ -1,17 +1,20 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
-import { InitialScreen } from "../../screens/InitialScreen";
-import { SignInScreen } from "../../screens/SignInScreen";
+import HomeScreen from "../../screens/HomeScreen/HomeScreen";
+import { MapScreen } from "../../screens/MapScreen";
 
 export type MainStackParamList = {
-  InitialScreen: undefined;
+  HomeScreen: undefined;
+  MapScreen: undefined;
 };
+
 const MainStack = createNativeStackNavigator();
 
 const AppNavigation = () => {
   return (
-    <MainStack.Navigator>
-      <MainStack.Screen name="SignIn" component={SignInScreen} />
+    <MainStack.Navigator screenOptions={{ headerShown: false }}>
+      <MainStack.Screen name="Home" component={HomeScreen} />
+      <MainStack.Screen name="Map" component={MapScreen} />
     </MainStack.Navigator>
   );
 };

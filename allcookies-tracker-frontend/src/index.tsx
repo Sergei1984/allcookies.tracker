@@ -11,6 +11,7 @@ export default function App() {
   React.useEffect(() => {
     SplashScreen.hide();
   }, []);
+
   return (
     <Provider store={store}>
       {Platform.OS === "ios" && <StatusBar barStyle="dark-content" />}
