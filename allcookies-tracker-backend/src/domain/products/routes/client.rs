@@ -1,27 +1,33 @@
-use crate::domain::Product;
-use crate::domain::IdPath;
-use crate::domain::LatLonQuery;
-use crate::domain::ManagerUserInfo;
-use crate::domain::NewSellingPoint;
-use crate::domain::PagedResult;
-use crate::domain::SellingPoint;
-use crate::domain::SkipTake;
-use crate::domain::TitleSearch;
-use actix_web::{error, get, patch, post, web, Scope};
+use crate::domain::products::contract::ProductClientService;
+use crate::domain::products::repos::PersistentProductRepository;
+use crate::domain::products::svcs::ProductClientServiceImpl;
+use crate::domain::{ManagerUserInfo, PagedResult, Product, SkipTake, TitleSearch};
+use actix_web::{error, get, web, Scope};
 
 pub fn product_client_route() -> Scope {
-    web::scope("/client/product")
-        .service(find_product)
+    web::scope("/client/product").service(find_product)
 }
 
 #[get("")]
 pub async fn find_product(
-    title: web::Query<TitleSearch>,
+    title_filter: web::Query<TitleSearch>,
     skip_take: web::Query<SkipTake>,
     current_user: ManagerUserInfo,
     pool: web::Data<sqlx::Pool<sqlx::Postgres>>,
 ) -> Result<web::Json<PagedResult<Product>>, actix_web::Error> {
-    todo!()
+    let title_filter = title_filter.into_inner();
+    let svc = ProductClientServiceImpl::new(PersistentProductRepository::new(&pool), current_user);
+
+    let result = svc
+        .find_all(
+            title_filter.title,
+            skip_take.skip.unwrap_or(0),
+            skip_take.take.unwrap_or(20),
+        )
+        .await
+        .map_err(|e| error::ErrorBadRequest(e))?;
+
+    Ok(web::Json(result))
 }
 
 // #[post("")]

@@ -89,3 +89,7 @@ Authorization: {{auth.response.body.jwt}}
 ###
 GET {{server}}/admin/product/
 Authorization: {{auth.response.body.jwt}}
+
+###
+GET {{server}}/client/product/
+Authorization: {{auth.response.body.jwt}}
