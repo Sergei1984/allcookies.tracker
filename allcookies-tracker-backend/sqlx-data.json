@@ -1,5 +1,18 @@
 {
   "db": "PostgreSQL",
+  "0407968e39db3c46389d2b6fdcea421f91a0f0a3ad733324d3f8ffc847fa566f": {
+    "query": "\n            update selling_point\n            set \n                deleted_by = $2,\n                deleted_at = current_timestamp\n            where\n                id = $1\n            ",
+    "describe": {
+      "columns": [],
+      "parameters": {
+        "Left": [
+          "Int8",
+          "Int8"
+        ]
+      },
+      "nullable": []
+    }
+  },
   "0c99cdadb06b97bc2dfe0ef42b2ecb0d59af1cbb5306cc071f6dc676c1d072f2": {
     "query": "\n            insert into selling_point(title, description, address, location, is_disabled, created_by, modified_by)\n            values ($1, $2, $3, ST_GeomFromWKB($4, 4326), $5, $6, $7)\n            returning id\n            ",
     "describe": {
@@ -26,8 +39,8 @@
       ]
     }
   },
-  "210973df4569cdccea21d3d0f6afab718805b39a83f2e2bf561ada84196b35f6": {
-    "query": "select id, title, description, address, location as \"location!: _\", is_disabled, created_by, created_at, modified_by, modified_at, deleted_by, deleted_at \n               from selling_point \n               where title ilike $1::text and is_disabled = false\n               order by title\n               offset $2::bigint limit $3::bigint",
+  "3f5d7dec3523c36bf602a9f57645810978d3fc2e3fce1a81eaf147d6037de020": {
+    "query": "select id, title, description, address, location as \"location!: _\", is_disabled, created_by, created_at, modified_by, modified_at, deleted_by, deleted_at \n               from selling_point \n               where \n                    title ilike $1::text \n                and is_disabled = false \n                and deleted_at is null \n                and ((st_distancesphere(location::geometry, ST_GeomFromWKB($2, 4326))) < $3 or $2 is null)\n\n               order by title\n               offset $4::bigint limit $5::bigint",
     "describe": {
       "columns": [
         {
@@ -99,6 +112,8 @@
       "parameters": {
         "Left": [
           "Text",
+          "Bytea",
+          "Float8",
           "Int8",
           "Int8"
         ]
