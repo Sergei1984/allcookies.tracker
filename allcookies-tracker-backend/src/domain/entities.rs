@@ -32,7 +32,7 @@ pub struct SellingPoint {
 pub struct Product {
     pub id: i64,
     pub title: String,
-    pub image: Option<String>,
+    pub image_url: Option<String>,
     pub is_disabled: bool,
     pub created_by: i64,
     pub created_at: DateTime<Utc>,

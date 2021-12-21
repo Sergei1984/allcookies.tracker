@@ -1,35 +1,44 @@
+use crate::domain::products::contract::ProductAdminService;
+use crate::domain::products::repos::PersistentProductRepository;
+use crate::domain::products::svcs::ProductAdminServiceImpl;
 use crate::domain::AdminUserInfo;
-use crate::domain::IdPath;
-use crate::domain::NewSellingPoint;
 use crate::domain::PagedResult;
 use crate::domain::Product;
-use crate::domain::SellingPoint;
 use crate::domain::SkipTake;
-use actix_web::HttpResponse;
-use actix_web::{delete, error, get, patch, post, web, Scope};
+use actix_web::{error, get, web, Scope};
+use serde::{Deserialize, Serialize};
 
 pub fn product_admin_route() -> Scope {
     web::scope("/admin/product").service(get_product)
 }
 
+#[derive(Serialize, Deserialize)]
+pub struct GetProductQuery {
+    pub is_disabled: Option<bool>,
+    pub title: Option<String>,
+}
+
 #[get("")]
 pub async fn get_product(
+    filter: web::Query<GetProductQuery>,
     skip_take: web::Query<SkipTake>,
     current_user: AdminUserInfo,
     pool: web::Data<sqlx::Pool<sqlx::Postgres>>,
 ) -> Result<web::Json<PagedResult<Product>>, actix_web::Error> {
-    // let svc = SellingPointAdminServiceImpl::new(
-    //     current_user,
-    //     PersistentSellingPointRepository::new(&pool),
-    // );
+    let filter = filter.into_inner();
+    let svc = ProductAdminServiceImpl::new(PersistentProductRepository::new(&pool), current_user);
 
-    // let result = svc
-    //     .get_all(skip_take.skip.unwrap_or(0), skip_take.take.unwrap_or(20))
-    //     .await
-    //     .map_err(|e| error::ErrorBadRequest(e))?;
+    let result = svc
+        .find_all(
+            filter.title,
+            filter.is_disabled,
+            skip_take.skip.unwrap_or(0),
+            skip_take.take.unwrap_or(20),
+        )
+        .await
+        .map_err(|e| error::ErrorBadRequest(e))?;
 
-    // Ok(web::Json(result))
-    todo!()
+    Ok(web::Json(result))
 }
 
 // #[post("")]

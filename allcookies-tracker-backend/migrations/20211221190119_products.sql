@@ -1,7 +1,7 @@
 create table product (
     id bigserial constraint product_pk primary key,
     title text not null constraint product__title__unique unique,
-    image text null,
+    image_url text null,
     is_disabled bool not null default (false),
     created_by bigint not null constraint fk__product__created_by references user_account(id),
     created_at timestamp with time zone not null default(current_timestamp),

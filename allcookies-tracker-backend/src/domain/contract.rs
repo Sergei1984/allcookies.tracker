@@ -2,6 +2,11 @@ use crate::domain::geo_primitives::LatLonPoint;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize)]
+pub struct Count {
+    pub count: i64,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
 pub struct PagedResult<T> {
     pub total: i64,
     pub data: Vec<T>,

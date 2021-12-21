@@ -85,3 +85,7 @@ Content-Type: application/json
 ###
 DELETE {{server}}/admin/selling-point/3
 Authorization: {{auth.response.body.jwt}}
+
+###
+GET {{server}}/admin/product/
+Authorization: {{auth.response.body.jwt}}
