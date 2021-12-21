@@ -27,3 +27,17 @@ pub struct SellingPoint {
     pub deleted_by: Option<i64>,
     pub deleted_at: Option<DateTime<Utc>>,
 }
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct Product {
+    pub id: i64,
+    pub title: String,
+    pub image: Option<String>,
+    pub is_disabled: bool,
+    pub created_by: i64,
+    pub created_at: DateTime<Utc>,
+    pub modified_by: i64,
+    pub modified_at: DateTime<Utc>,
+    pub deleted_by: Option<i64>,
+    pub deleted_at: Option<DateTime<Utc>>,
+}

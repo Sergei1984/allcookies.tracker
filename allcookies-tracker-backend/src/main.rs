@@ -2,12 +2,14 @@ mod config;
 mod domain;
 mod error;
 
+use crate::config::Config;
+use crate::domain::authentication_route;
+use crate::domain::product_client_route;
+use crate::domain::product_admin_route;
+use crate::domain::profile_route;
 use crate::domain::selling_point_admin_route;
 use crate::domain::selling_point_client_route;
 use actix_web::HttpResponse;
-use crate::config::Config;
-use crate::domain::authentication_route;
-use crate::domain::profile_route;
 
 use actix_web::{middleware, web, App, HttpServer};
 pub use error::*;
@@ -30,6 +32,8 @@ async fn main() -> std::io::Result<()> {
             .service(profile_route())
             .service(selling_point_admin_route())
             .service(selling_point_client_route())
+            .service(product_admin_route())
+            .service(product_client_route())
     })
     .bind(Config::server_url())?
     .run()
