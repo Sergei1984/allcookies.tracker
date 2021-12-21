@@ -1,4 +1,5 @@
 use crate::domain::geo_primitives::LatLonPoint;
+use crate::domain::Count;
 use crate::domain::NewSellingPoint;
 use crate::domain::{PagedResult, SellingPoint};
 use crate::AnError;
@@ -84,23 +85,24 @@ impl<'a> SellingPointRepository for PersistentSellingPointRepository<'a> {
         .fetch_all(self.db)
         .await?;
 
-        let count: i64 = sqlx::query_scalar(
-            "select count(1) 
+        let count = sqlx::query_as!(
+            Count,
+            r#"select count(1) as "count!"
             from selling_point 
             where 
                     title ilike $1 
                 and is_disabled = false 
                 and deleted_at is null
-                and ((st_distancesphere(location::geometry, ST_GeomFromWKB($2, 4326))) < $3 or $2 is null)",
+                and ((st_distancesphere(location::geometry, ST_GeomFromWKB($2, 4326))) < $3 or $2 is null)"#,
+                title,
+                search_location as _,
+                radius_meters
         )
-        .bind(title)
-        .bind(search_location)
-        .bind(radius_meters)
         .fetch_one(self.db)
         .await?;
 
         Ok(PagedResult {
-            total: count,
+            total: count.count,
             data: points,
         })
     }
@@ -115,12 +117,12 @@ impl<'a> SellingPointRepository for PersistentSellingPointRepository<'a> {
         .fetch_all(self.db)
         .await?;
 
-        let count: i64 = sqlx::query_scalar("select count(1) from selling_point")
+        let count = sqlx::query_as!(Count, r#"select count(1) as "count!" from selling_point"#)
             .fetch_one(self.db)
             .await?;
 
         Ok(PagedResult {
-            total: count,
+            total: count.count,
             data: points,
         })
     }
