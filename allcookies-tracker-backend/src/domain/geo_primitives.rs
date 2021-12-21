@@ -1,3 +1,4 @@
+use geo_types::Geometry;
 use geozero::wkb::FromWkb;
 use geozero::wkb::WkbDialect;
 use geozero::CoordDimensions;
@@ -61,4 +62,10 @@ mod postgis_sqlx_macros {
     geozero::impl_sqlx_postgis_type_info!(super::LatLonPoint);
     geozero::impl_sqlx_postgis_decode!(super::LatLonPoint);
     geozero::impl_sqlx_postgis_encode!(super::LatLonPoint);
+}
+
+impl From<LatLonPoint> for Geometry<f64> {
+    fn from(src: LatLonPoint) -> Geometry<f64> {
+        Geometry::Point(geo_types::Point::new(src.lon, src.lat))
+    }
 }

@@ -1,7 +1,9 @@
+use crate::domain::geo_primitives::LatLonPoint;
 use crate::domain::selling_points::contract::*;
 use crate::domain::selling_points::repos::PersistentSellingPointRepository;
 use crate::domain::selling_points::svcs::SellingPointClientServiceImpl;
 use crate::domain::IdPath;
+use crate::domain::LatLonQuery;
 use crate::domain::ManagerUserInfo;
 use crate::domain::NewSellingPoint;
 use crate::domain::PagedResult;
@@ -21,6 +23,7 @@ pub fn selling_point_client_route() -> Scope {
 pub async fn find_selling_point(
     title: web::Query<TitleSearch>,
     skip_take: web::Query<SkipTake>,
+    lat_lon: web::Query<LatLonQuery>,
     current_user: ManagerUserInfo,
     pool: web::Data<sqlx::Pool<sqlx::Postgres>>,
 ) -> Result<web::Json<PagedResult<SellingPoint>>, actix_web::Error> {
@@ -29,10 +32,12 @@ pub async fn find_selling_point(
         PersistentSellingPointRepository::new(&pool),
     );
 
+    let lat_lon: Option<LatLonPoint> = lat_lon.into_inner().into();
+
     let result = svc
         .find_all(
             title.title.clone(),
-            None,
+            lat_lon,
             skip_take.skip.unwrap_or(0),
             skip_take.take.unwrap_or(20),
         )

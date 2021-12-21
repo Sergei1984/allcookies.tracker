@@ -17,6 +17,7 @@ pub trait SellingPointRepository {
         &self,
         search_by_name: Option<String>,
         location: Option<LatLonPoint>,
+        radius_meters: f64,
         skip: i64,
         take: i64,
     ) -> Result<PagedResult<SellingPoint>, AnError>;
@@ -48,7 +49,8 @@ impl<'a> SellingPointRepository for PersistentSellingPointRepository<'a> {
     async fn find_active(
         &self,
         search_by_name: Option<String>,
-        _location: Option<LatLonPoint>,
+        location: Option<LatLonPoint>,
+        radius_meters: f64,
         skip: i64,
         take: i64,
     ) -> Result<PagedResult<SellingPoint>, AnError> {
@@ -56,14 +58,26 @@ impl<'a> SellingPointRepository for PersistentSellingPointRepository<'a> {
             .map(|v| format!("%{}%", v.replace("%", "")))
             .unwrap_or(String::from("%"));
 
+        let search_location = location.map(|l| {
+            let geom: Geometry<f64> = l.into();
+            geozero::wkb::Encode(geom)
+        });
+
         let points = sqlx::query_as!(
             SellingPoint,
             r#"select id, title, description, address, location as "location!: _", is_disabled, created_by, created_at, modified_by, modified_at, deleted_by, deleted_at 
                from selling_point 
-               where title ilike $1::text and is_disabled = false and deleted_at is null
+               where 
+                    title ilike $1::text 
+                and is_disabled = false 
+                and deleted_at is null 
+                and ((st_distancesphere(location::geometry, ST_GeomFromWKB($2, 4326))) < $3 or $2 is null)
+
                order by title
-               offset $2::bigint limit $3::bigint"#,
+               offset $4::bigint limit $5::bigint"#,
             title,
+            search_location as _,
+            radius_meters,
             skip,
             take
         )
@@ -71,9 +85,17 @@ impl<'a> SellingPointRepository for PersistentSellingPointRepository<'a> {
         .await?;
 
         let count: i64 = sqlx::query_scalar(
-            "select count(1) from selling_point where title ilike $1 and is_disabled = false and deleted_at is null",
+            "select count(1) 
+            from selling_point 
+            where 
+                    title ilike $1 
+                and is_disabled = false 
+                and deleted_at is null
+                and ((st_distancesphere(location::geometry, ST_GeomFromWKB($2, 4326))) < $3 or $2 is null)",
         )
         .bind(title)
+        .bind(search_location)
+        .bind(radius_meters)
         .fetch_one(self.db)
         .await?;
 
@@ -125,10 +147,7 @@ impl<'a> SellingPointRepository for PersistentSellingPointRepository<'a> {
         entity: NewSellingPoint,
         current_user_id: i64,
     ) -> Result<SellingPoint, AnError> {
-        let p = Geometry::Point(geo_types::Point::new(
-            entity.location.lon,
-            entity.location.lat,
-        ));
+        let p: Geometry<f64> = entity.location.into();
 
         let rec = sqlx::query!(
             r#"
