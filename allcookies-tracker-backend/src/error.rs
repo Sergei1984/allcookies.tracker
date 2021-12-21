@@ -24,6 +24,26 @@ impl AppError {
             actix_web::http::StatusCode::from_u16(401).unwrap(),
         )
     }
+
+    pub fn not_authorized_err() -> AppError {
+        Self::new(
+            "Not authorized",
+            actix_web::http::StatusCode::from_u16(401).unwrap(),
+        )
+    }
+    pub fn internal_server_err(desc: Option<&str>) -> AppError {
+        Self::new(
+            desc.unwrap_or("Internal server error"),
+            actix_web::http::StatusCode::from_u16(500).unwrap(),
+        )
+    }
+
+    pub fn not_found_err() -> AppError {
+        Self::new(
+            "Not found",
+            actix_web::http::StatusCode::from_u16(404).unwrap(),
+        )
+    }
 }
 
 impl actix_web::error::ResponseError for AppError {

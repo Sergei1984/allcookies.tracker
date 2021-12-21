@@ -1,5 +1,5 @@
 @server=http://localhost:8088
-@server=https://allcookies-tracker.a-dev.com
+# @server=https://allcookies-tracker.a-dev.com
 
 ###
 GET {{server}}/health
@@ -23,7 +23,25 @@ GET {{server}}/admin/selling-point/
 Authorization: {{auth.response.body.jwt}}
 
 ###
+GET {{server}}/client/selling-point
+Authorization: {{auth.response.body.jwt}}
+
+###
 POST {{server}}/admin/selling-point/
+Authorization: {{auth.response.body.jwt}}
+Content-Type: application/json
+
+{
+    "title": "Test point2",
+    "is_disabled": false,
+    "location": {
+        "lon": 50,
+        "lat": 33
+    }
+}
+
+###
+POST {{server}}/client/selling-point/
 Authorization: {{auth.response.body.jwt}}
 Content-Type: application/json
 
@@ -32,5 +50,30 @@ Content-Type: application/json
     "location": {
         "lon": 50,
         "lat": 33
+    }
+}
+
+###
+PATCH {{server}}/client/selling-point/3
+Authorization: {{auth.response.body.jwt}}
+Content-Type: application/json
+
+{
+    "title": "Test point4"
+}
+
+###
+PATCH {{server}}/admin/selling-point/3
+Authorization: {{auth.response.body.jwt}}
+Content-Type: application/json
+
+{
+    "title": "Test point3",
+    "description": "Test desc",
+    "address": "Loc 1 asdsd",
+    "is_disabled": false,
+    "location": {
+        "lon": 20,
+        "lat": 20
     }
 }

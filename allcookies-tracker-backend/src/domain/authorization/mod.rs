@@ -9,24 +9,17 @@ use sha2::Sha256;
 use std::future::ready;
 use std::future::Ready;
 
-use serde::{Deserialize, Serialize};
-
+mod contract;
+mod repos;
 mod routes;
+mod svcs;
 mod test;
 
+pub use contract::*;
 pub use routes::*;
+pub use svcs::*;
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
-pub struct CurrentUser {
-    pub id: i64,
-    pub email: String,
-    pub name: String,
-    pub account_role: String,
-    pub iss: String,
-    pub sub: String,
-    pub exp: i64,
-}
-
+#[allow(unused)]
 impl CurrentUser {
     pub fn from_jwt(jwt: String) -> Result<Self, AnError> {
         let key: Hmac<Sha256> = Hmac::new_from_slice(Config::jwt_secret()).unwrap();
