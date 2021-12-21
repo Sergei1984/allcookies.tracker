@@ -60,7 +60,7 @@ impl<'a> SellingPointRepository for PersistentSellingPointRepository<'a> {
             SellingPoint,
             r#"select id, title, description, address, location as "location!: _", is_disabled, created_by, created_at, modified_by, modified_at, deleted_by, deleted_at 
                from selling_point 
-               where title ilike $1::text and is_disabled = false
+               where title ilike $1::text and is_disabled = false and deleted_at is null
                order by title
                offset $2::bigint limit $3::bigint"#,
             title,
@@ -71,7 +71,7 @@ impl<'a> SellingPointRepository for PersistentSellingPointRepository<'a> {
         .await?;
 
         let count: i64 = sqlx::query_scalar(
-            "select count(1) from selling_point where title ilike $1 and is_disabled = false",
+            "select count(1) from selling_point where title ilike $1 and is_disabled = false and deleted_at is null",
         )
         .bind(title)
         .fetch_one(self.db)

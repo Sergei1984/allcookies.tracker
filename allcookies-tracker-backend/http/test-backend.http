@@ -32,11 +32,11 @@ Authorization: {{auth.response.body.jwt}}
 Content-Type: application/json
 
 {
-    "title": "Test point2",
+    "title": "Никольский",
     "is_disabled": false,
     "location": {
-        "lon": 50,
-        "lat": 33
+        "lon": 49.991414,
+        "lat": 36.235887
     }
 }
 
@@ -77,3 +77,7 @@ Content-Type: application/json
         "lat": 20
     }
 }
+
+###
+DELETE {{server}}/admin/selling-point/3
+Authorization: {{auth.response.body.jwt}}
