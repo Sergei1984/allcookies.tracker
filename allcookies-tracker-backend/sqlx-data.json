@@ -39,6 +39,46 @@
       ]
     }
   },
+  "105aab8501b2ad2bf11f0381a45e38b637195a1f1b548fb5f3a57bfda3c2c5c4": {
+    "query": "select count(1) as \"count!\"\n            from selling_point \n            where \n                    title ilike $1 \n                and is_disabled = false \n                and deleted_at is null\n                and ((st_distancesphere(location::geometry, ST_GeomFromWKB($2, 4326))) < $3 or $2 is null)",
+    "describe": {
+      "columns": [
+        {
+          "ordinal": 0,
+          "name": "count!",
+          "type_info": "Int8"
+        }
+      ],
+      "parameters": {
+        "Left": [
+          "Text",
+          "Bytea",
+          "Float8"
+        ]
+      },
+      "nullable": [
+        null
+      ]
+    }
+  },
+  "3dc513dbfa28cedf4fc0446eafb57cd878716602852e9757cd98211ff31b9f99": {
+    "query": "select count(1) as \"count!\" from selling_point",
+    "describe": {
+      "columns": [
+        {
+          "ordinal": 0,
+          "name": "count!",
+          "type_info": "Int8"
+        }
+      ],
+      "parameters": {
+        "Left": []
+      },
+      "nullable": [
+        null
+      ]
+    }
+  },
   "3f5d7dec3523c36bf602a9f57645810978d3fc2e3fce1a81eaf147d6037de020": {
     "query": "select id, title, description, address, location as \"location!: _\", is_disabled, created_by, created_at, modified_by, modified_at, deleted_by, deleted_at \n               from selling_point \n               where \n                    title ilike $1::text \n                and is_disabled = false \n                and deleted_at is null \n                and ((st_distancesphere(location::geometry, ST_GeomFromWKB($2, 4326))) < $3 or $2 is null)\n\n               order by title\n               offset $4::bigint limit $5::bigint",
     "describe": {
@@ -344,6 +384,83 @@
       ]
     }
   },
+  "bea83af58aa62391f536d84cc0110c999a1d12c61690ed51538d389356e86fff": {
+    "query": "\n            select \n                id, \n                title, \n                image_url,\n                is_disabled, \n                created_by, \n                created_at, \n                modified_by, \n                modified_at, \n                deleted_by, \n                deleted_at \n            from \n                product \n            where\n                    (title ilike $1 or $1 is null)\n                and (is_disabled = $2 or $2 is null)\n            offset $3 limit $4",
+    "describe": {
+      "columns": [
+        {
+          "ordinal": 0,
+          "name": "id",
+          "type_info": "Int8"
+        },
+        {
+          "ordinal": 1,
+          "name": "title",
+          "type_info": "Text"
+        },
+        {
+          "ordinal": 2,
+          "name": "image_url",
+          "type_info": "Text"
+        },
+        {
+          "ordinal": 3,
+          "name": "is_disabled",
+          "type_info": "Bool"
+        },
+        {
+          "ordinal": 4,
+          "name": "created_by",
+          "type_info": "Int8"
+        },
+        {
+          "ordinal": 5,
+          "name": "created_at",
+          "type_info": "Timestamptz"
+        },
+        {
+          "ordinal": 6,
+          "name": "modified_by",
+          "type_info": "Int8"
+        },
+        {
+          "ordinal": 7,
+          "name": "modified_at",
+          "type_info": "Timestamptz"
+        },
+        {
+          "ordinal": 8,
+          "name": "deleted_by",
+          "type_info": "Int8"
+        },
+        {
+          "ordinal": 9,
+          "name": "deleted_at",
+          "type_info": "Timestamptz"
+        }
+      ],
+      "parameters": {
+        "Left": [
+          "Text",
+          "Bool",
+          "Int8",
+          "Int8"
+        ]
+      },
+      "nullable": [
+        false,
+        false,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        true
+      ]
+    }
+  },
   "e2d8f2c94c1077bd32334479a6ed4529b6c1e9719e730bb20e731a421115ba4b": {
     "query": "select id, title, description, address, location as \"location!: _\", is_disabled, created_by, created_at, modified_by, modified_at, deleted_by, deleted_at \n               from selling_point where id = $1",
     "describe": {
@@ -432,6 +549,27 @@
         false,
         true,
         true
+      ]
+    }
+  },
+  "f358cf617a2b3cf80170d271a4745f11b2181e182c03fb476a3b00ffc476b039": {
+    "query": "\n            select\n                count(1) as \"count!\"\n            from\n                product\n            where\n                    (title ilike $1 or $1 is null)\n                and (is_disabled = $2 or $2 is null)\n            ",
+    "describe": {
+      "columns": [
+        {
+          "ordinal": 0,
+          "name": "count!",
+          "type_info": "Int8"
+        }
+      ],
+      "parameters": {
+        "Left": [
+          "Text",
+          "Bool"
+        ]
+      },
+      "nullable": [
+        null
       ]
     }
   }
