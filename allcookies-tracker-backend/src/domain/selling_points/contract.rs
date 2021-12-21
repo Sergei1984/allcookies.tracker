@@ -67,4 +67,6 @@ pub trait SellingPointAdminService {
     async fn create(&self, item: NewSellingPoint) -> Result<SellingPoint, AnError>;
 
     async fn update(&self, id: i64, patch: UpdateSellingPoint) -> Result<SellingPoint, AppError>;
+
+    async fn delete(&self, id: i64) -> Result<(), AppError>;
 }

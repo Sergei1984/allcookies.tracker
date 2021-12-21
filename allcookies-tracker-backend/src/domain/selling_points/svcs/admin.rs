@@ -66,4 +66,14 @@ where
             Err(AppError::not_found_err())
         }
     }
+
+    async fn delete(&self, id: i64) -> Result<(), AppError> {
+        let _ = self
+            .selling_point_repo
+            .delete(id, self.current_user.id())
+            .await
+            .map_err(|e| AppError::internal_server_err(Some(&e.to_string())))?;
+
+        Ok(())
+    }
 }

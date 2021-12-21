@@ -27,11 +27,9 @@ pub trait SellingPointRepository {
         current_user_id: i64,
     ) -> Result<SellingPoint, AnError>;
 
-    async fn update(
-        &self,
-        updated: SellingPoint,
-        current_user_id: i64,
-    ) -> Result<(), AnError>;
+    async fn update(&self, updated: SellingPoint, current_user_id: i64) -> Result<(), AnError>;
+
+    async fn delete(&self, id: i64, current_user_id: i64) -> Result<(), AnError>;
 }
 
 #[derive(Debug)]
@@ -193,6 +191,32 @@ impl<'a> SellingPointRepository for PersistentSellingPointRepository<'a> {
         if rec.rows_affected() != 1 {
             return Err(AppError::new_an_err(
                 &format!("Can't update selling point with id {}", entity.id),
+                actix_web::http::StatusCode::from_u16(400).unwrap(),
+            ));
+        }
+
+        Ok(())
+    }
+
+    async fn delete(&self, id: i64, current_user_id: i64) -> Result<(), AnError> {
+        let res = sqlx::query!(
+            r#"
+            update selling_point
+            set 
+                deleted_by = $2,
+                deleted_at = current_timestamp
+            where
+                id = $1
+            "#,
+            id,
+            current_user_id
+        )
+        .execute(self.db)
+        .await?;
+
+        if res.rows_affected() != 1 {
+            return Err(AppError::new_an_err(
+                &format!("Can't delete selling point with id {}", id),
                 actix_web::http::StatusCode::from_u16(400).unwrap(),
             ));
         }

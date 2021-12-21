@@ -7,13 +7,15 @@ use crate::domain::NewSellingPoint;
 use crate::domain::PagedResult;
 use crate::domain::SellingPoint;
 use crate::domain::SkipTake;
-use actix_web::{error, get, patch, post, web, Scope};
+use actix_web::HttpResponse;
+use actix_web::{delete, error, get, patch, post, web, Scope};
 
 pub fn selling_point_admin_route() -> Scope {
     web::scope("/admin/selling-point")
         .service(get_selling_point)
         .service(create_selling_point)
         .service(update_selling_point)
+        .service(delete_selling_point)
 }
 
 #[get("")]
@@ -70,4 +72,21 @@ pub async fn update_selling_point(
         .await
         .map(|r| web::Json(r))
         .map_err(|e| e.into())
+}
+
+#[delete("{id}")]
+pub async fn delete_selling_point(
+    id: web::Path<IdPath>,
+    current_user: AdminUserInfo,
+    pool: web::Data<sqlx::Pool<sqlx::Postgres>>,
+) -> Result<HttpResponse, actix_web::Error> {
+    let svc = SellingPointAdminServiceImpl::new(
+        current_user,
+        PersistentSellingPointRepository::new(&pool),
+    );
+
+    svc.delete(id.id)
+        .await
+        .map_err(|e| e.into())
+        .map(|_| HttpResponse::NoContent().finish())
 }
