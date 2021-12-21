@@ -9,6 +9,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   Text,
+  TouchableOpacity,
   View,
 } from "react-native";
 import { AppButton } from "../../components/AppButton";
@@ -19,6 +20,7 @@ import { Colors } from "../../constants/colors";
 import { useAppDispatch } from "../../hooks/useAppDispatch";
 import { useAppSelector } from "../../hooks/useAppSelector";
 import { useForm } from "../../hooks/useForm";
+import { navigate } from "../../navigation/utils/navigationHelper";
 import { signInThunk } from "../../store/user/thunk";
 import createStyles from "./styles";
 
@@ -79,13 +81,15 @@ export const SignInScreen: React.FC<IProps> = ({ navigation }) => {
             <AppTextInput
               value={formData.login}
               onChangeText={(value: string) => handleChange(value, "login")}
-              placeholder="Login"
+              placeholder="Логин"
+              autoCapitalize="none"
               style={styles.input}
             />
             <AppTextInput
               value={formData.password}
               onChangeText={(value: string) => handleChange(value, "password")}
-              placeholder="Password"
+              placeholder="Пароль"
+              autoCapitalize="none"
               style={styles.input}
             />
             {error ? (
@@ -97,7 +101,7 @@ export const SignInScreen: React.FC<IProps> = ({ navigation }) => {
           <View style={styles.footer}>
             <AppButton
               onPress={handleSignIn}
-              name="Sign In"
+              name="Логин"
               disabled={isLoading || !nextDisabled}
             />
           </View>

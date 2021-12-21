@@ -7,7 +7,12 @@ export const userSlice = createSlice({
     name: 'user',
     initialState,
     reducers: {
-     
+        clearCurrentUser: (state) => {
+            state.isAuthorized = false
+        },
+        setIsAuthorized: (state) => {
+            state.isAuthorized = true
+        }
     },
     extraReducers: {
         [signInThunk.pending.type]: (state) => {
