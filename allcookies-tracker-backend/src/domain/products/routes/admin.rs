@@ -1,15 +1,18 @@
 use crate::domain::products::contract::ProductAdminService;
 use crate::domain::products::repos::PersistentProductRepository;
 use crate::domain::products::svcs::ProductAdminServiceImpl;
-use crate::domain::AdminUserInfo;
-use crate::domain::PagedResult;
-use crate::domain::Product;
-use crate::domain::SkipTake;
-use actix_web::{error, get, web, Scope};
+use crate::domain::{
+    AdminUserInfo, IdPath, NewProduct, PagedResult, Product, SkipTake, UpdateProduct,
+};
+use actix_web::{delete, error, get, patch, post, web, Scope};
 use serde::{Deserialize, Serialize};
 
 pub fn product_admin_route() -> Scope {
-    web::scope("/admin/product").service(get_product)
+    web::scope("/admin/product")
+        .service(get_product)
+        .service(create_product)
+        .service(update_product)
+        .service(delete_product)
 }
 
 #[derive(Serialize, Deserialize)]
@@ -41,56 +44,47 @@ pub async fn get_product(
     Ok(web::Json(result))
 }
 
-// #[post("")]
-// pub async fn create_selling_point(
-//     selling_point: web::Json<NewSellingPoint>,
-//     current_user: AdminUserInfo,
-//     pool: web::Data<sqlx::Pool<sqlx::Postgres>>,
-// ) -> Result<web::Json<SellingPoint>, actix_web::Error> {
-//     let svc = SellingPointAdminServiceImpl::new(
-//         current_user,
-//         PersistentSellingPointRepository::new(&pool),
-//     );
+#[post("")]
+pub async fn create_product(
+    product: web::Json<NewProduct>,
+    current_user: AdminUserInfo,
+    pool: web::Data<sqlx::Pool<sqlx::Postgres>>,
+) -> Result<web::Json<Product>, actix_web::Error> {
+    let svc = ProductAdminServiceImpl::new(PersistentProductRepository::new(&pool), current_user);
 
-//     let new_selling_point = svc
-//         .create(selling_point.into_inner())
-//         .await
-//         .map_err(|e| error::ErrorBadRequest(e))?;
+    let new_product = svc
+        .create(&product.into_inner())
+        .await
+        .map_err(|e| error::ErrorBadRequest(e))?;
 
-//     Ok(web::Json(new_selling_point))
-// }
+    Ok(web::Json(new_product))
+}
 
-// #[patch("{id}")]
-// pub async fn update_selling_point(
-//     id: web::Path<IdPath>,
-//     selling_point: web::Json<UpdateSellingPoint>,
-//     current_user: AdminUserInfo,
-//     pool: web::Data<sqlx::Pool<sqlx::Postgres>>,
-// ) -> Result<web::Json<SellingPoint>, actix_web::Error> {
-//     let svc = SellingPointAdminServiceImpl::new(
-//         current_user,
-//         PersistentSellingPointRepository::new(&pool),
-//     );
+#[patch("{id}")]
+pub async fn update_product(
+    id: web::Path<IdPath>,
+    product: web::Json<UpdateProduct>,
+    current_user: AdminUserInfo,
+    pool: web::Data<sqlx::Pool<sqlx::Postgres>>,
+) -> Result<web::Json<Product>, actix_web::Error> {
+    let svc = ProductAdminServiceImpl::new(PersistentProductRepository::new(&pool), current_user);
 
-//     svc.update(id.id, selling_point.into_inner())
-//         .await
-//         .map(|r| web::Json(r))
-//         .map_err(|e| e.into())
-// }
+    svc.update(id.id, &product.into_inner())
+        .await
+        .map(|r| web::Json(r))
+        .map_err(|e| e.into())
+}
 
-// #[delete("{id}")]
-// pub async fn delete_selling_point(
-//     id: web::Path<IdPath>,
-//     current_user: AdminUserInfo,
-//     pool: web::Data<sqlx::Pool<sqlx::Postgres>>,
-// ) -> Result<HttpResponse, actix_web::Error> {
-//     let svc = SellingPointAdminServiceImpl::new(
-//         current_user,
-//         PersistentSellingPointRepository::new(&pool),
-//     );
+#[delete("{id}")]
+pub async fn delete_product(
+    id: web::Path<IdPath>,
+    current_user: AdminUserInfo,
+    pool: web::Data<sqlx::Pool<sqlx::Postgres>>,
+) -> Result<web::Json<Product>, actix_web::Error> {
+    let svc = ProductAdminServiceImpl::new(PersistentProductRepository::new(&pool), current_user);
 
-//     svc.delete(id.id)
-//         .await
-//         .map_err(|e| e.into())
-//         .map(|_| HttpResponse::NoContent().finish())
-// }
+    svc.delete(id.id)
+        .await
+        .map_err(|e| e.into())
+        .map(|e| web::Json(e))
+}

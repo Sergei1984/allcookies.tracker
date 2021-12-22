@@ -36,7 +36,7 @@ pub struct IdPath {
 
 /// Produces a copy of value with updated fields
 pub trait Patch<TPatch> {
-    fn patch(&self, patch: TPatch) -> Self;
+    fn patch(&self, patch: &TPatch) -> Self;
 }
 
 impl From<LatLonQuery> for Option<LatLonPoint> {

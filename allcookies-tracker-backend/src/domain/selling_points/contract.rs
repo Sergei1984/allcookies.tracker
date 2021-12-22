@@ -26,14 +26,18 @@ pub struct UpdateSellingPoint {
 }
 
 impl Patch<UpdateSellingPoint> for SellingPoint {
-    fn patch(&self, patch: UpdateSellingPoint) -> Self {
+    fn patch(&self, patch: &UpdateSellingPoint) -> Self {
         SellingPoint {
             id: self.id,
-            title: patch.title.unwrap_or_else(|| self.title.clone()),
+            title: patch.title.clone().unwrap_or_else(|| self.title.clone()),
             description: patch
                 .description
+                .clone()
                 .unwrap_or_else(|| self.description.clone()),
-            address: patch.address.unwrap_or_else(|| self.address.clone()),
+            address: patch
+                .address
+                .clone()
+                .unwrap_or_else(|| self.address.clone()),
             location: patch.location.unwrap_or_else(|| self.location),
             is_disabled: patch.is_disabled.unwrap_or_else(|| self.is_disabled),
             ..(*self)

@@ -1,5 +1,8 @@
 use crate::domain::products::repos::ProductRepository;
-use crate::domain::{AdminUserInfo, PagedResult, Product, ProductAdminService};
+use crate::domain::{
+    ActiveUserInfo, AdminUserInfo, NewProduct, PagedResult, Patch, Product, ProductAdminService,
+    UpdateProduct,
+};
 use crate::AppError;
 use async_trait::async_trait;
 
@@ -37,5 +40,48 @@ where
             .get_all(title, is_disabled, skip, take)
             .await
             .map_err(|e| AppError::internal_server_err(Some(&e.to_string())))
+    }
+
+    async fn create(&self, new_product: &NewProduct) -> Result<Product, AppError> {
+        self.product_repo
+            .create(new_product, self.current_user.id())
+            .await
+            .map_err(|e| AppError::internal_server_err(Some(&e.to_string())))
+    }
+
+    async fn update(&self, id: i64, patch: &UpdateProduct) -> Result<Product, AppError> {
+        let product = self
+            .product_repo
+            .get_one(id)
+            .await
+            .map_err(|e| AppError::internal_server_err(Some(&e.to_string())))?
+            .ok_or(AppError::not_found_err())?;
+
+        let updated_product = product.patch(&patch);
+
+        let _ = self
+            .product_repo
+            .update(&updated_product, self.current_user.id())
+            .await
+            .map_err(|e| AppError::internal_server_err(Some(&e.to_string())))?;
+
+        self.product_repo
+            .get_one(id)
+            .await
+            .map_err(|e| AppError::internal_server_err(Some(&e.to_string())))?
+            .ok_or(AppError::not_found_err())
+    }
+
+    async fn delete(&self, id: i64) -> Result<Product, AppError> {
+        self.product_repo
+            .delete(id, self.current_user.id())
+            .await
+            .map_err(|e| AppError::internal_server_err(Some(&e.to_string())))?;
+            
+        self.product_repo
+            .get_one(id)
+            .await
+            .map_err(|e| AppError::internal_server_err(Some(&e.to_string())))?
+            .ok_or(AppError::not_found_err())
     }
 }

@@ -93,3 +93,28 @@ Authorization: {{auth.response.body.jwt}}
 ###
 GET {{server}}/client/product/
 Authorization: {{auth.response.body.jwt}}
+
+
+###
+POST {{server}}/admin/product/
+Authorization: {{auth.response.body.jwt}}
+Content-Type: application/json
+
+{
+    "title": "Ежики",
+    "is_disabled": false
+}
+
+###
+PATCH {{server}}/admin/product/5
+Authorization: {{auth.response.body.jwt}}
+Content-Type: application/json
+
+{
+    "title": "Йижачкы",
+    "is_disabled": false
+}
+
+###
+DELETE {{server}}/admin/product/5
+Authorization: {{auth.response.body.jwt}}

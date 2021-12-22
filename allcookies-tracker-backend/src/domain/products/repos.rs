@@ -1,6 +1,6 @@
 use crate::domain::Count;
-use crate::domain::{PagedResult, Product};
-use crate::AnError;
+use crate::domain::{NewProduct, PagedResult, Product};
+use crate::{AnError, AppError};
 use async_trait::async_trait;
 use sqlx::PgPool;
 
@@ -14,26 +14,13 @@ pub trait ProductRepository {
         take: i64,
     ) -> Result<PagedResult<Product>, AnError>;
 
-    // async fn get_one(&self, id: i64) -> Result<Option<SellingPoint>, AnError>;
+    async fn get_one(&self, id: i64) -> Result<Option<Product>, AnError>;
 
-    // async fn find_active(
-    //     &self,
-    //     search_by_name: Option<String>,
-    //     location: Option<LatLonPoint>,
-    //     radius_meters: f64,
-    //     skip: i64,
-    //     take: i64,
-    // ) -> Result<PagedResult<SellingPoint>, AnError>;
+    async fn create(&self, entity: &NewProduct, current_user_id: i64) -> Result<Product, AnError>;
 
-    // async fn create(
-    //     &self,
-    //     entity: NewSellingPoint,
-    //     current_user_id: i64,
-    // ) -> Result<SellingPoint, AnError>;
+    async fn update(&self, updated: &Product, current_user_id: i64) -> Result<(), AnError>;
 
-    // async fn update(&self, updated: SellingPoint, current_user_id: i64) -> Result<(), AnError>;
-
-    // async fn delete(&self, id: i64, current_user_id: i64) -> Result<(), AnError>;
+    async fn delete(&self, id: i64, current_user_id: i64) -> Result<(), AnError>;
 }
 
 #[derive(Debug)]
@@ -115,121 +102,112 @@ impl<'a> ProductRepository for PersistentProductRepository<'a> {
         })
     }
 
-    // async fn get_one(&self, id: i64) -> Result<Option<SellingPoint>, AnError> {
-    //     let point = sqlx::query_as!(
-    //         SellingPoint,
-    //         r#"select id, title, description, address, location as "location!: _", is_disabled, created_by, created_at, modified_by, modified_at, deleted_by, deleted_at
-    //            from selling_point where id = $1"#,
-    //         id
-    //     )
-    //     .fetch_optional(self.db)
-    //     .await?;
+    async fn get_one(&self, id: i64) -> Result<Option<Product>, AnError> {
+        let product = sqlx::query_as!(
+            Product,
+            r#"select 
+                    id, 
+                    title, 
+                    image_url, 
+                    is_disabled, 
+                    created_by, 
+                    created_at, 
+                    modified_by, 
+                    modified_at, 
+                    deleted_by, 
+                    deleted_at
+               from 
+                    product where id = $1"#,
+            id
+        )
+        .fetch_optional(self.db)
+        .await?;
 
-    //     if let Some(p) = point {
-    //         Ok(Some(p))
-    //     } else {
-    //         Ok(None)
-    //     }
-    // }
+        if let Some(p) = product {
+            Ok(Some(p))
+        } else {
+            Ok(None)
+        }
+    }
 
-    // async fn create(
-    //     &self,
-    //     entity: NewSellingPoint,
-    //     current_user_id: i64,
-    // ) -> Result<SellingPoint, AnError> {
-    //     let p: Geometry<f64> = entity.location.into();
+    async fn create(&self, entity: &NewProduct, current_user_id: i64) -> Result<Product, AnError> {
+        let rec = sqlx::query!(
+            r#"
+                insert into product(title, image_url, is_disabled, created_by, modified_by)
+                values ($1, $2, $3, $4, $4)
+                returning id
+                "#,
+            entity.title,
+            entity.image_url,
+            entity.is_disabled,
+            current_user_id
+        )
+        .fetch_one(self.db)
+        .await?;
 
-    //     let rec = sqlx::query!(
-    //         r#"
-    //         insert into selling_point(title, description, address, location, is_disabled, created_by, modified_by)
-    //         values ($1, $2, $3, ST_GeomFromWKB($4, 4326), $5, $6, $7)
-    //         returning id
-    //         "#,
-    //         entity.title,
-    //         entity.description,
-    //         entity.address,
-    //         geozero::wkb::Encode(p) as _,
-    //         entity.is_disabled,
-    //         current_user_id,
-    //         current_user_id
-    //     ).fetch_one(self.db)
-    //     .await?;
+        let new = self.get_one(rec.id).await?;
 
-    //     let new = self.get_one(rec.id).await?;
+        match new {
+            Some(e) => Ok(e),
+            None => Err(Box::new(AppError::not_found_err())),
+        }
+    }
 
-    //     match new {
-    //         Some(e) => Ok(e),
-    //         None => Err(AppError::new_an_err(
-    //             "Not found",
-    //             actix_web::http::StatusCode::from_u16(404).unwrap(),
-    //         )),
-    //     }
-    // }
+    async fn update(&self, entity: &Product, current_user_id: i64) -> Result<(), AnError> {
+        let rec = sqlx::query!(
+            r#"
+            update product
+            set
+                title = $1,
+                image_url = $2,
+                is_disabled = $3,
+                modified_by = $4,
+                modified_at = current_timestamp
+            where
+                id = $5
+            "#,
+            entity.title,
+            entity.image_url,
+            entity.is_disabled,
+            current_user_id,
+            entity.id
+        )
+        .execute(self.db)
+        .await?;
 
-    // async fn update(&self, entity: SellingPoint, current_user_id: i64) -> Result<(), AnError> {
-    //     let p = Geometry::Point(geo_types::Point::new(
-    //         entity.location.lon,
-    //         entity.location.lat,
-    //     ));
+        if rec.rows_affected() != 1 {
+            return Err(AppError::new_an_err(
+                &format!("Can't update product with id {}", entity.id),
+                actix_web::http::StatusCode::from_u16(400).unwrap(),
+            ));
+        }
 
-    //     let rec = sqlx::query!(
-    //         r#"
-    //         update selling_point
-    //         set
-    //             title = $1,
-    //             description = $2,
-    //             address = $3,
-    //             location = ST_GeomFromWKB($4, 4326),
-    //             is_disabled = $5,
-    //             modified_by = $6,
-    //             modified_at = current_timestamp
-    //         where
-    //             id = $7
-    //         "#,
-    //         entity.title,
-    //         entity.description,
-    //         entity.address,
-    //         geozero::wkb::Encode(p) as _,
-    //         entity.is_disabled,
-    //         current_user_id,
-    //         entity.id
-    //     )
-    //     .execute(self.db)
-    //     .await?;
+        Ok(())
+    }
 
-    //     if rec.rows_affected() != 1 {
-    //         return Err(AppError::new_an_err(
-    //             &format!("Can't update selling point with id {}", entity.id),
-    //             actix_web::http::StatusCode::from_u16(400).unwrap(),
-    //         ));
-    //     }
+    async fn delete(&self, id: i64, current_user_id: i64) -> Result<(), AnError> {
+        let res = sqlx::query!(
+            r#"
+            update product
+            set
+                deleted_by = $2,
+                deleted_at = current_timestamp
+            where
+                id = $1
+            "#,
+            id,
+            current_user_id
+        )
+        .execute(self.db)
+        .await?;
 
-    //     Ok(())
-    // }
+        if res.rows_affected() != 1 {
+            return Err(AppError::new_an_err(
+                &format!("Can't delete product with id {}", id),
+                actix_web::http::StatusCode::from_u16(400).unwrap(),
+            ));
+        }
 
-    // async fn delete(&self, id: i64, current_user_id: i64) -> Result<(), AnError> {
-    //     let res = sqlx::query!(
-    //         r#"
-    //         update selling_point
-    //         set
-    //             deleted_by = $2,
-    //             deleted_at = current_timestamp
-    //         where
-    //             id = $1
-    //         "#,
-    //         id,
-    //         current_user_id
-    //     )
-    //     .execute(self.db)
-    //     .await?;
-
-    //     if res.rows_affected() != 1 {
-    //         return Err(AppError::new_an_err(
-    //             &format!("Can't delete selling point with id {}", id),
-    //             actix_web::http::StatusCode::from_u16(400).unwrap(),
-    //         ));
-    //     }
-
-    //     Ok(())
-    // }
+        Ok(())
+    }
 }
