@@ -61,6 +61,29 @@
       ]
     }
   },
+  "29728fd0ab3b371ff18fd1768e84c0273855dace45f7423b716ba66d75aed61c": {
+    "query": "\n                insert into product(title, image_url, is_disabled, created_by, modified_by)\n                values ($1, $2, $3, $4, $4)\n                returning id\n                ",
+    "describe": {
+      "columns": [
+        {
+          "ordinal": 0,
+          "name": "id",
+          "type_info": "Int8"
+        }
+      ],
+      "parameters": {
+        "Left": [
+          "Text",
+          "Text",
+          "Bool",
+          "Int8"
+        ]
+      },
+      "nullable": [
+        false
+      ]
+    }
+  },
   "3dc513dbfa28cedf4fc0446eafb57cd878716602852e9757cd98211ff31b9f99": {
     "query": "select count(1) as \"count!\" from selling_point",
     "describe": {
@@ -190,6 +213,80 @@
         ]
       },
       "nullable": []
+    }
+  },
+  "72cd3a0bf05ea81efa646ca840521da19e943dfbfe3016917ce4b3e4ddbd274f": {
+    "query": "select \n                    id, \n                    title, \n                    image_url, \n                    is_disabled, \n                    created_by, \n                    created_at, \n                    modified_by, \n                    modified_at, \n                    deleted_by, \n                    deleted_at\n               from \n                    product where id = $1",
+    "describe": {
+      "columns": [
+        {
+          "ordinal": 0,
+          "name": "id",
+          "type_info": "Int8"
+        },
+        {
+          "ordinal": 1,
+          "name": "title",
+          "type_info": "Text"
+        },
+        {
+          "ordinal": 2,
+          "name": "image_url",
+          "type_info": "Text"
+        },
+        {
+          "ordinal": 3,
+          "name": "is_disabled",
+          "type_info": "Bool"
+        },
+        {
+          "ordinal": 4,
+          "name": "created_by",
+          "type_info": "Int8"
+        },
+        {
+          "ordinal": 5,
+          "name": "created_at",
+          "type_info": "Timestamptz"
+        },
+        {
+          "ordinal": 6,
+          "name": "modified_by",
+          "type_info": "Int8"
+        },
+        {
+          "ordinal": 7,
+          "name": "modified_at",
+          "type_info": "Timestamptz"
+        },
+        {
+          "ordinal": 8,
+          "name": "deleted_by",
+          "type_info": "Int8"
+        },
+        {
+          "ordinal": 9,
+          "name": "deleted_at",
+          "type_info": "Timestamptz"
+        }
+      ],
+      "parameters": {
+        "Left": [
+          "Int8"
+        ]
+      },
+      "nullable": [
+        false,
+        false,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        true
+      ]
     }
   },
   "772daa019a25f82cfaac75c052ba5f07f247bd1fb8a370e5032478ef01175132": {
@@ -382,6 +479,35 @@
         false,
         false
       ]
+    }
+  },
+  "ad4558e3aad93c807e4f889a16ff86e17619578bcfc95cbc22d44b2cf2ed4e49": {
+    "query": "\n            update product\n            set\n                deleted_by = $2,\n                deleted_at = current_timestamp\n            where\n                id = $1\n            ",
+    "describe": {
+      "columns": [],
+      "parameters": {
+        "Left": [
+          "Int8",
+          "Int8"
+        ]
+      },
+      "nullable": []
+    }
+  },
+  "ba4f7103a3231c34e5cbd4eafac68ad63057ccd6c4d5f1d2b5e11296e4fa3c15": {
+    "query": "\n            update product\n            set\n                title = $1,\n                image_url = $2,\n                is_disabled = $3,\n                modified_by = $4,\n                modified_at = current_timestamp\n            where\n                id = $5\n            ",
+    "describe": {
+      "columns": [],
+      "parameters": {
+        "Left": [
+          "Text",
+          "Text",
+          "Bool",
+          "Int8",
+          "Int8"
+        ]
+      },
+      "nullable": []
     }
   },
   "bea83af58aa62391f536d84cc0110c999a1d12c61690ed51538d389356e86fff": {
