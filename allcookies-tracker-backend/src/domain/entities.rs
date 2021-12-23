@@ -47,4 +47,26 @@ pub struct Activity {
     pub id: i64,
     pub activity_type: String,
     pub location: Option<LatLonPoint>,
+    pub amend_by_activity_id: Option<i64>,
+    pub created_by: i64,
+    pub created_at: DateTime<Utc>,
+    pub deleted_by: Option<i64>,
+    pub deleted_at: Option<DateTime<Utc>>,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct SellingPointCheck {
+    pub id: i64,
+    pub activity_id: i64,
+    pub selling_point_id: i64,
+    pub product_id: i64,
+    pub quantity: i64,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct SellingPointCheckPhotos {
+    pub id: i64,
+    pub activity_id: i64,
+    pub selling_point_id: i64,
+    pub photo_data: Vec<u8>,
 }
