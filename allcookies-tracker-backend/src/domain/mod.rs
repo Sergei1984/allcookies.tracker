@@ -1,3 +1,4 @@
+mod activity;
 mod authentication;
 mod authorization;
 mod contract;
@@ -6,9 +7,11 @@ mod geo_primitives;
 mod products;
 mod selling_points;
 
+pub use activity::*;
 pub use authentication::*;
 pub use authorization::*;
 pub use contract::*;
 pub use entities::*;
+pub use geo_primitives::*;
 pub use products::*;
 pub use selling_points::*;
