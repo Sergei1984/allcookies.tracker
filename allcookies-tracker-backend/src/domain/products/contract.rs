@@ -1,3 +1,4 @@
+use crate::domain::optional_patch_field;
 use crate::domain::{PagedResult, Patch, Product};
 use crate::AppError;
 use async_trait::async_trait;
@@ -13,6 +14,7 @@ pub struct NewProduct {
 #[derive(Debug, Serialize, Deserialize)]
 pub struct UpdateProduct {
     pub title: Option<String>,
+    #[serde(default, deserialize_with = "optional_patch_field")]
     pub image_url: Option<Option<String>>,
     pub is_disabled: Option<bool>,
 }

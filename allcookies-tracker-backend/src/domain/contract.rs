@@ -1,3 +1,4 @@
+use serde::Deserializer;
 use crate::domain::geo_primitives::LatLonPoint;
 use serde::{Deserialize, Serialize};
 
@@ -50,4 +51,12 @@ impl From<LatLonQuery> for Option<LatLonPoint> {
 
         None
     }
+}
+
+// Any value that is present is considered Some value, including null.
+pub fn optional_patch_field<'de, T, D>(deserializer: D) -> Result<Option<T>, D::Error>
+    where T: Deserialize<'de>,
+          D: Deserializer<'de>
+{
+    Deserialize::deserialize(deserializer).map(Some)
 }

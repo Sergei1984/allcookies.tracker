@@ -149,7 +149,7 @@ impl<'a> SellingPointRepository for PersistentSellingPointRepository<'a> {
         entity: NewSellingPoint,
         current_user_id: i64,
     ) -> Result<SellingPoint, AnError> {
-        let p: Geometry<f64> = entity.location.into();
+        let p: Option<Geometry<f64>> = entity.location.map(|e| e.into());
 
         let rec = sqlx::query!(
             r#"
@@ -160,7 +160,7 @@ impl<'a> SellingPointRepository for PersistentSellingPointRepository<'a> {
             entity.title,
             entity.description,
             entity.address,
-            geozero::wkb::Encode(p) as _,
+            p.map(|e| geozero::wkb::Encode(e)) as _,
             entity.is_disabled,
             current_user_id,
             current_user_id
@@ -179,10 +179,9 @@ impl<'a> SellingPointRepository for PersistentSellingPointRepository<'a> {
     }
 
     async fn update(&self, entity: SellingPoint, current_user_id: i64) -> Result<(), AnError> {
-        let p = Geometry::Point(geo_types::Point::new(
-            entity.location.lon,
-            entity.location.lat,
-        ));
+        let p = entity
+            .location
+            .map(|l| Geometry::Point(geo_types::Point::new(l.lon, l.lat)));
 
         let rec = sqlx::query!(
             r#"
@@ -201,7 +200,7 @@ impl<'a> SellingPointRepository for PersistentSellingPointRepository<'a> {
             entity.title,
             entity.description,
             entity.address,
-            geozero::wkb::Encode(p) as _,
+            p.map(|e| geozero::wkb::Encode(e)) as _,
             entity.is_disabled,
             current_user_id,
             entity.id

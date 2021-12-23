@@ -1,3 +1,4 @@
+use crate::domain::optional_patch_field;
 use crate::domain::geo_primitives::LatLonPoint;
 use crate::domain::PagedResult;
 use crate::domain::Patch;
@@ -12,16 +13,19 @@ pub struct NewSellingPoint {
     pub title: String,
     pub description: Option<String>,
     pub address: Option<String>,
-    pub location: LatLonPoint,
+    pub location: Option<LatLonPoint>,
     pub is_disabled: bool,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct UpdateSellingPoint {
     pub title: Option<String>,
+    #[serde(default, deserialize_with = "optional_patch_field")]
     pub description: Option<Option<String>>,
+    #[serde(default, deserialize_with = "optional_patch_field")]
     pub address: Option<Option<String>>,
-    pub location: Option<LatLonPoint>,
+    #[serde(default, deserialize_with = "optional_patch_field")]
+    pub location: Option<Option<LatLonPoint>>,
     pub is_disabled: Option<bool>,
 }
 

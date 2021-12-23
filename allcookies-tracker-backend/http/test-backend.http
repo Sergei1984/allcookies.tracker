@@ -36,12 +36,9 @@ Authorization: {{auth.response.body.jwt}}
 Content-Type: application/json
 
 {
-    "title": "Никольский",
+    "title": "Барабашово",
     "is_disabled": false,
-    "location": {
-        "lon": 49.991414,
-        "lat": 36.235887
-    }
+    "location": null
 }
 
 ###
@@ -58,12 +55,12 @@ Content-Type: application/json
 }
 
 ###
-PATCH {{server}}/client/selling-point/3
+PATCH {{server}}/admin/selling-point/7
 Authorization: {{auth.response.body.jwt}}
 Content-Type: application/json
 
 {
-    "title": "Test point4"
+    "title": "Барабашово"
 }
 
 ###
