@@ -32,8 +32,8 @@ impl Encode<'_, Postgres> for LatLonPoint {
         let primitive_type: i32 = 4326;
         push_to::<4>(buf, &primitive_type.to_le_bytes());
 
-        push_to::<8>(buf, &self.lat.to_le_bytes());
         push_to::<8>(buf, &self.lon.to_le_bytes());
+        push_to::<8>(buf, &self.lat.to_le_bytes());
 
         IsNull::No
     }
@@ -69,8 +69,8 @@ impl<'r> Decode<'r, Postgres> for LatLonPoint {
                 ));
             } // 2D point
 
-            let lat = f64::from_be_bytes(blob[5..13].try_into().unwrap());
-            let lon = f64::from_be_bytes(blob[13..21].try_into().unwrap());
+            let lon = f64::from_be_bytes(blob[5..13].try_into().unwrap());
+            let lat = f64::from_be_bytes(blob[13..21].try_into().unwrap());
             Ok(LatLonPoint { lat: lat, lon: lon })
         } else {
             // Little endian
@@ -82,8 +82,8 @@ impl<'r> Decode<'r, Postgres> for LatLonPoint {
                 ));
             } // 2D point
 
-            let lat = f64::from_le_bytes(blob[9..17].try_into().unwrap());
-            let lon = f64::from_le_bytes(blob[17..25].try_into().unwrap());
+            let lon = f64::from_le_bytes(blob[9..17].try_into().unwrap());
+            let lat = f64::from_le_bytes(blob[17..25].try_into().unwrap());
             Ok(LatLonPoint { lat: lat, lon: lon })
         }
     }
