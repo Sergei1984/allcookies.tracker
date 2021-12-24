@@ -60,7 +60,7 @@ impl<'a> SellingPointRepository for PersistentSellingPointRepository<'a> {
 
         let points = sqlx::query_as!(
             SellingPoint,
-            r#"select id, title, description, address, location as "location!: _", is_disabled, created_by, created_at, modified_by, modified_at, deleted_by, deleted_at 
+            r#"select id, title, description, address, st_AsBinary(location) as "location!: _", is_disabled, created_by, created_at, modified_by, modified_at, deleted_by, deleted_at 
                from selling_point 
                where 
                     title ilike $1::text 
@@ -104,7 +104,7 @@ impl<'a> SellingPointRepository for PersistentSellingPointRepository<'a> {
     async fn get_all(&self, skip: i64, take: i64) -> Result<PagedResult<SellingPoint>, AnError> {
         let points = sqlx::query_as!(
             SellingPoint,
-            r#"select id, title, description, address, location as "location!: _", is_disabled, created_by, created_at, modified_by, modified_at, deleted_by, deleted_at from selling_point offset $1 limit $2"#,
+            r#"select id, title, description, address, ST_AsBinary(location) as "location!: _", is_disabled, created_by, created_at, modified_by, modified_at, deleted_by, deleted_at from selling_point offset $1 limit $2"#,
             skip,
             take
         )
