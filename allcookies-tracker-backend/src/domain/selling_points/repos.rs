@@ -65,7 +65,7 @@ impl<'a> SellingPointRepository for PersistentSellingPointRepository<'a> {
                     title, 
                     description, 
                     address, 
-                    ST_AsBinary(location) as "location!: _", 
+                    location as "location!: _", 
                     is_disabled, 
                     created_by, 
                     created_at, 
@@ -78,7 +78,7 @@ impl<'a> SellingPointRepository for PersistentSellingPointRepository<'a> {
                     title ilike $1::text 
                 and is_disabled = false 
                 and deleted_at is null 
-                and ((st_distancesphere(location::geometry, ST_GeomFromWKB($2, 4326))) < $3 or $2 is null)
+                and ((st_distancesphere(location::geometry, $2)) < $3 or $2 is null)
 
                order by title
                offset $4::bigint limit $5::bigint"#,
@@ -100,10 +100,10 @@ impl<'a> SellingPointRepository for PersistentSellingPointRepository<'a> {
                     title ilike $1 
                 and is_disabled = false 
                 and deleted_at is null
-                and ((st_distancesphere(location::geometry, ST_GeomFromWKB($2, 4326))) < $3 or $2 is null)"#,
-                title,
-                location as _,
-                radius_meters
+                and ((st_distancesphere(location::geometry, $2)) < $3 or $2 is null)"#,
+            title,
+            location as _,
+            radius_meters
         )
         .fetch_one(self.db)
         .await?;
@@ -122,7 +122,7 @@ impl<'a> SellingPointRepository for PersistentSellingPointRepository<'a> {
                     title, 
                     description, 
                     address, 
-                    ST_AsBinary(location) as "location!: _", 
+                    location as "location!: _", 
                     is_disabled, 
                     created_by, 
                     created_at, 
@@ -157,7 +157,7 @@ impl<'a> SellingPointRepository for PersistentSellingPointRepository<'a> {
                     title, 
                     description, 
                     address, 
-                    ST_AsBinary(location) as "location!: _", 
+                    location as "location!: _", 
                     is_disabled, 
                     created_by, 
                     created_at, 
@@ -194,7 +194,7 @@ impl<'a> SellingPointRepository for PersistentSellingPointRepository<'a> {
                 created_by, 
                 modified_by
             )
-            values ($1, $2, $3, ST_GeomFromWKB($4, 4326), $5, $6, $7)
+            values ($1, $2, $3, $4, $5, $6, $7)
             returning id
             "#,
             entity.title,
@@ -204,7 +204,8 @@ impl<'a> SellingPointRepository for PersistentSellingPointRepository<'a> {
             entity.is_disabled,
             current_user_id,
             current_user_id
-        ).fetch_one(self.db)
+        )
+        .fetch_one(self.db)
         .await?;
 
         let new = self.get_one(rec.id).await?;
@@ -226,7 +227,7 @@ impl<'a> SellingPointRepository for PersistentSellingPointRepository<'a> {
                 title = $1,
                 description = $2,
                 address = $3,
-                location = ST_GeomFromWKB($4, 4326),
+                location = $4,
                 is_disabled = $5,
                 modified_by = $6,
                 modified_at = current_timestamp

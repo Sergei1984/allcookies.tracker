@@ -36,8 +36,12 @@ Authorization: {{auth.response.body.jwt}}
 Content-Type: application/json
 
 {
-    "title": "Null",
-    "is_disabled": false
+    "title": "Lat 44 Lon 55",
+    "is_disabled": false,
+    "location": {
+        "lon": 55,
+        "lat": 44
+    }
 }
 
 ###

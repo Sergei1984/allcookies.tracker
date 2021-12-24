@@ -15,7 +15,7 @@ pub struct LatLonPoint {
 
 impl Type<Postgres> for LatLonPoint {
     fn type_info() -> PgTypeInfo {
-        PgTypeInfo::with_name("bytea")
+        PgTypeInfo::with_name("geometry")
     }
 }
 
@@ -26,7 +26,10 @@ impl Encode<'_, Postgres> for LatLonPoint {
         let endian: u8 = 1;
         buf.push(endian);
 
-        let primitive_type: i32 = 1;
+        let some_type: Vec<u8> = vec![1, 0, 0, 32];
+        push_to::<4>(buf, &some_type);
+
+        let primitive_type: i32 = 4326;
         push_to::<4>(buf, &primitive_type.to_le_bytes());
 
         push_to::<8>(buf, &self.lat.to_le_bytes());
@@ -71,16 +74,16 @@ impl<'r> Decode<'r, Postgres> for LatLonPoint {
             Ok(LatLonPoint { lat: lat, lon: lon })
         } else {
             // Little endian
-            let primitive_type = i32::from_le_bytes(blob[1..5].try_into().unwrap());
-            if primitive_type != 1 {
+            let primitive_type = i32::from_le_bytes(blob[5..9].try_into().unwrap());
+            if primitive_type != 4326 {
                 return Err(AppError::new_an_err(
                     "Error converting column value to LatLonPoint",
                     actix_web::http::StatusCode::from_u16(500).unwrap(),
                 ));
             } // 2D point
 
-            let lat = f64::from_le_bytes(blob[5..13].try_into().unwrap());
-            let lon = f64::from_le_bytes(blob[13..21].try_into().unwrap());
+            let lat = f64::from_le_bytes(blob[9..17].try_into().unwrap());
+            let lon = f64::from_le_bytes(blob[17..25].try_into().unwrap());
             Ok(LatLonPoint { lat: lat, lon: lon })
         }
     }
