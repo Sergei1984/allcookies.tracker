@@ -36,9 +36,8 @@ Authorization: {{auth.response.body.jwt}}
 Content-Type: application/json
 
 {
-    "title": "Барабашово",
-    "is_disabled": false,
-    "location": null
+    "title": "Null",
+    "is_disabled": false
 }
 
 ###

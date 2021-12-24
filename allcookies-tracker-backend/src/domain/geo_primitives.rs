@@ -2,7 +2,7 @@ use crate::AppError;
 use serde::{Deserialize, Serialize};
 use sqlx::decode::Decode;
 use sqlx::encode::{Encode, IsNull};
-use sqlx::error::{BoxDynError, Error};
+use sqlx::error::BoxDynError;
 use sqlx::postgres::{PgArgumentBuffer, PgTypeInfo, PgValueRef, Postgres};
 use sqlx::types::Type;
 use sqlx::ValueRef;
@@ -20,15 +20,33 @@ impl Type<Postgres> for LatLonPoint {
 }
 
 impl Encode<'_, Postgres> for LatLonPoint {
-    fn encode_by_ref(&self, _buf: &mut PgArgumentBuffer) -> IsNull {
-        IsNull::Yes
+    fn encode_by_ref(&self, buf: &mut PgArgumentBuffer) -> IsNull {
+        buf.reserve_exact(self.size_hint());
+
+        let endian: u8 = 1;
+        buf.push(endian);
+
+        let primitive_type: i32 = 1;
+        push_to::<4>(buf, &primitive_type.to_le_bytes());
+
+        push_to::<8>(buf, &self.lat.to_le_bytes());
+        push_to::<8>(buf, &self.lon.to_le_bytes());
+
+        IsNull::No
     }
 
     fn size_hint(&self) -> usize {
-        std::mem::size_of::<LatLonPoint>()
+        21
     }
 }
 
+fn push_to<const N: usize>(buf: &mut PgArgumentBuffer, data: &[u8]) {
+    for i in 0..N {
+        buf.push(data[i]);
+    }
+}
+
+// https://ru.wikipedia.org/wiki/WKT
 impl<'r> Decode<'r, Postgres> for LatLonPoint {
     fn decode(value: PgValueRef<'r>) -> Result<Self, BoxDynError> {
         if value.is_null() {
@@ -39,7 +57,7 @@ impl<'r> Decode<'r, Postgres> for LatLonPoint {
 
         let endian = blob[0];
         if endian == 0 {
-            // Little endian
+            // Big endian
             let primitive_type = i32::from_be_bytes(blob[1..5].try_into().unwrap());
             if primitive_type != 1 {
                 return Err(AppError::new_an_err(
@@ -52,7 +70,7 @@ impl<'r> Decode<'r, Postgres> for LatLonPoint {
             let lon = f64::from_be_bytes(blob[13..21].try_into().unwrap());
             Ok(LatLonPoint { lat: lat, lon: lon })
         } else {
-            // Big endian
+            // Little endian
             let primitive_type = i32::from_le_bytes(blob[1..5].try_into().unwrap());
             if primitive_type != 1 {
                 return Err(AppError::new_an_err(
