@@ -1,11 +1,9 @@
-use geo_types::Geometry;
-use geozero::wkb::FromWkb;
-use geozero::wkb::WkbDialect;
-use geozero::CoordDimensions;
-use geozero::GeomProcessor;
-use geozero::GeozeroGeometry;
 use serde::{Deserialize, Serialize};
-use std::io::Read;
+use sqlx::decode::Decode;
+use sqlx::encode::{Encode, IsNull};
+use sqlx::error::BoxDynError;
+use sqlx::postgres::{PgArgumentBuffer, PgTypeInfo, PgValueFormat, PgValueRef, Postgres};
+use sqlx::types::Type;
 
 #[derive(Debug, PartialEq, Default, Clone, Serialize, Deserialize)]
 pub struct LatLonPoint {
@@ -13,59 +11,25 @@ pub struct LatLonPoint {
     pub lon: f64,
 }
 
-impl Copy for LatLonPoint {}
-
-impl GeozeroGeometry for LatLonPoint {
-    fn process_geom<P: GeomProcessor>(
-        &self,
-        processor: &mut P,
-    ) -> std::result::Result<(), geozero::error::GeozeroError> {
-        processor.point_begin(0)?;
-        processor.coordinate(self.lon, self.lat, None, None, None, None, 0)?;
-        processor.point_end(0)
-    }
-
-    fn dims(&self) -> CoordDimensions {
-        CoordDimensions::xyz()
+impl Type<Postgres> for LatLonPoint {
+    fn type_info() -> PgTypeInfo {
+        PgTypeInfo::with_name("geometry")
     }
 }
 
-impl GeomProcessor for LatLonPoint {
-    fn dimensions(&self) -> CoordDimensions {
-        CoordDimensions::xyz()
+impl Encode<'_, Postgres> for LatLonPoint {
+    fn encode_by_ref(&self, buf: &mut PgArgumentBuffer) -> IsNull {
+        // Encode::<Postgres>::encode(&us, buf)
+        IsNull::Yes
     }
-    fn coordinate(
-        &mut self,
-        x: f64,
-        y: f64,
-        _z: Option<f64>,
-        _m: Option<f64>,
-        _t: Option<f64>,
-        _tm: Option<u64>,
-        _idx: usize,
-    ) -> geozero::error::Result<()> {
-        self.lon = x;
-        self.lat = y;
-        Ok(())
+
+    fn size_hint(&self) -> usize {
+        std::mem::size_of::<LatLonPoint>()
     }
 }
 
-impl FromWkb for LatLonPoint {
-    fn from_wkb<R: Read>(rdr: &mut R, dialect: WkbDialect) -> geozero::error::Result<Self> {
-        let mut pt = LatLonPoint::default();
-        geozero::wkb::process_wkb_type_geom(rdr, &mut pt, dialect)?;
-        Ok(pt)
-    }
-}
-
-mod postgis_sqlx_macros {
-    geozero::impl_sqlx_postgis_type_info!(super::LatLonPoint);
-    geozero::impl_sqlx_postgis_decode!(super::LatLonPoint);
-    geozero::impl_sqlx_postgis_encode!(super::LatLonPoint);
-}
-
-impl From<LatLonPoint> for Geometry<f64> {
-    fn from(src: LatLonPoint) -> Geometry<f64> {
-        Geometry::Point(geo_types::Point::new(src.lon, src.lat))
+impl<'r> Decode<'r, Postgres> for LatLonPoint {
+    fn decode(value: PgValueRef<'r>) -> Result<Self, BoxDynError> {
+        Ok(LatLonPoint { lat: 0.0, lon: 0.0 })
     }
 }

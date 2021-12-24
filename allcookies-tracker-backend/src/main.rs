@@ -26,7 +26,7 @@ async fn main() -> std::io::Result<()> {
         App::new()
             .app_data(web::Data::new(pool.clone()))
             .wrap(middleware::Logger::new("%t %a %r %s %b %T"))
-            .wrap(middleware::NormalizePath::trim())
+            .wrap(middleware::NormalizePath::new(middleware::normalize::TrailingSlash::Trim))
             .route("/health", web::to(|| HttpResponse::Ok().body("Healthy")))
             .service(authentication_route())
             .service(profile_route())

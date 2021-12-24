@@ -45,6 +45,7 @@ impl CurrentUser {
 impl FromRequest for CurrentUser {
     type Error = AppError;
     type Future = Ready<Result<Self, Self::Error>>;
+    type Config = ();
 
     fn from_request(req: &HttpRequest, _payload: &mut Payload) -> Self::Future {
         if let Some(auth_header) = req.headers().get(header::AUTHORIZATION) {

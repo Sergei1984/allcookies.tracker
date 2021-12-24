@@ -1,3 +1,5 @@
+use actix_web::dev::HttpResponseBuilder;
+
 pub type AnError = Box<dyn std::error::Error + Send + Sync + 'static>;
 
 #[derive(Debug)]
@@ -48,11 +50,11 @@ impl AppError {
 
 impl actix_web::error::ResponseError for AppError {
     fn error_response(&self) -> actix_web::HttpResponse {
-        actix_web::HttpResponseBuilder::new(self.status_code())
-            .insert_header((
+        HttpResponseBuilder::new(self.status_code())
+            .set_header(
                 actix_web::http::header::CONTENT_TYPE,
                 "text/html; charset=utf-8",
-            ))
+            )
             .body(self.description.clone())
     }
 

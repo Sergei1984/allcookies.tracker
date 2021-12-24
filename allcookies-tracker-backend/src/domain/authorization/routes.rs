@@ -25,6 +25,7 @@ pub async fn me(current_user: CurrentUser) -> Result<web::Json<CurrentUser>, act
 impl FromRequest for AdminUserInfo {
     type Error = AppError;
     type Future = Pin<Box<dyn Future<Output = Result<Self, Self::Error>>>>;
+    type Config = ();
 
     fn from_request(req: &HttpRequest, _payload: &mut Payload) -> Self::Future {
         let db = req
@@ -56,6 +57,7 @@ impl FromRequest for AdminUserInfo {
 impl FromRequest for ManagerUserInfo {
     type Error = AppError;
     type Future = Pin<Box<dyn Future<Output = Result<Self, Self::Error>>>>;
+    type Config = ();
 
     fn from_request(req: &HttpRequest, _payload: &mut Payload) -> Self::Future {
         let db = req

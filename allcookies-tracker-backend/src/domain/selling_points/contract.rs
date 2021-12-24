@@ -1,5 +1,5 @@
-use crate::domain::optional_patch_field;
 use crate::domain::geo_primitives::LatLonPoint;
+use crate::domain::optional_patch_field;
 use crate::domain::PagedResult;
 use crate::domain::Patch;
 use crate::domain::SellingPoint;
@@ -42,7 +42,10 @@ impl Patch<UpdateSellingPoint> for SellingPoint {
                 .address
                 .clone()
                 .unwrap_or_else(|| self.address.clone()),
-            location: patch.location.unwrap_or_else(|| self.location),
+            location: patch
+                .location
+                .clone()
+                .unwrap_or_else(|| self.location.clone()),
             is_disabled: patch.is_disabled.unwrap_or_else(|| self.is_disabled),
             ..(*self)
         }

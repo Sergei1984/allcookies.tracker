@@ -5,7 +5,6 @@ use crate::domain::{PagedResult, SellingPoint};
 use crate::AnError;
 use crate::AppError;
 use async_trait::async_trait;
-use geo_types::Geometry;
 use sqlx::PgPool;
 
 #[async_trait]
@@ -59,11 +58,6 @@ impl<'a> SellingPointRepository for PersistentSellingPointRepository<'a> {
             .map(|v| format!("%{}%", v.replace("%", "")))
             .unwrap_or(String::from("%"));
 
-        let search_location = location.map(|l| {
-            let geom: Geometry<f64> = l.into();
-            geozero::wkb::Encode(geom)
-        });
-
         let points = sqlx::query_as!(
             SellingPoint,
             r#"select id, title, description, address, location as "location!: _", is_disabled, created_by, created_at, modified_by, modified_at, deleted_by, deleted_at 
@@ -77,7 +71,7 @@ impl<'a> SellingPointRepository for PersistentSellingPointRepository<'a> {
                order by title
                offset $4::bigint limit $5::bigint"#,
             title,
-            search_location as _,
+            location as _,
             radius_meters,
             skip,
             take
@@ -95,7 +89,7 @@ impl<'a> SellingPointRepository for PersistentSellingPointRepository<'a> {
                 and deleted_at is null
                 and ((st_distancesphere(location::geometry, ST_GeomFromWKB($2, 4326))) < $3 or $2 is null)"#,
                 title,
-                search_location as _,
+                location as _,
                 radius_meters
         )
         .fetch_one(self.db)
@@ -149,8 +143,6 @@ impl<'a> SellingPointRepository for PersistentSellingPointRepository<'a> {
         entity: NewSellingPoint,
         current_user_id: i64,
     ) -> Result<SellingPoint, AnError> {
-        let p: Option<Geometry<f64>> = entity.location.map(|e| e.into());
-
         let rec = sqlx::query!(
             r#"
             insert into selling_point(title, description, address, location, is_disabled, created_by, modified_by)
@@ -160,7 +152,7 @@ impl<'a> SellingPointRepository for PersistentSellingPointRepository<'a> {
             entity.title,
             entity.description,
             entity.address,
-            p.map(|e| geozero::wkb::Encode(e)) as _,
+            entity.location as _,
             entity.is_disabled,
             current_user_id,
             current_user_id
@@ -179,10 +171,6 @@ impl<'a> SellingPointRepository for PersistentSellingPointRepository<'a> {
     }
 
     async fn update(&self, entity: SellingPoint, current_user_id: i64) -> Result<(), AnError> {
-        let p = entity
-            .location
-            .map(|l| Geometry::Point(geo_types::Point::new(l.lon, l.lat)));
-
         let rec = sqlx::query!(
             r#"
             update selling_point
@@ -200,7 +188,7 @@ impl<'a> SellingPointRepository for PersistentSellingPointRepository<'a> {
             entity.title,
             entity.description,
             entity.address,
-            p.map(|e| geozero::wkb::Encode(e)) as _,
+            entity.location as _,
             entity.is_disabled,
             current_user_id,
             entity.id
@@ -208,12 +196,12 @@ impl<'a> SellingPointRepository for PersistentSellingPointRepository<'a> {
         .execute(self.db)
         .await?;
 
-        if rec.rows_affected() != 1 {
-            return Err(AppError::new_an_err(
-                &format!("Can't update selling point with id {}", entity.id),
-                actix_web::http::StatusCode::from_u16(400).unwrap(),
-            ));
-        }
+        // if rec.rows_affected() != 1 {
+        //     return Err(AppError::new_an_err(
+        //         &format!("Can't update selling point with id {}", entity.id),
+        //         actix_web::http::StatusCode::from_u16(400).unwrap(),
+        //     ));
+        // }
 
         Ok(())
     }
@@ -234,12 +222,12 @@ impl<'a> SellingPointRepository for PersistentSellingPointRepository<'a> {
         .execute(self.db)
         .await?;
 
-        if res.rows_affected() != 1 {
-            return Err(AppError::new_an_err(
-                &format!("Can't delete selling point with id {}", id),
-                actix_web::http::StatusCode::from_u16(400).unwrap(),
-            ));
-        }
+        // if res.rows_affected() != 1 {
+        //     return Err(AppError::new_an_err(
+        //         &format!("Can't delete selling point with id {}", id),
+        //         actix_web::http::StatusCode::from_u16(400).unwrap(),
+        //     ));
+        // }
 
         Ok(())
     }
