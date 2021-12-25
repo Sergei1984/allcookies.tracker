@@ -5,6 +5,7 @@ use crate::domain::{PagedResult, SellingPoint};
 use crate::AnError;
 use crate::AppError;
 use async_trait::async_trait;
+use sqlx::prelude::*;
 use sqlx::PgPool;
 
 #[async_trait]
@@ -245,12 +246,12 @@ impl<'a> SellingPointRepository for PersistentSellingPointRepository<'a> {
         .execute(self.db)
         .await?;
 
-        // if rec.rows_affected() != 1 {
-        //     return Err(AppError::new_an_err(
-        //         &format!("Can't update selling point with id {}", entity.id),
-        //         actix_web::http::StatusCode::from_u16(400).unwrap(),
-        //     ));
-        // }
+        if rec.rows_affected() != 1 {
+            return Err(AppError::new_an_err(
+                &format!("Can't update selling point with id {}", entity.id),
+                actix_web::http::StatusCode::from_u16(400).unwrap(),
+            ));
+        }
 
         Ok(())
     }
@@ -271,12 +272,12 @@ impl<'a> SellingPointRepository for PersistentSellingPointRepository<'a> {
         .execute(self.db)
         .await?;
 
-        // if res.rows_affected() != 1 {
-        //     return Err(AppError::new_an_err(
-        //         &format!("Can't delete selling point with id {}", id),
-        //         actix_web::http::StatusCode::from_u16(400).unwrap(),
-        //     ));
-        // }
+        if res.rows_affected() != 1 {
+            return Err(AppError::new_an_err(
+                &format!("Can't delete selling point with id {}", id),
+                actix_web::http::StatusCode::from_u16(400).unwrap(),
+            ));
+        }
 
         Ok(())
     }

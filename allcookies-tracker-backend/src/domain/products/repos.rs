@@ -3,6 +3,7 @@ use crate::domain::{NewProduct, PagedResult, Product};
 use crate::{AnError, AppError};
 use async_trait::async_trait;
 use sqlx::PgPool;
+use sqlx::prelude::*;
 
 #[async_trait]
 pub trait ProductRepository {
@@ -175,12 +176,12 @@ impl<'a> ProductRepository for PersistentProductRepository<'a> {
         .execute(self.db)
         .await?;
 
-        // if rec.rows_affected() != 1 {
-        //     return Err(AppError::new_an_err(
-        //         &format!("Can't update product with id {}", entity.id),
-        //         actix_web::http::StatusCode::from_u16(400).unwrap(),
-        //     ));
-        // }
+        if rec.rows_affected() != 1 {
+            return Err(AppError::new_an_err(
+                &format!("Can't update product with id {}", entity.id),
+                actix_web::http::StatusCode::from_u16(400).unwrap(),
+            ));
+        }
 
         Ok(())
     }
@@ -201,12 +202,12 @@ impl<'a> ProductRepository for PersistentProductRepository<'a> {
         .execute(self.db)
         .await?;
 
-        // if res.rows_affected() != 1 {
-        //     return Err(AppError::new_an_err(
-        //         &format!("Can't delete product with id {}", id),
-        //         actix_web::http::StatusCode::from_u16(400).unwrap(),
-        //     ));
-        // }
+        if res.rows_affected() != 1 {
+            return Err(AppError::new_an_err(
+                &format!("Can't delete product with id {}", id),
+                actix_web::http::StatusCode::from_u16(400).unwrap(),
+            ));
+        }
 
         Ok(())
     }
