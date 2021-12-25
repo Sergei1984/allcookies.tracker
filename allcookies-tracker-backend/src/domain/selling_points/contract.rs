@@ -7,9 +7,11 @@ use crate::AnError;
 use crate::AppError;
 use async_trait::async_trait;
 use serde::{Deserialize, Serialize};
+use validator::Validate;
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Validate)]
 pub struct NewSellingPoint {
+    #[validate(length(min = 2))]
     pub title: String,
     pub description: Option<String>,
     pub address: Option<String>,

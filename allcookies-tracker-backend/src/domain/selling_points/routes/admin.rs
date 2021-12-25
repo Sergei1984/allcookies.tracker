@@ -51,7 +51,7 @@ pub async fn create_selling_point(
     let new_selling_point = svc
         .create(selling_point.into_inner())
         .await
-        .map_err(|e| error::ErrorBadRequest(e))?;
+        .map_err(|_| error::ErrorBadRequest("Bad request"))?;
 
     Ok(web::Json(new_selling_point))
 }

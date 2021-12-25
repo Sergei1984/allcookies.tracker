@@ -10,6 +10,7 @@ use crate::domain::UpdateSellingPoint;
 use crate::AnError;
 use crate::AppError;
 use async_trait::async_trait;
+use validator::Validate;
 
 pub struct SellingPointAdminServiceImpl<TSellingPointRepo: SellingPointRepository + Send + Sync> {
     selling_point_repo: TSellingPointRepo,
@@ -38,6 +39,15 @@ where
     }
 
     async fn create(&self, item: NewSellingPoint) -> Result<SellingPoint, AnError> {
+        let is_valid = item.validate();
+
+        if is_valid.is_err() {
+            return Err(AppError::new_an_err(
+                "Input is not valid",
+                actix_web::http::StatusCode::from_u16(400).unwrap(),
+            ));
+        }
+
         self.selling_point_repo
             .create(item, self.current_user.id())
             .await
