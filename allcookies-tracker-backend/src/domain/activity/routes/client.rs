@@ -23,11 +23,11 @@ pub async fn get_my_activity(
 ) -> Result<web::Json<PagedResult<ActivityInfo>>, actix_web::Error> {
     let mut trans = pool.begin().await.map_err(|e| error::ErrorBadRequest(e))?;
 
-    let mut result: Result<web::Json<PagedResult<ActivityInfo>>, actix_web::Error> =
-        Err(error::ErrorBadRequest("error"));
+    let result: Result<web::Json<PagedResult<ActivityInfo>>, actix_web::Error>;
 
     {
-        let mut svc = ClientActivityServiceImpl::new(PersistentActivityRepo::new(&mut trans));
+        let mut svc =
+            ClientActivityServiceImpl::new(current_user, PersistentActivityRepo::new(&mut trans));
 
         let data = svc
             .get_my_activity(skip_take.skip.unwrap_or(0), skip_take.take.unwrap_or(50))
@@ -49,13 +49,14 @@ pub async fn get_my_activity(
 
 #[put("open-day")]
 pub async fn open_day(
-    _current_user: ManagerUserInfo,
+    current_user: ManagerUserInfo,
     pool: web::Data<sqlx::Pool<sqlx::Postgres>>,
 ) -> Result<web::Json<()>, actix_web::Error> {
     let mut trans = pool.begin().await.map_err(|e| error::ErrorBadRequest(e))?;
 
     {
-        let svc = ClientActivityServiceImpl::new(PersistentActivityRepo::new(&mut trans));
+        let svc =
+            ClientActivityServiceImpl::new(current_user, PersistentActivityRepo::new(&mut trans));
         drop(svc);
     }
 
