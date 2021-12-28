@@ -3,27 +3,35 @@ use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize)]
-#[serde(tag = "t")]
+#[serde(tag = "activity_type")]
 pub enum ActivityInfo {
-    OpenDayActivityInfo,
-    CloseDayActivityInfo,
-    SellingPointCheckActivityInfo,
+    #[serde(rename = "open_day")]
+    OpenDay(OpenDayActivityInfo),
+
+    #[serde(rename = "close_day")]
+    CloseDay(CloseDayActivityInfo),
+
+    #[serde(rename = "point_check")]
+    SellingPointCheck(SellingPointCheckActivityInfo),
 }
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct OpenDayActivityInfo {
+    pub id: i64,
     pub location: Option<LatLonPoint>,
     pub time: DateTime<Utc>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct CloseDayActivityInfo {
+    pub id: i64,
     pub location: Option<LatLonPoint>,
     pub time: DateTime<Utc>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct SellingPointCheckActivityInfo {
+    pub id: i64,
     pub location: Option<LatLonPoint>,
     pub time: DateTime<Utc>,
     pub selling_point: SellingPointRef,
@@ -31,7 +39,7 @@ pub struct SellingPointCheckActivityInfo {
     pub photos: Vec<Photo>,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Default)]
 pub struct SellingPointRef {
     pub id: i64,
     pub title: String,

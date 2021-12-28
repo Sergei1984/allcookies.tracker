@@ -1,7 +1,7 @@
 use crate::domain::activity::repo::ActivityRepo;
 use crate::domain::{
-    ActivityInfo, ClientActivityService, CloseDayActivityInfo, ManagerUserInfo,
-    OpenDayActivityInfo, PagedResult,
+    ActiveUserInfo, ActivityInfo, ClientActivityService, CloseDayActivityInfo, ManagerUserInfo,
+    OpenDayActivityInfo, PagedResult, SellingPointCheckActivityInfo, SellingPointRef,
 };
 use crate::AppError;
 
@@ -32,12 +32,55 @@ where
 {
     async fn get_my_activity(
         &mut self,
-        _skip: i64,
-        _take: i64,
+        skip: i64,
+        take: i64,
     ) -> Result<PagedResult<ActivityInfo>, AppError> {
+        let (data, _info, selling_points) = self
+            .repo
+            .get_my_activity(self.current_user.id(), skip, take)
+            .await
+            .map_err(|e| AppError::internal_server_err(Some(&e.to_string())))?;
+
+        let activity: Vec<ActivityInfo> = data
+            .data
+            .into_iter()
+            .map(|i| match i.activity_type.as_str() {
+                "open_day" => ActivityInfo::OpenDay(OpenDayActivityInfo {
+                    id: i.id,
+                    location: i.location,
+                    time: i.created_at,
+                }),
+                "close_day" => ActivityInfo::CloseDay(CloseDayActivityInfo {
+                    id: i.id,
+                    location: i.location,
+                    time: i.created_at,
+                }),
+                _ => {
+                    let selling_point = selling_points
+                        .iter()
+                        .find(|sp| sp.id == i.selling_point_id.unwrap())
+                        .unwrap();
+
+                    ActivityInfo::SellingPointCheck(SellingPointCheckActivityInfo {
+                        id: i.id,
+                        location: i.location,
+                        time: i.created_at,
+                        selling_point: SellingPointRef {
+                            id: selling_point.id,
+                            title: selling_point.title.clone(),
+                            address: selling_point.address.clone(),
+                            location: selling_point.location.clone(),
+                        },
+                        products: vec![],
+                        photos: vec![],
+                    })
+                }
+            })
+            .collect();
+
         Ok(PagedResult {
-            data: vec![],
-            total: 0,
+            data: activity,
+            total: data.total,
         })
     }
 }
