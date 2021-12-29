@@ -1,7 +1,8 @@
 use crate::domain::activity::repo::ActivityRepo;
 use crate::domain::{
     ActiveUserInfo, ActivityInfo, ClientActivityService, CloseDayActivityInfo, ManagerUserInfo,
-    OpenDayActivityInfo, PagedResult, SellingPointCheckActivityInfo, SellingPointRef,
+    OpenDayActivityInfo, PagedResult, ProductCheckInfo, ProductRef, SellingPointCheckActivityInfo,
+    SellingPointRef,
 };
 use crate::AppError;
 
@@ -35,7 +36,7 @@ where
         skip: i64,
         take: i64,
     ) -> Result<PagedResult<ActivityInfo>, AppError> {
-        let (data, _info, selling_points) = self
+        let (data, info, selling_points) = self
             .repo
             .get_my_activity(self.current_user.id(), skip, take)
             .await
@@ -71,7 +72,18 @@ where
                             address: selling_point.address.clone(),
                             location: selling_point.location.clone(),
                         },
-                        products: vec![],
+                        products: info
+                            .iter()
+                            .filter(|c| c.activity_id == i.id)
+                            .map(|c| ProductCheckInfo {
+                                product: ProductRef {
+                                    id: c.product_id,
+                                    title: c.product_title.clone(),
+                                    image_url: c.product_image_url.clone(),
+                                },
+                                quantity: c.quantity,
+                            })
+                            .collect(),
                         photos: vec![],
                     })
                 }

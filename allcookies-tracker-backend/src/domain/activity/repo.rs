@@ -3,7 +3,7 @@ use crate::AnError;
 use serde::{Deserialize, Serialize};
 use sqlx::{Postgres, Transaction};
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Clone)]
 pub struct SellingPointCheckDto {
     pub id: i64,
     pub activity_id: i64,

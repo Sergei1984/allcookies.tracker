@@ -22,12 +22,12 @@ pub struct NewSellingPointCheckActivity {
     pub location: Option<LatLonPoint>,
     pub time: DateTime<Utc>,
     pub selling_point_id: i64,
-    pub products: Vec<ProductCheckInfo>,
+    pub products: Vec<ProductCheck>,
     pub photos: Vec<Photo>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
-pub struct ProductCheckInfo {
+pub struct ProductCheck {
     pub product_id: i64,
     pub quantity: i32,
 }
