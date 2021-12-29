@@ -14,7 +14,7 @@ RUN cargo build --release
 
 
 
-FROM rust:1.57
+FROM debian:buster-slim
 
 COPY --from=builder /usr/src/app/target/release/allcookies-tracker-backend /usr/app/allcookies-tracker-backend
 
