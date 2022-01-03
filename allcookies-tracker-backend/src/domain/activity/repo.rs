@@ -51,6 +51,7 @@ impl<'a, 'c> ActivityRepo for PersistentActivityRepo<'a, 'c> {
             r#"select
                 id,
                 activity_type,
+                at,
                 selling_point_id,
                 location as "location!: _",
                 amend_by_activity_id,
@@ -92,6 +93,7 @@ impl<'a, 'c> ActivityRepo for PersistentActivityRepo<'a, 'c> {
             r#"select
                 id,
                 activity_type,
+                at,
                 location as "location!: _",
                 selling_point_id,
                 amend_by_activity_id,

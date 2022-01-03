@@ -46,6 +46,7 @@ pub struct Product {
 pub struct Activity {
     pub id: i64,
     pub activity_type: String,
+    pub at: DateTime<Utc>,
     pub location: Option<LatLonPoint>,
     pub selling_point_id: Option<i64>,
     pub amend_by_activity_id: Option<i64>,
@@ -67,5 +68,6 @@ pub struct SellingPointCheck {
 pub struct SellingPointCheckPhotos {
     pub id: i64,
     pub activity_id: i64,
+    pub at: DateTime<Utc>,
     pub photo_data: Vec<u8>,
 }
