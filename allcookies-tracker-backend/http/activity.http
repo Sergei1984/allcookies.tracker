@@ -17,3 +17,16 @@ Content-Type: application/json
 ### 
 GET {{server}}/client/activity
 Authorization: {{auth.response.body.jwt}}
+
+### 
+PUT {{server}}/client/activity/open-day
+Content-Type: application/json
+Authorization: {{auth.response.body.jwt}}
+
+{
+    "location": {
+        "lat": 22.2,
+        "lon": 12.3
+    },
+    "time": "2022-01-03T17:17:20.372Z"
+}

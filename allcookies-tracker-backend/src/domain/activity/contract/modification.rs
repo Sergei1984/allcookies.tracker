@@ -4,7 +4,6 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct NewOpenDayActivity {
-    pub activity_type: String,
     pub location: Option<LatLonPoint>,
     pub time: DateTime<Utc>,
 }
