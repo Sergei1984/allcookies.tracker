@@ -1,7 +1,6 @@
 use crate::domain::activity::repo::PersistentActivityRepo;
 use crate::domain::{
-    ActivityInfo, ClientActivityService, ClientActivityServiceImpl, ManagerUserInfo, PagedResult,
-    SkipTake,
+    ActivityInfo, ClientActivityService, ManagerUserInfo, NewOpenDayActivity, PagedResult, SkipTake,
 };
 use actix_web::{error, get, put, web, Scope};
 use serde::{Deserialize, Serialize};
@@ -27,7 +26,7 @@ pub async fn get_my_activity(
 
     {
         let mut svc =
-            ClientActivityServiceImpl::new(current_user, PersistentActivityRepo::new(&mut trans));
+            ClientActivityService::new(current_user, PersistentActivityRepo::new(&mut trans));
 
         let data = svc
             .get_my_activity(skip_take.skip.unwrap_or(0), skip_take.take.unwrap_or(50))
@@ -50,13 +49,26 @@ pub async fn get_my_activity(
 #[put("open-day")]
 pub async fn open_day(
     current_user: ManagerUserInfo,
+    open_day: web::Json<NewOpenDayActivity>,
     pool: web::Data<sqlx::Pool<sqlx::Postgres>>,
-) -> Result<web::Json<()>, actix_web::Error> {
+) -> Result<web::Json<ActivityInfo>, actix_web::Error> {
     let mut trans = pool.begin().await.map_err(|e| error::ErrorBadRequest(e))?;
 
+    let result: Result<web::Json<ActivityInfo>, actix_web::Error>;
+
     {
-        let svc =
-            ClientActivityServiceImpl::new(current_user, PersistentActivityRepo::new(&mut trans));
+        let mut svc =
+            ClientActivityService::new(current_user, PersistentActivityRepo::new(&mut trans));
+
+        let new_open_day = open_day.into_inner();
+
+        let data = svc
+            .open_day(new_open_day)
+            .await
+            .map_err(|e| error::ErrorBadRequest(e))?;
+
+        result = Ok(web::Json(data));
+
         drop(svc);
     }
 
@@ -65,5 +77,5 @@ pub async fn open_day(
         .await
         .map_err(|e| error::ErrorBadRequest(e))?;
 
-    Ok(web::Json(()))
+    return result;
 }
