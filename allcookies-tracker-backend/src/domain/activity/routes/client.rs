@@ -2,7 +2,7 @@ use crate::domain::activity::repo::PersistentActivityRepo;
 use crate::domain::{
     ActivityInfo, ClientActivityService, ManagerUserInfo, NewOpenDayActivity, PagedResult, SkipTake,
 };
-use actix_web::{error, get, put, web, Scope};
+use actix_web::{error, get, post, web, Scope};
 use serde::{Deserialize, Serialize};
 
 pub fn activity_client_route() -> Scope {
@@ -46,7 +46,7 @@ pub async fn get_my_activity(
     return result;
 }
 
-#[put("open-day")]
+#[post("open-day")]
 pub async fn open_day(
     current_user: ManagerUserInfo,
     open_day: web::Json<NewOpenDayActivity>,
@@ -65,7 +65,7 @@ pub async fn open_day(
         let data = svc
             .open_day(new_open_day)
             .await
-            .map_err(|e| error::ErrorBadRequest(e))?;
+            .map_err(|e| error::ErrorBadRequest(e.to_string()))?;
 
         result = Ok(web::Json(data));
 

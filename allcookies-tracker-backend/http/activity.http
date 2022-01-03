@@ -19,7 +19,7 @@ GET {{server}}/client/activity
 Authorization: {{auth.response.body.jwt}}
 
 ### 
-PUT {{server}}/client/activity/open-day
+POST {{server}}/client/activity/open-day
 Content-Type: application/json
 Authorization: {{auth.response.body.jwt}}
 
