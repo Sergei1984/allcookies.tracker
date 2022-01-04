@@ -4,6 +4,70 @@ use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use sqlx::{Postgres, Transaction};
 
+macro_rules! activity_info {
+    ($db: expr, $where:expr, $($params:expr),*) => {
+        {
+            let selling_point_check_dtos = sqlx::query_as!(
+                SellingPointCheckDto,
+                r#"
+                select
+                    spc.id,
+                    spc.activity_id,
+                    spc.product_id,
+                    p.title as "product_title!",
+                    p.image_url as product_image_url,
+                    p.is_disabled product_is_disabled,
+                    spc.quantity
+                from
+                    selling_point_check spc inner join
+                    product p on spc.product_id = p.id
+                where
+                    spc.activity_id in ( select id from activity "# +
+                        $where +
+                    " ) ",
+                $($params,)*
+            )
+            .fetch_all($db)
+            .await?;
+
+            let selling_points = sqlx::query_as!(
+                SellingPoint,
+                r#"
+                select
+                    id, 
+                    title, 
+                    description, 
+                    address, 
+                    location as "location!: _", 
+                    is_disabled, 
+                    created_by, 
+                    created_at, 
+                    modified_by, 
+                    modified_at, 
+                    deleted_by, 
+                    deleted_at 
+                from
+                    selling_point sp
+                where
+                    sp.id in (
+                        select 
+                            id 
+                        from
+                            activity "#  +
+                            $where +
+                            r#"                        
+                    )            
+                "#,
+                $($params,)*
+            )
+            .fetch_all($db)
+            .await?;
+
+            (selling_point_check_dtos, selling_points)
+        }
+    }
+}
+
 #[derive(Serialize, Deserialize, Clone)]
 pub struct SellingPointCheckDto {
     pub id: i64,
@@ -164,77 +228,17 @@ impl<'a, 'c> ActivityRepo for PersistentActivityRepo<'a, 'c> {
         .fetch_all(&mut *self.db)
         .await?;
 
-        let selling_point_check_dtos = sqlx::query_as!(
-            SellingPointCheckDto,
-            r#"
-            select
-                spc.id,
-                spc.activity_id,
-                spc.product_id,
-                p.title as "product_title!",
-                p.image_url as product_image_url,
-                p.is_disabled product_is_disabled,
-                spc.quantity
-            from
-                selling_point_check spc inner join
-                product p on spc.product_id = p.id
-            where
-                spc.activity_id in (
-                    select 
-                        id 
-                    from
-                        activity a 
-                    where 
-                        a.created_by = $1 and a.deleted_by is null
-                    order by 
-                        a.created_at desc
-                    offset $2 limit $3
-                )            
-            "#,
+        let (point_checks, selling_points) = activity_info!(
+            &mut *self.db,
+            r#" where 
+                    created_by = $1 and deleted_by is null
+                order by 
+                    created_at desc
+                offset $2 limit $3 "#,
             current_user_id,
             skip,
             take
-        )
-        .fetch_all(&mut *self.db)
-        .await?;
-
-        let selling_points = sqlx::query_as!(
-            SellingPoint,
-            r#"
-            select
-                id, 
-                title, 
-                description, 
-                address, 
-                location as "location!: _", 
-                is_disabled, 
-                created_by, 
-                created_at, 
-                modified_by, 
-                modified_at, 
-                deleted_by, 
-                deleted_at 
-            from
-                selling_point sp
-            where
-                sp.id in (
-                    select 
-                        a.selling_point_id 
-                    from
-                        activity a 
-                    where 
-                        a.created_by = $1 and a.deleted_by is null
-                    order by 
-                        a.created_at desc
-                    offset $2 limit $3
-                )            
-            "#,
-            current_user_id,
-            skip,
-            take
-        )
-        .fetch_all(&mut *self.db)
-        .await?;
+        );
 
         let count = sqlx::query_as!(
             Count,
@@ -256,7 +260,7 @@ impl<'a, 'c> ActivityRepo for PersistentActivityRepo<'a, 'c> {
                 total: count.count,
                 data: activity,
             },
-            selling_point_check_dtos,
+            point_checks,
             selling_points,
         ))
     }
@@ -288,69 +292,9 @@ impl<'a, 'c> ActivityRepo for PersistentActivityRepo<'a, 'c> {
         .fetch_one(&mut *self.db)
         .await?;
 
-        let selling_point_check_dtos = sqlx::query_as!(
-            SellingPointCheckDto,
-            r#"
-            select
-                spc.id,
-                spc.activity_id,
-                spc.product_id,
-                p.title as "product_title!",
-                p.image_url as product_image_url,
-                p.is_disabled product_is_disabled,
-                spc.quantity
-            from
-                selling_point_check spc inner join
-                product p on spc.product_id = p.id
-            where
-                spc.activity_id in (
-                    select 
-                        id 
-                    from
-                        activity a 
-                    where 
-                        id = $1
-                )            
-            "#,
-            id
-        )
-        .fetch_all(&mut *self.db)
-        .await?;
+        let (point_check, selling_points) = activity_info!(&mut *self.db, "where id = $1", id);
 
-        let selling_points = sqlx::query_as!(
-            SellingPoint,
-            r#"
-            select
-                id, 
-                title, 
-                description, 
-                address, 
-                location as "location!: _", 
-                is_disabled, 
-                created_by, 
-                created_at, 
-                modified_by, 
-                modified_at, 
-                deleted_by, 
-                deleted_at 
-            from
-                selling_point sp
-            where
-                sp.id in (
-                    select 
-                        id 
-                    from
-                        activity a 
-                    where 
-                        id = $1
-                )            
-            "#,
-            id,
-        )
-        .fetch_all(&mut *self.db)
-        .await?;
-
-        Ok((activity, selling_point_check_dtos, selling_points))
+        Ok((activity, point_check, selling_points))
     }
 
     async fn create_open_day(
