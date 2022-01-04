@@ -2,7 +2,7 @@ use serde::Deserializer;
 use crate::domain::geo_primitives::LatLonPoint;
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, sqlx::FromRow)]
 pub struct Count {
     pub count: i64,
 }

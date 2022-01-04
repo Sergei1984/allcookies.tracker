@@ -1,5 +1,5 @@
 use crate::domain::{Activity, Count, LatLonPoint, PagedResult, SellingPoint};
-use crate::AnError;
+use crate::{select_with_count, AnError};
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use sqlx::{Postgres, Transaction};
@@ -200,8 +200,9 @@ impl<'a, 'c> ActivityRepo for PersistentActivityRepo<'a, 'c> {
         ),
         AnError,
     > {
-        let activity = sqlx::query_as!(
+        let (act, count) = select_with_count!(
             Activity,
+            &mut *self.db,
             r#"select
                 id,
                 activity_type,
@@ -224,9 +225,7 @@ impl<'a, 'c> ActivityRepo for PersistentActivityRepo<'a, 'c> {
             current_user_id,
             skip,
             take
-        )
-        .fetch_all(&mut *self.db)
-        .await?;
+        )?;
 
         let (point_checks, selling_points) = activity_info!(
             &mut *self.db,
@@ -240,25 +239,10 @@ impl<'a, 'c> ActivityRepo for PersistentActivityRepo<'a, 'c> {
             take
         );
 
-        let count = sqlx::query_as!(
-            Count,
-            r#"
-            select
-                count(1) as "count!"
-            from
-                activity
-            where 
-                created_by = $1 and deleted_by is null
-            "#,
-            current_user_id
-        )
-        .fetch_one(&mut *self.db)
-        .await?;
-
         Ok((
             PagedResult {
-                total: count.count,
-                data: activity,
+                total: count,
+                data: act,
             },
             point_checks,
             selling_points,
