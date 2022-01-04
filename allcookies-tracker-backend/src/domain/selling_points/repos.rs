@@ -1,9 +1,5 @@
-use crate::domain::geo_primitives::LatLonPoint;
-use crate::domain::Count;
-use crate::domain::NewSellingPoint;
-use crate::domain::{PagedResult, SellingPoint};
-use crate::AnError;
-use crate::AppError;
+use crate::domain::{Count, LatLonPoint, NewSellingPoint, PagedResult, SellingPoint};
+use crate::{select_with_count, AnError, AppError};
 use async_trait::async_trait;
 use sqlx::prelude::*;
 use sqlx::PgPool;
@@ -116,8 +112,9 @@ impl<'a> SellingPointRepository for PersistentSellingPointRepository<'a> {
     }
 
     async fn get_all(&self, skip: i64, take: i64) -> Result<PagedResult<SellingPoint>, AnError> {
-        let points = sqlx::query_as!(
+        let (points, count) = select_with_count!(
             SellingPoint,
+            self.db,
             r#"select 
                     id, 
                     title, 
@@ -136,16 +133,10 @@ impl<'a> SellingPointRepository for PersistentSellingPointRepository<'a> {
                 offset $1 limit $2"#,
             skip,
             take
-        )
-        .fetch_all(self.db)
-        .await?;
-
-        let count = sqlx::query_as!(Count, r#"select count(1) as "count!" from selling_point"#)
-            .fetch_one(self.db)
-            .await?;
+        )?;
 
         Ok(PagedResult {
-            total: count.count,
+            total: count,
             data: points,
         })
     }
