@@ -16,7 +16,6 @@ pub struct NewCloseDayActivity {
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct NewSellingPointCheckActivity {
-    pub activity_type: String,
     pub location: Option<LatLonPoint>,
     pub time: DateTime<Utc>,
     pub selling_point_id: i64,
@@ -33,5 +32,5 @@ pub struct ProductCheck {
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Photo {
     /// Base64 encoded photo data
-    photo_data: String,
+    pub photo_data: String,
 }

@@ -323,6 +323,7 @@ dependencies = [
  "actix-rt 2.5.0",
  "actix-web",
  "async-trait",
+ "base64 0.13.0",
  "bcrypt",
  "chrono",
  "crypto-mac 0.11.1",

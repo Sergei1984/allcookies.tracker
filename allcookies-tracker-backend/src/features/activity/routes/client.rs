@@ -1,7 +1,7 @@
 use crate::features::activity::repo::PersistentActivityRepo;
 use crate::features::{
     ActivityInfo, ClientActivityService, ManagerUserInfo, NewCloseDayActivity, NewOpenDayActivity,
-    PagedResult, SkipTake,
+    NewSellingPointCheckActivity, PagedResult, SkipTake,
 };
 use actix_web::{error, get, post, web, Scope};
 use serde::{Deserialize, Serialize};
@@ -100,6 +100,40 @@ pub async fn close_day(
 
         let data = svc
             .close_day(new_close_day)
+            .await
+            .map_err(|e| error::ErrorBadRequest(e.to_string()))?;
+
+        result = Ok(web::Json(data));
+
+        drop(svc);
+    }
+
+    trans
+        .commit()
+        .await
+        .map_err(|e| error::ErrorBadRequest(e))?;
+
+    return result;
+}
+
+#[post("check-selling-point")]
+pub async fn check_selling_point(
+    current_user: ManagerUserInfo,
+    point_check: web::Json<NewSellingPointCheckActivity>,
+    pool: web::Data<sqlx::Pool<sqlx::Postgres>>,
+) -> Result<web::Json<ActivityInfo>, actix_web::Error> {
+    let mut trans = pool.begin().await.map_err(|e| error::ErrorBadRequest(e))?;
+
+    let result: Result<web::Json<ActivityInfo>, actix_web::Error>;
+
+    {
+        let mut svc =
+            ClientActivityService::new(current_user, PersistentActivityRepo::new(&mut trans));
+
+        let point_check_activity = point_check.into_inner();
+
+        let data = svc
+            .check_selling_point(point_check_activity)
             .await
             .map_err(|e| error::ErrorBadRequest(e.to_string()))?;
 

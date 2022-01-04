@@ -8,6 +8,7 @@ publish = false
 actix-rt = "2.5"
 actix-web = { version = "3.3" }
 async-trait = "0.1"
+base64 = "0.13"
 bcrypt = "0.10"
 chrono = { version = "0.4", features = ["serde"] }
 env_logger = "0.9"

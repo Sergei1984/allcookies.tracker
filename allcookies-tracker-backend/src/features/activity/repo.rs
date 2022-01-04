@@ -115,6 +115,15 @@ pub trait ActivityRepo {
         selling_point_id: Option<i64>,
         current_user_id: i64,
     ) -> Result<i64, AnError>;
+
+    async fn create_selling_point_check(
+        &mut self,
+        activity_id: i64,
+        product_id: i64,
+        quantity: i32,
+    ) -> Result<(), AnError>;
+
+    async fn create_photo(&mut self, activity_id: i64, photo_bytes: &[u8]) -> Result<(), AnError>;
 }
 
 pub struct PersistentActivityRepo<'a, 'c> {
@@ -319,5 +328,55 @@ impl<'a, 'c> ActivityRepo for PersistentActivityRepo<'a, 'c> {
         .await?;
 
         Ok(res.id)
+    }
+
+    async fn create_selling_point_check(
+        &mut self,
+        activity_id: i64,
+        product_id: i64,
+        quantity: i32,
+    ) -> Result<(), AnError> {
+        let _ = sqlx::query!(
+            r#"
+            insert into selling_point_check(
+                activity_id, 
+                product_id,
+                quantity
+            )
+            values (                
+                $1,
+                $2,
+                $3
+            )
+            "#,
+            activity_id,
+            product_id,
+            quantity
+        )
+        .execute(&mut *self.db)
+        .await?;
+
+        Ok(())
+    }
+
+    async fn create_photo(&mut self, activity_id: i64, photo_bytes: &[u8]) -> Result<(), AnError> {
+        let _ = sqlx::query!(
+            r#"
+            insert into selling_point_check_photos(
+                activity_id, 
+                photo_data
+            )
+            values (                
+                $1,
+                $2
+            )
+            "#,
+            activity_id,
+            photo_bytes
+        )
+        .execute(&mut *self.db)
+        .await?;
+
+        Ok(())
     }
 }

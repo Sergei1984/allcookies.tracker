@@ -2,8 +2,9 @@ use crate::features::activity::repo::ActivityRepo;
 use crate::features::activity::repo::SellingPointCheckDto;
 use crate::features::{
     ActiveUserInfo, Activity, ActivityInfo, CloseDayActivityInfo, ManagerUserInfo,
-    NewCloseDayActivity, NewOpenDayActivity, OpenDayActivityInfo, PagedResult, ProductCheckInfo,
-    ProductRef, SellingPoint, SellingPointCheckActivityInfo, SellingPointRef,
+    NewCloseDayActivity, NewOpenDayActivity, NewSellingPointCheckActivity, OpenDayActivityInfo,
+    PagedResult, ProductCheckInfo, ProductRef, SellingPoint, SellingPointCheckActivityInfo,
+    SellingPointRef,
 };
 use crate::AppError;
 use chrono::Utc;
@@ -95,6 +96,83 @@ where
         &mut self,
         close_day: NewCloseDayActivity,
     ) -> Result<ActivityInfo, AppError> {
+        let _ = self.is_day_open().await?;
+
+        let activity_id = self
+            .repo
+            .create_activity(
+                "close_day",
+                close_day.time,
+                close_day.location,
+                None,
+                self.current_user.id(),
+            )
+            .await
+            .map_err(|e| {
+                AppError::new(
+                    &e.to_string(),
+                    actix_web::http::StatusCode::from_u16(400).unwrap(),
+                )
+            })?;
+
+        self.get_activity_info_by_id(activity_id).await
+    }
+
+    pub async fn check_selling_point(
+        &mut self,
+        point_check: NewSellingPointCheckActivity,
+    ) -> Result<ActivityInfo, AppError> {
+        let _ = self.is_day_open().await?;
+
+        let activity_id = self
+            .repo
+            .create_activity(
+                "point_check",
+                point_check.time,
+                point_check.location,
+                Some(point_check.selling_point_id),
+                self.current_user.id(),
+            )
+            .await
+            .map_err(|e| {
+                AppError::new(
+                    &e.to_string(),
+                    actix_web::http::StatusCode::from_u16(400).unwrap(),
+                )
+            })?;
+
+        for product in point_check.products {
+            let _ = self
+                .repo
+                .create_selling_point_check(activity_id, product.product_id, product.quantity)
+                .await
+                .map_err(|e| {
+                    AppError::new(
+                        &e.to_string(),
+                        actix_web::http::StatusCode::from_u16(400).unwrap(),
+                    )
+                })?;
+        }
+
+        for photo in point_check.photos {
+            let photo_bytes = base64::decode(photo.photo_data).unwrap();
+
+            let _ = self
+                .repo
+                .create_photo(activity_id, &photo_bytes)
+                .await
+                .map_err(|e| {
+                    AppError::new(
+                        &e.to_string(),
+                        actix_web::http::StatusCode::from_u16(400).unwrap(),
+                    )
+                })?;
+        }
+
+        self.get_activity_info_by_id(activity_id).await
+    }
+
+    async fn is_day_open(&mut self) -> Result<(), AppError> {
         let last_activity_opt = self
             .repo
             .get_latest_activity(self.current_user.id())
@@ -116,24 +194,7 @@ where
             }
         }
 
-        let activity_id = self
-            .repo
-            .create_activity(
-                "close_day",
-                close_day.time,
-                close_day.location,
-                None,
-                self.current_user.id(),
-            )
-            .await
-            .map_err(|e| {
-                AppError::new(
-                    &e.to_string(),
-                    actix_web::http::StatusCode::from_u16(400).unwrap(),
-                )
-            })?;
-
-        self.get_activity_info_by_id(activity_id).await
+        Ok(())
     }
 
     async fn get_activity_info_by_id(
