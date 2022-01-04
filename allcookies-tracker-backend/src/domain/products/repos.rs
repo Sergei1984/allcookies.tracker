@@ -1,9 +1,9 @@
 use crate::domain::Count;
 use crate::domain::{NewProduct, PagedResult, Product};
-use crate::{AnError, AppError};
+use crate::{select_with_count, AnError, AppError};
 use async_trait::async_trait;
-use sqlx::PgPool;
 use sqlx::prelude::*;
+use sqlx::PgPool;
 
 #[async_trait]
 pub trait ProductRepository {
@@ -52,8 +52,9 @@ impl<'a> ProductRepository for PersistentProductRepository<'a> {
             }
         });
 
-        let products = sqlx::query_as!(
+        let (products, count) = select_with_count!(
             Product,
+            self.db,
             r#"
             select 
                 id, 
@@ -76,29 +77,10 @@ impl<'a> ProductRepository for PersistentProductRepository<'a> {
             is_disabled,
             skip,
             take
-        )
-        .fetch_all(self.db)
-        .await?;
-
-        let count = sqlx::query_as!(
-            Count,
-            r#"
-            select
-                count(1) as "count!"
-            from
-                product
-            where
-                    (title ilike $1 or $1 is null)
-                and (is_disabled = $2 or $2 is null)
-            "#,
-            title_filter,
-            is_disabled
-        )
-        .fetch_one(self.db)
-        .await?;
+        )?;
 
         Ok(PagedResult {
-            total: count.count,
+            total: count,
             data: products,
         })
     }
