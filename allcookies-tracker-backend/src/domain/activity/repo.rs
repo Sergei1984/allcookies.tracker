@@ -107,11 +107,13 @@ pub trait ActivityRepo {
         AnError,
     >;
 
-    async fn create_open_day(
+    async fn create_activity(
         &mut self,
-        current_user_id: i64,
+        activity_type: &str,
         at_time: DateTime<Utc>,
         location: Option<LatLonPoint>,
+        selling_point_id: Option<i64>,
+        current_user_id: i64,
     ) -> Result<i64, AnError>;
 }
 
@@ -281,11 +283,13 @@ impl<'a, 'c> ActivityRepo for PersistentActivityRepo<'a, 'c> {
         Ok((activity, point_check, selling_points))
     }
 
-    async fn create_open_day(
+    async fn create_activity(
         &mut self,
-        current_user_id: i64,
+        activity_type: &str,
         at_time: DateTime<Utc>,
         location: Option<LatLonPoint>,
+        selling_point_id: Option<i64>,
+        current_user_id: i64,
     ) -> Result<i64, AnError> {
         let res = sqlx::query!(
             r#"
@@ -293,18 +297,22 @@ impl<'a, 'c> ActivityRepo for PersistentActivityRepo<'a, 'c> {
                 activity_type, 
                 at, 
                 location, 
+                selling_point_id,
                 created_by
             )
-            values (
-                'open_day',
+            values (                
                 $1,
                 $2,
-                $3
+                $3, 
+                $4,
+                $5
             )
             returning id
             "#,
+            activity_type,
             at_time,
             location as _,
+            selling_point_id,
             current_user_id
         )
         .fetch_one(&mut *self.db)

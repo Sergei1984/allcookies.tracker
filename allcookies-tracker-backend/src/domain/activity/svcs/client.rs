@@ -2,8 +2,8 @@ use crate::domain::activity::repo::ActivityRepo;
 use crate::domain::activity::repo::SellingPointCheckDto;
 use crate::domain::{
     ActiveUserInfo, Activity, ActivityInfo, CloseDayActivityInfo, ManagerUserInfo,
-    NewOpenDayActivity, OpenDayActivityInfo, PagedResult, ProductCheckInfo, ProductRef,
-    SellingPoint, SellingPointCheckActivityInfo, SellingPointRef,
+    NewCloseDayActivity, NewOpenDayActivity, OpenDayActivityInfo, PagedResult, ProductCheckInfo,
+    ProductRef, SellingPoint, SellingPointCheckActivityInfo, SellingPointRef,
 };
 use crate::AppError;
 use chrono::Utc;
@@ -73,7 +73,13 @@ where
 
         let activity_id = self
             .repo
-            .create_open_day(self.current_user.id(), open_day.time, open_day.location)
+            .create_activity(
+                "open_day",
+                open_day.time,
+                open_day.location,
+                None,
+                self.current_user.id(),
+            )
             .await
             .map_err(|e| {
                 AppError::new(
@@ -82,6 +88,58 @@ where
                 )
             })?;
 
+        self.get_activity_info_by_id(activity_id).await
+    }
+
+    pub async fn close_day(
+        &mut self,
+        close_day: NewCloseDayActivity,
+    ) -> Result<ActivityInfo, AppError> {
+        let last_activity_opt = self
+            .repo
+            .get_latest_activity(self.current_user.id())
+            .await
+            .map_err(|e| {
+                AppError::new(
+                    &e.to_string(),
+                    actix_web::http::StatusCode::from_u16(400).unwrap(),
+                )
+            })?;
+
+        if let Some(last_activity) = last_activity_opt {
+            if last_activity.activity_type == "close_day" && last_activity.at.date() == Utc::today()
+            {
+                return Err(AppError::new(
+                    "Day is closed already",
+                    actix_web::http::StatusCode::from_u16(400).unwrap(),
+                ));
+            }
+        }
+
+        let activity_id = self
+            .repo
+            .create_activity(
+                "close_day",
+                close_day.time,
+                close_day.location,
+                None,
+                self.current_user.id(),
+            )
+            .await
+            .map_err(|e| {
+                AppError::new(
+                    &e.to_string(),
+                    actix_web::http::StatusCode::from_u16(400).unwrap(),
+                )
+            })?;
+
+        self.get_activity_info_by_id(activity_id).await
+    }
+
+    async fn get_activity_info_by_id(
+        &mut self,
+        activity_id: i64,
+    ) -> Result<ActivityInfo, AppError> {
         let (activity, check, selling_points) = self
             .repo
             .get_activity_info_by_id(activity_id)
