@@ -1,5 +1,19 @@
 {
   "db": "PostgreSQL",
+  "024ff4df6896edf131b765891fb02302020de78f34a8fac579e6a21e2a49cbe7": {
+    "query": "\n            insert into selling_point_check(\n                activity_id, \n                product_id,\n                quantity\n            )\n            values (                \n                $1,\n                $2,\n                $3\n            )\n            ",
+    "describe": {
+      "columns": [],
+      "parameters": {
+        "Left": [
+          "Int8",
+          "Int8",
+          "Int4"
+        ]
+      },
+      "nullable": []
+    }
+  },
   "0407968e39db3c46389d2b6fdcea421f91a0f0a3ad733324d3f8ffc847fa566f": {
     "query": "\n            update selling_point\n            set \n                deleted_by = $2,\n                deleted_at = current_timestamp\n            where\n                id = $1\n            ",
     "describe": {
@@ -141,24 +155,6 @@
       },
       "nullable": [
         false
-      ]
-    }
-  },
-  "3dc513dbfa28cedf4fc0446eafb57cd878716602852e9757cd98211ff31b9f99": {
-    "query": "select count(1) as \"count!\" from selling_point",
-    "describe": {
-      "columns": [
-        {
-          "ordinal": 0,
-          "name": "count!",
-          "type_info": "Int8"
-        }
-      ],
-      "parameters": {
-        "Left": []
-      },
-      "nullable": [
-        null
       ]
     }
   },
@@ -1140,6 +1136,19 @@
       ]
     }
   },
+  "ceb28677731aeafd178b9e8f76a4bd09c1cde95c74e373be930ce5587321147e": {
+    "query": "\n            insert into selling_point_check_photos(\n                activity_id, \n                photo_data\n            )\n            values (                \n                $1,\n                $2\n            )\n            ",
+    "describe": {
+      "columns": [],
+      "parameters": {
+        "Left": [
+          "Int8",
+          "Bytea"
+        ]
+      },
+      "nullable": []
+    }
+  },
   "d6b3d949deed16dc4dd0c14178753478168b709897b5198cdf21002bb6cdfdae": {
     "query": "select \n                    id, \n                    title, \n                    description, \n                    address, \n                    location as \"location!: _\", \n                    is_disabled, \n                    created_by, \n                    created_at, \n                    modified_by, \n                    modified_at, \n                    deleted_by, \n                    deleted_at \n               from selling_point where id = $1",
     "describe": {
@@ -1228,27 +1237,6 @@
         false,
         true,
         true
-      ]
-    }
-  },
-  "f358cf617a2b3cf80170d271a4745f11b2181e182c03fb476a3b00ffc476b039": {
-    "query": "\n            select\n                count(1) as \"count!\"\n            from\n                product\n            where\n                    (title ilike $1 or $1 is null)\n                and (is_disabled = $2 or $2 is null)\n            ",
-    "describe": {
-      "columns": [
-        {
-          "ordinal": 0,
-          "name": "count!",
-          "type_info": "Int8"
-        }
-      ],
-      "parameters": {
-        "Left": [
-          "Text",
-          "Bool"
-        ]
-      },
-      "nullable": [
-        null
       ]
     }
   },
