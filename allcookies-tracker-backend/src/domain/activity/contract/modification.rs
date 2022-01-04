@@ -10,7 +10,6 @@ pub struct NewOpenDayActivity {
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct NewCloseDayActivity {
-    pub activity_type: String,
     pub location: Option<LatLonPoint>,
     pub time: DateTime<Utc>,
 }

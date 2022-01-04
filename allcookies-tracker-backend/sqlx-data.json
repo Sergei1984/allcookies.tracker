@@ -115,6 +115,35 @@
       ]
     }
   },
+  "3ccb7ada8397a6ba9da99d756dbbedfcd7c520f3fe3871571d94b33535e5108d": {
+    "query": "\n            insert into activity(\n                activity_type, \n                at, \n                location, \n                selling_point_id,\n                created_by\n            )\n            values (                \n                $1,\n                $2,\n                $3, \n                $4,\n                $5\n            )\n            returning id\n            ",
+    "describe": {
+      "columns": [
+        {
+          "ordinal": 0,
+          "name": "id",
+          "type_info": "Int8"
+        }
+      ],
+      "parameters": {
+        "Left": [
+          "Varchar",
+          "Timestamptz",
+          {
+            "Custom": {
+              "name": "geometry",
+              "kind": "Simple"
+            }
+          },
+          "Int8",
+          "Int8"
+        ]
+      },
+      "nullable": [
+        false
+      ]
+    }
+  },
   "3dc513dbfa28cedf4fc0446eafb57cd878716602852e9757cd98211ff31b9f99": {
     "query": "select count(1) as \"count!\" from selling_point",
     "describe": {
@@ -1199,33 +1228,6 @@
         false,
         true,
         true
-      ]
-    }
-  },
-  "df6db95a7a5fe15636cbcec99d3b66a4dbcc746e45ef2d6914acd1c537965d0f": {
-    "query": "\n            insert into activity(\n                activity_type, \n                at, \n                location, \n                created_by\n            )\n            values (\n                'open_day',\n                $1,\n                $2,\n                $3\n            )\n            returning id\n            ",
-    "describe": {
-      "columns": [
-        {
-          "ordinal": 0,
-          "name": "id",
-          "type_info": "Int8"
-        }
-      ],
-      "parameters": {
-        "Left": [
-          "Timestamptz",
-          {
-            "Custom": {
-              "name": "geometry",
-              "kind": "Simple"
-            }
-          },
-          "Int8"
-        ]
-      },
-      "nullable": [
-        false
       ]
     }
   },
