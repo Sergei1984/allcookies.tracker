@@ -13,9 +13,9 @@ export const useCurrentUser = () => {
   const getTokenFromStorage = React.useCallback(async () => {
     const token = await AsyncStorageLib.getItem("token");
     if (token) {
-      dispatch(setIsAuthorized());
+      await dispatch(setIsAuthorized());
     }
-  }, []);
+  }, [isAuthorized]);
 
   React.useEffect(() => {
     const checkUser = async () => {
@@ -26,5 +26,5 @@ export const useCurrentUser = () => {
       }
     };
     checkUser();
-  }, []);
+  }, [isAuthorized]);
 };

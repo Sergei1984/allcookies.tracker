@@ -11,6 +11,13 @@ const createStyles = () => StyleSheet.create({
         flex: 0.7,
         justifyContent:"center"
     },
+    title: {
+        color: Colors.PRIMARY,
+        fontWeight: '600',
+        fontSize: RFValue(16),
+        textAlign: 'center',
+        marginBottom: 21
+    },
     input: {
         marginVertical: SIZES.paddingHorizontal / 2,
     },

@@ -11,7 +11,15 @@ const createStyles = () => StyleSheet.create({
     text: {
         fontSize: RFValue(25),
         fontWeight: '300',
-    }
+    },
+    button: {
+        padding: 10,
+        alignItems: 'center',
+        justifyContent: 'center',
+      },
+      buttonLabel: {
+        color: 'blue',
+      },
 })
 
 export default createStyles;

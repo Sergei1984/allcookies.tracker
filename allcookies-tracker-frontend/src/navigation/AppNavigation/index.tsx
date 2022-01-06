@@ -1,21 +1,63 @@
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import React from "react";
-import HomeScreen from "../../screens/HomeScreen/HomeScreen";
-import { MapScreen } from "../../screens/MapScreen";
+import { View } from "react-native";
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import HomeNavigation from "../HomeNavigation";
+import MapNavigation from "../MapNavigation";
+import ProfileNavigation from "../ProfileNavigation";
 
-export type MainStackParamList = {
-  HomeScreen: undefined;
-  MapScreen: undefined;
-};
+export type MainStackParamList = {};
 
-const MainStack = createNativeStackNavigator();
+const Tab = createBottomTabNavigator();
 
 const AppNavigation = () => {
   return (
-    <MainStack.Navigator screenOptions={{ headerShown: false }}>
-      <MainStack.Screen name="Home" component={HomeScreen} />
-      <MainStack.Screen name="Map" component={MapScreen} />
-    </MainStack.Navigator>
+    <Tab.Navigator
+      screenOptions={({ route, navigation }) => ({
+        tabBarIcon: ({ focused, color, size }) => {
+          switch (route.name) {
+            case "Главная": {
+              return (
+                <View>
+                  <MaterialIcons name={"home"} size={30} color={color} />
+                </View>
+              );
+            }
+            case "Уведомления": {
+              return (
+                <View>
+                  <MaterialIcons
+                    name={"notifications"}
+                    size={30}
+                    color={color}
+                  />
+                </View>
+              );
+            }
+            case "Карты": {
+              return (
+                <View>
+                  <MaterialIcons name={"map"} size={30} color={color} />
+                </View>
+              );
+            }
+            case "Профиль": {
+              return (
+                <View>
+                  <MaterialIcons name={"account-box"} size={30} color={color} />
+                </View>
+              );
+            }
+          }
+        },
+        headerShown: false,
+      })}
+    >
+      <Tab.Screen name="Главная" component={HomeNavigation} />
+      <Tab.Screen name="Уведомления" component={HomeNavigation} />
+      <Tab.Screen name="Карты" component={MapNavigation} />
+      <Tab.Screen name="Профиль" component={ProfileNavigation} />
+    </Tab.Navigator>
   );
 };
 

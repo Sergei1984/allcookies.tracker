@@ -3,7 +3,9 @@ export interface ColorValue {
     BLACK: string,
     RED: string,
     BLUE: string,
-    GREY: string
+    GREY: string,
+    PRIMARY: string,
+    LIGHTGREY: string
 }
 
 export const Colors: ColorValue = {
@@ -11,5 +13,7 @@ export const Colors: ColorValue = {
     BLACK: '#000',
     RED: '#ff0000',
     BLUE: '#0092ff',
-    GREY: '#999999'
+    GREY: '#999999',
+    PRIMARY: '#5B5B7E',
+    LIGHTGREY: '#F6F9FC'
 }

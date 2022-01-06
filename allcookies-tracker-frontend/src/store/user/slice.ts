@@ -8,7 +8,9 @@ export const userSlice = createSlice({
     initialState,
     reducers: {
         clearCurrentUser: (state) => {
-            state.isAuthorized = false
+            state.isAuthorized = false,
+            state.isLogout = true,
+            state.user = null
         },
         setIsAuthorized: (state) => {
             state.isAuthorized = true

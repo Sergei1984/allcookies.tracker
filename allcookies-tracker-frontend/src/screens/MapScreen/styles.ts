@@ -3,15 +3,15 @@ import { RFValue } from 'react-native-responsive-fontsize';
 import { Colors } from "../../constants/colors";
 
 const createStyles = () => StyleSheet.create({
-    body: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center'
-    },
-    text: {
-        fontSize: RFValue(25),
-        fontWeight: '300',
-    }
+    container: {
+        ...StyleSheet.absoluteFillObject,
+        height: '100%',
+        justifyContent: 'flex-end',
+        alignItems: 'center',
+      },
+      map: {
+        ...StyleSheet.absoluteFillObject,
+      },
 })
 
 export default createStyles;

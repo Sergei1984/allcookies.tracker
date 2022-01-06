@@ -3,11 +3,11 @@ import { ITheme } from "./types";
 export const darkTheme: ITheme = {
     dark: true,
     colors: {
-        primary: '#9933ff',
+        primary: '#fff',
         background: '#000023',
         text: '#ffffff',
-        card: '',
-        border: '',
-        notification: ''
+        card: '#000023',
+        border: '#000023',
+        notification: '#000023'
     }
 }

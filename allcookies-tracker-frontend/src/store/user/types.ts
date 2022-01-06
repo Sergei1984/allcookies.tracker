@@ -1,3 +1,4 @@
+
 export interface SignInData {
     login: string;
     password: string;
@@ -18,4 +19,13 @@ export interface UserState {
     isLoading: boolean;
     error: string;
     isAuthorized: boolean;
+    isLogout: boolean;
+}
+
+export interface IOpenCloseDay {
+    location: {
+        lat: number,
+        lon: number
+    },
+    time: string
 }

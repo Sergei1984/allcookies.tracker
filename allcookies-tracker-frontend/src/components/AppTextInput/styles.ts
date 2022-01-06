@@ -7,6 +7,7 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 12,
     borderRadius: 8,
     borderWidth: 1,
+    borderColor: '#EBF0FF'
   },
   errorInput: {
     width: '100%',
