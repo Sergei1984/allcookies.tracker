@@ -154,22 +154,27 @@ where
                 })?;
         }
 
-        for photo in point_check.photos {
-            let photo_bytes = base64::decode(photo.photo_data).unwrap();
+        self.get_activity_info_by_id(activity_id).await
+    }
 
-            let _ = self
-                .repo
-                .create_photo(activity_id, &photo_bytes)
-                .await
-                .map_err(|e| {
-                    AppError::new(
-                        &e.to_string(),
-                        actix_web::http::StatusCode::from_u16(400).unwrap(),
-                    )
-                })?;
+    pub async fn add_photo(&mut self, activity_id: i64, photo: &[u8]) -> Result<(), AppError> {
+        let _ = self.is_day_open().await?;
+        let activity = self.get_activity_info_by_id(activity_id).await?;
+
+        if let ActivityInfo::SellingPointCheck(selling_point_check) = activity {
+            if selling_point_check.created_by == self.current_user.id() && selling_point_check.time.date() == Utc::today()
+            {
+                let _ = self
+                    .repo
+                    .create_photo(selling_point_check.id, photo)
+                    .await
+                    .map_err(|e| AppError::bad_request(&e.to_string()))?;
+
+                return Ok(());
+            }
         }
 
-        self.get_activity_info_by_id(activity_id).await
+        return Err(AppError::bad_request("Invalid activity"));
     }
 
     async fn is_day_open(&mut self) -> Result<(), AppError> {
@@ -234,11 +239,13 @@ where
                     id: i.id,
                     location: i.location,
                     time: i.created_at,
+                    created_by: i.created_by,
                 }),
                 "close_day" => ActivityInfo::CloseDay(CloseDayActivityInfo {
                     id: i.id,
                     location: i.location,
                     time: i.created_at,
+                    created_by: i.created_by,
                 }),
                 _ => {
                     let selling_point = selling_points
@@ -250,6 +257,7 @@ where
                         id: i.id,
                         location: i.location,
                         time: i.created_at,
+                        created_by: i.created_by,
                         selling_point: SellingPointRef {
                             id: selling_point.id,
                             title: selling_point.title.clone(),

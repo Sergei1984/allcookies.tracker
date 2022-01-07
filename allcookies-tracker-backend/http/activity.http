@@ -32,6 +32,32 @@ Authorization: {{auth.response.body.jwt}}
 }
 
 ### 
+POST {{server}}/client/activity/check-selling-point
+Content-Type: application/json
+Authorization: {{auth.response.body.jwt}}
+
+{
+    "location": {
+        "lat": 22.2,
+        "lon": 12.3
+    },
+    "time": "2022-01-04T17:17:20.372Z",
+    "selling_point_id": 7,
+    "products": [
+        { "product_id": 1, "quantity": 10 },
+        { "product_id": 5, "quantity": 1 }
+    ]
+}
+
+### 
+POST {{server}}/client/activity/15/photo
+Authorization: {{auth.response.body.jwt}}
+Content-Type: application/octet-stream
+
+< ./sample_photo.jpg
+
+
+### 
 POST {{server}}/client/activity/close-day
 Content-Type: application/json
 Authorization: {{auth.response.body.jwt}}

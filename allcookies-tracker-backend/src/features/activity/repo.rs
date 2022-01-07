@@ -51,7 +51,7 @@ macro_rules! activity_info {
                 where
                     sp.id in (
                         select 
-                            id 
+                            selling_point_id
                         from
                             activity "#  +
                             $where +
