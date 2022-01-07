@@ -1,9 +1,9 @@
 use crate::features::activity::repo::ActivityRepo;
-use crate::features::activity::repo::SellingPointCheckDto;
+use crate::features::activity::repo::{SellingPointCheckDto, SellingPointCheckPhotoInfo};
 use crate::features::{
     ActiveUserInfo, Activity, ActivityInfo, CloseDayActivityInfo, ManagerUserInfo,
     NewCloseDayActivity, NewOpenDayActivity, NewSellingPointCheckActivity, OpenDayActivityInfo,
-    PagedResult, ProductCheckInfo, ProductRef, SellingPoint, SellingPointCheckActivityInfo,
+    PagedResult, Photo, ProductCheckInfo, ProductRef, SellingPoint, SellingPointCheckActivityInfo,
     SellingPointRef,
 };
 use crate::AppError;
@@ -33,13 +33,13 @@ where
         skip: i64,
         take: i64,
     ) -> Result<PagedResult<ActivityInfo>, AppError> {
-        let (data, info, selling_points) = self
+        let (data, info, selling_points, photos) = self
             .repo
             .get_my_activity(self.current_user.id(), skip, take)
             .await
             .map_err(|e| AppError::internal_server_err(Some(&e.to_string())))?;
 
-        let activity = self.to_activity_info(data.data, info, selling_points);
+        let activity = self.to_activity_info(data.data, info, selling_points, photos);
 
         Ok(PagedResult {
             data: activity,
@@ -230,7 +230,7 @@ where
         &mut self,
         activity_id: i64,
     ) -> Result<ActivityInfo, AppError> {
-        let (activity, check, selling_points) = self
+        let (activity, check, selling_points, photos) = self
             .repo
             .get_activity_info_by_id(activity_id)
             .await
@@ -241,7 +241,7 @@ where
                 )
             })?;
 
-        self.to_activity_info(vec![activity], check, selling_points)
+        self.to_activity_info(vec![activity], check, selling_points, photos)
             .into_iter()
             .next()
             .ok_or(AppError::new(
@@ -255,6 +255,7 @@ where
         activity: Vec<Activity>,
         selling_point_check: Vec<SellingPointCheckDto>,
         selling_points: Vec<SellingPoint>,
+        photos: Vec<SellingPointCheckPhotoInfo>,
     ) -> Vec<ActivityInfo> {
         activity
             .into_iter()
@@ -300,7 +301,15 @@ where
                                 quantity: c.quantity,
                             })
                             .collect(),
-                        photos: vec![],
+                        photos: photos
+                            .iter()
+                            .filter(|p| p.activity_id == i.id)
+                            .map(|p| Photo {
+                                id: p.id,
+                                time: p.at,
+                                url: format!("/client/activity/{}/photo/{}", i.id, p.id),
+                            })
+                            .collect(),
                     })
                 }
             })

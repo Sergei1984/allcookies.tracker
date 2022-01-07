@@ -65,6 +65,7 @@ pub struct ProductRef {
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Photo {
-    /// Base64 encoded photo data
-    photo_data: String,
+    pub id: i64,
+    pub time: DateTime<Utc>,
+    pub url: String,
 }
