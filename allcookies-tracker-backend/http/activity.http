@@ -56,6 +56,10 @@ Content-Type: application/octet-stream
 
 < ./sample_photo.jpg
 
+### 
+GET {{server}}/client/activity/15/photo/4
+Authorization: {{auth.response.body.jwt}}
+
 
 ### 
 POST {{server}}/client/activity/close-day

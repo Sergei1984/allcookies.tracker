@@ -162,7 +162,8 @@ where
         let activity = self.get_activity_info_by_id(activity_id).await?;
 
         if let ActivityInfo::SellingPointCheck(selling_point_check) = activity {
-            if selling_point_check.created_by == self.current_user.id() && selling_point_check.time.date() == Utc::today()
+            if selling_point_check.created_by == self.current_user.id()
+                && selling_point_check.time.date() == Utc::today()
             {
                 let _ = self
                     .repo
@@ -171,6 +172,29 @@ where
                     .map_err(|e| AppError::bad_request(&e.to_string()))?;
 
                 return Ok(());
+            }
+        }
+
+        return Err(AppError::bad_request("Invalid activity"));
+    }
+
+    pub async fn get_photo(
+        &mut self,
+        activity_id: i64,
+        photo_id: i64,
+    ) -> Result<Vec<u8>, AppError> {
+        let _ = self.is_day_open().await?;
+        let activity = self.get_activity_info_by_id(activity_id).await?;
+
+        if let ActivityInfo::SellingPointCheck(selling_point_check) = activity {
+            if selling_point_check.created_by == self.current_user.id() {
+                let data = self
+                    .repo
+                    .get_photo(activity_id, photo_id)
+                    .await
+                    .map_err(|e| AppError::bad_request(&e.to_string()))?;
+
+                return Ok(data);
             }
         }
 

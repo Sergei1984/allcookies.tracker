@@ -1,3 +1,4 @@
+use crate::features::SellingPointCheckPhotos;
 use crate::features::{Activity, Count, LatLonPoint, PagedResult, SellingPoint};
 use crate::{select_with_count, AnError};
 use chrono::{DateTime, Utc};
@@ -124,6 +125,8 @@ pub trait ActivityRepo {
     ) -> Result<(), AnError>;
 
     async fn create_photo(&mut self, activity_id: i64, photo_bytes: &[u8]) -> Result<(), AnError>;
+
+    async fn get_photo(&mut self, activity_id: i64, photo_id: i64) -> Result<Vec<u8>, AnError>;
 }
 
 pub struct PersistentActivityRepo<'a, 'c> {
@@ -378,5 +381,25 @@ impl<'a, 'c> ActivityRepo for PersistentActivityRepo<'a, 'c> {
         .await?;
 
         Ok(())
+    }
+
+    async fn get_photo(&mut self, activity_id: i64, photo_id: i64) -> Result<Vec<u8>, AnError> {
+        let photo = sqlx::query_as!(
+            SellingPointCheckPhotos,
+            r#"
+            select 
+                * 
+            from 
+                selling_point_check_photos
+            where
+                activity_id = $1 and id = $2
+            "#,
+            activity_id,
+            photo_id
+        )
+        .fetch_one(&mut *self.db)
+        .await?;
+
+        Ok(photo.photo_data)
     }
 }

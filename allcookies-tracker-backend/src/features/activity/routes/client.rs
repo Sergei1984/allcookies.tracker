@@ -1,9 +1,9 @@
-use actix_web::http::StatusCode;
 use crate::features::activity::repo::PersistentActivityRepo;
 use crate::features::{
     ActivityInfo, ClientActivityService, ManagerUserInfo, NewCloseDayActivity, NewOpenDayActivity,
     NewSellingPointCheckActivity, PagedResult, SkipTake,
 };
+use actix_web::http::StatusCode;
 use actix_web::Responder;
 use actix_web::{dev::HttpResponseBuilder, error, get, post, web, web::Bytes, Scope};
 use serde::{Deserialize, Serialize};
@@ -15,6 +15,7 @@ pub fn activity_client_route() -> Scope {
         .service(close_day)
         .service(check_selling_point)
         .service(add_photo)
+        .service(get_photo)
 }
 
 #[derive(Serialize, Deserialize)]
@@ -156,10 +157,10 @@ pub async fn check_selling_point(
 
 #[derive(Deserialize)]
 pub struct ActivityIdPath {
-    pub id: i64,
+    pub activity_id: i64,
 }
 
-#[post("{id}/photo")]
+#[post("{activity_id}/photo")]
 pub async fn add_photo(
     current_user: ManagerUserInfo,
     activity: web::Path<ActivityIdPath>,
@@ -173,7 +174,7 @@ pub async fn add_photo(
             ClientActivityService::new(current_user, PersistentActivityRepo::new(&mut trans));
 
         let _ = svc
-            .add_photo(activity.id, &photo_data.to_vec()[..])
+            .add_photo(activity.activity_id, &photo_data.to_vec()[..])
             .await
             .map_err(|e| error::ErrorBadRequest(e.to_string()))?;
 
@@ -186,4 +187,41 @@ pub async fn add_photo(
         .map_err(|e| error::ErrorBadRequest(e))?;
 
     return Ok(HttpResponseBuilder::new(StatusCode::from_u16(204).unwrap()).finish());
+}
+
+#[derive(Deserialize)]
+pub struct GetActivityPhotoPath {
+    pub activity_id: i64,
+    pub photo_id: i64,
+}
+
+#[get("{activity_id}/photo/{photo_id}")]
+pub async fn get_photo(
+    current_user: ManagerUserInfo,
+    path: web::Path<GetActivityPhotoPath>,
+    pool: web::Data<sqlx::Pool<sqlx::Postgres>>,
+) -> Result<impl Responder, actix_web::Error> {
+    let mut trans = pool.begin().await.map_err(|e| error::ErrorBadRequest(e))?;
+    let photo_data: Vec<u8>;
+
+    {
+        let mut svc =
+            ClientActivityService::new(current_user, PersistentActivityRepo::new(&mut trans));
+
+        photo_data = svc
+            .get_photo(path.activity_id, path.photo_id)
+            .await
+            .map_err(|e| error::ErrorBadRequest(e.to_string()))?;
+
+        drop(svc);
+    }
+
+    trans
+        .commit()
+        .await
+        .map_err(|e| error::ErrorBadRequest(e))?;
+
+    return Ok(HttpResponseBuilder::new(StatusCode::from_u16(200).unwrap())
+        .content_type("image/jpg")
+        .body(photo_data));
 }
