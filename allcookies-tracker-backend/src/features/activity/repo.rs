@@ -1,3 +1,4 @@
+use crate::features::SellingPointCheckPhotos;
 use crate::features::{Activity, Count, LatLonPoint, PagedResult, SellingPoint};
 use crate::{select_with_count, AnError};
 use chrono::{DateTime, Utc};
@@ -51,7 +52,7 @@ macro_rules! activity_info {
                 where
                     sp.id in (
                         select 
-                            id 
+                            selling_point_id
                         from
                             activity "#  +
                             $where +
@@ -63,7 +64,31 @@ macro_rules! activity_info {
             .fetch_all($db)
             .await?;
 
-            (selling_point_check_dtos, selling_points)
+            let photos = sqlx::query_as!(
+                SellingPointCheckPhotoInfo,
+                r#"
+                select
+                    id, 
+                    activity_id, 
+                    at
+                from
+                    selling_point_check_photos
+                where
+                    activity_id in (
+                        select 
+                            id
+                        from
+                            activity "#  +
+                            $where +
+                            r#"                        
+                    )            
+                "#,
+                $($params,)*
+            )
+            .fetch_all($db)
+            .await?;
+
+            (selling_point_check_dtos, selling_points, photos)
         }
     }
 }
@@ -79,6 +104,13 @@ pub struct SellingPointCheckDto {
     pub quantity: i32,
 }
 
+#[derive(Debug, Serialize, Deserialize)]
+pub struct SellingPointCheckPhotoInfo {
+    pub id: i64,
+    pub activity_id: i64,
+    pub at: DateTime<Utc>,
+}
+
 #[async_trait::async_trait]
 pub trait ActivityRepo {
     async fn get_latest_activity(
@@ -91,7 +123,15 @@ pub trait ActivityRepo {
     async fn get_activity_info_by_id(
         &mut self,
         id: i64,
-    ) -> Result<(Activity, Vec<SellingPointCheckDto>, Vec<SellingPoint>), AnError>;
+    ) -> Result<
+        (
+            Activity,
+            Vec<SellingPointCheckDto>,
+            Vec<SellingPoint>,
+            Vec<SellingPointCheckPhotoInfo>,
+        ),
+        AnError,
+    >;
 
     async fn get_my_activity(
         &mut self,
@@ -103,6 +143,7 @@ pub trait ActivityRepo {
             PagedResult<Activity>,
             Vec<SellingPointCheckDto>,
             Vec<SellingPoint>,
+            Vec<SellingPointCheckPhotoInfo>,
         ),
         AnError,
     >;
@@ -124,6 +165,8 @@ pub trait ActivityRepo {
     ) -> Result<(), AnError>;
 
     async fn create_photo(&mut self, activity_id: i64, photo_bytes: &[u8]) -> Result<(), AnError>;
+
+    async fn get_photo(&mut self, activity_id: i64, photo_id: i64) -> Result<Vec<u8>, AnError>;
 }
 
 pub struct PersistentActivityRepo<'a, 'c> {
@@ -208,6 +251,7 @@ impl<'a, 'c> ActivityRepo for PersistentActivityRepo<'a, 'c> {
             PagedResult<Activity>,
             Vec<SellingPointCheckDto>,
             Vec<SellingPoint>,
+            Vec<SellingPointCheckPhotoInfo>,
         ),
         AnError,
     > {
@@ -238,7 +282,7 @@ impl<'a, 'c> ActivityRepo for PersistentActivityRepo<'a, 'c> {
             take
         )?;
 
-        let (point_checks, selling_points) = activity_info!(
+        let (point_checks, selling_points, photos) = activity_info!(
             &mut *self.db,
             r#" where 
                     created_by = $1 and deleted_by is null
@@ -257,13 +301,22 @@ impl<'a, 'c> ActivityRepo for PersistentActivityRepo<'a, 'c> {
             },
             point_checks,
             selling_points,
+            photos,
         ))
     }
 
     async fn get_activity_info_by_id(
         &mut self,
         id: i64,
-    ) -> Result<(Activity, Vec<SellingPointCheckDto>, Vec<SellingPoint>), AnError> {
+    ) -> Result<
+        (
+            Activity,
+            Vec<SellingPointCheckDto>,
+            Vec<SellingPoint>,
+            Vec<SellingPointCheckPhotoInfo>,
+        ),
+        AnError,
+    > {
         let activity = sqlx::query_as!(
             Activity,
             r#"select
@@ -287,9 +340,10 @@ impl<'a, 'c> ActivityRepo for PersistentActivityRepo<'a, 'c> {
         .fetch_one(&mut *self.db)
         .await?;
 
-        let (point_check, selling_points) = activity_info!(&mut *self.db, "where id = $1", id);
+        let (point_check, selling_points, photos) =
+            activity_info!(&mut *self.db, "where id = $1", id);
 
-        Ok((activity, point_check, selling_points))
+        Ok((activity, point_check, selling_points, photos))
     }
 
     async fn create_activity(
@@ -378,5 +432,25 @@ impl<'a, 'c> ActivityRepo for PersistentActivityRepo<'a, 'c> {
         .await?;
 
         Ok(())
+    }
+
+    async fn get_photo(&mut self, activity_id: i64, photo_id: i64) -> Result<Vec<u8>, AnError> {
+        let photo = sqlx::query_as!(
+            SellingPointCheckPhotos,
+            r#"
+            select 
+                * 
+            from 
+                selling_point_check_photos
+            where
+                activity_id = $1 and id = $2
+            "#,
+            activity_id,
+            photo_id
+        )
+        .fetch_one(&mut *self.db)
+        .await?;
+
+        Ok(photo.photo_data)
     }
 }

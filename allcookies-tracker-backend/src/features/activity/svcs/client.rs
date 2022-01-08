@@ -1,9 +1,9 @@
 use crate::features::activity::repo::ActivityRepo;
-use crate::features::activity::repo::SellingPointCheckDto;
+use crate::features::activity::repo::{SellingPointCheckDto, SellingPointCheckPhotoInfo};
 use crate::features::{
     ActiveUserInfo, Activity, ActivityInfo, CloseDayActivityInfo, ManagerUserInfo,
     NewCloseDayActivity, NewOpenDayActivity, NewSellingPointCheckActivity, OpenDayActivityInfo,
-    PagedResult, ProductCheckInfo, ProductRef, SellingPoint, SellingPointCheckActivityInfo,
+    PagedResult, Photo, ProductCheckInfo, ProductRef, SellingPoint, SellingPointCheckActivityInfo,
     SellingPointRef,
 };
 use crate::AppError;
@@ -33,13 +33,13 @@ where
         skip: i64,
         take: i64,
     ) -> Result<PagedResult<ActivityInfo>, AppError> {
-        let (data, info, selling_points) = self
+        let (data, info, selling_points, photos) = self
             .repo
             .get_my_activity(self.current_user.id(), skip, take)
             .await
             .map_err(|e| AppError::internal_server_err(Some(&e.to_string())))?;
 
-        let activity = self.to_activity_info(data.data, info, selling_points);
+        let activity = self.to_activity_info(data.data, info, selling_points, photos);
 
         Ok(PagedResult {
             data: activity,
@@ -154,22 +154,51 @@ where
                 })?;
         }
 
-        for photo in point_check.photos {
-            let photo_bytes = base64::decode(photo.photo_data).unwrap();
+        self.get_activity_info_by_id(activity_id).await
+    }
 
-            let _ = self
-                .repo
-                .create_photo(activity_id, &photo_bytes)
-                .await
-                .map_err(|e| {
-                    AppError::new(
-                        &e.to_string(),
-                        actix_web::http::StatusCode::from_u16(400).unwrap(),
-                    )
-                })?;
+    pub async fn add_photo(&mut self, activity_id: i64, photo: &[u8]) -> Result<(), AppError> {
+        let _ = self.is_day_open().await?;
+        let activity = self.get_activity_info_by_id(activity_id).await?;
+
+        if let ActivityInfo::SellingPointCheck(selling_point_check) = activity {
+            if selling_point_check.created_by == self.current_user.id()
+                && selling_point_check.time.date() == Utc::today()
+            {
+                let _ = self
+                    .repo
+                    .create_photo(selling_point_check.id, photo)
+                    .await
+                    .map_err(|e| AppError::bad_request(&e.to_string()))?;
+
+                return Ok(());
+            }
         }
 
-        self.get_activity_info_by_id(activity_id).await
+        return Err(AppError::bad_request("Invalid activity"));
+    }
+
+    pub async fn get_photo(
+        &mut self,
+        activity_id: i64,
+        photo_id: i64,
+    ) -> Result<Vec<u8>, AppError> {
+        let _ = self.is_day_open().await?;
+        let activity = self.get_activity_info_by_id(activity_id).await?;
+
+        if let ActivityInfo::SellingPointCheck(selling_point_check) = activity {
+            if selling_point_check.created_by == self.current_user.id() {
+                let data = self
+                    .repo
+                    .get_photo(activity_id, photo_id)
+                    .await
+                    .map_err(|e| AppError::bad_request(&e.to_string()))?;
+
+                return Ok(data);
+            }
+        }
+
+        return Err(AppError::bad_request("Invalid activity"));
     }
 
     async fn is_day_open(&mut self) -> Result<(), AppError> {
@@ -201,7 +230,7 @@ where
         &mut self,
         activity_id: i64,
     ) -> Result<ActivityInfo, AppError> {
-        let (activity, check, selling_points) = self
+        let (activity, check, selling_points, photos) = self
             .repo
             .get_activity_info_by_id(activity_id)
             .await
@@ -212,7 +241,7 @@ where
                 )
             })?;
 
-        self.to_activity_info(vec![activity], check, selling_points)
+        self.to_activity_info(vec![activity], check, selling_points, photos)
             .into_iter()
             .next()
             .ok_or(AppError::new(
@@ -226,6 +255,7 @@ where
         activity: Vec<Activity>,
         selling_point_check: Vec<SellingPointCheckDto>,
         selling_points: Vec<SellingPoint>,
+        photos: Vec<SellingPointCheckPhotoInfo>,
     ) -> Vec<ActivityInfo> {
         activity
             .into_iter()
@@ -234,11 +264,13 @@ where
                     id: i.id,
                     location: i.location,
                     time: i.created_at,
+                    created_by: i.created_by,
                 }),
                 "close_day" => ActivityInfo::CloseDay(CloseDayActivityInfo {
                     id: i.id,
                     location: i.location,
                     time: i.created_at,
+                    created_by: i.created_by,
                 }),
                 _ => {
                     let selling_point = selling_points
@@ -250,6 +282,7 @@ where
                         id: i.id,
                         location: i.location,
                         time: i.created_at,
+                        created_by: i.created_by,
                         selling_point: SellingPointRef {
                             id: selling_point.id,
                             title: selling_point.title.clone(),
@@ -268,7 +301,15 @@ where
                                 quantity: c.quantity,
                             })
                             .collect(),
-                        photos: vec![],
+                        photos: photos
+                            .iter()
+                            .filter(|p| p.activity_id == i.id)
+                            .map(|p| Photo {
+                                id: p.id,
+                                time: p.at,
+                                url: format!("/client/activity/{}/photo/{}", i.id, p.id),
+                            })
+                            .collect(),
                     })
                 }
             })

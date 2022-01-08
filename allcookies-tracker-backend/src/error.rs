@@ -16,6 +16,13 @@ impl AppError {
         }
     }
 
+    pub fn bad_request(description: &str) -> Self {
+        Self::new(
+            description,
+            actix_web::http::StatusCode::from_u16(400).unwrap(),
+        )
+    }
+
     pub fn new_an_err(description: &str, status_code: actix_web::http::StatusCode) -> AnError {
         Box::new(AppError::new(description, status_code))
     }

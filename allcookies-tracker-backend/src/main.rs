@@ -22,6 +22,7 @@ async fn main() -> std::io::Result<()> {
 
     HttpServer::new(move || {
         App::new()
+            .data(web::PayloadConfig::new(10 * 1024 * 1024))
             .app_data(web::Data::new(pool.clone()))
             .wrap(middleware::Logger::new("%t %a %r %s %b %T"))
             .wrap(middleware::NormalizePath::new(
