@@ -204,8 +204,10 @@ pub async fn get_photo(
     {
         let photo_sign_info = PhotoSigningInfo::from_jwt(&path.token)?;
 
-        let mut svc =
-            ClientActivityService::new(current_user, PersistentActivityRepo::new(&mut trans));
+        let mut svc = ClientActivityService::new(
+            ManagerUserInfo::new_fake(photo_sign_info.user_id),
+            PersistentActivityRepo::new(&mut trans),
+        );
 
         photo_data = svc
             .get_photo(photo_sign_info.activity_id, photo_sign_info.photo_id)

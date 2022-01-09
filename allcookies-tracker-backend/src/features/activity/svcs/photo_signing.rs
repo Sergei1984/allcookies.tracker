@@ -10,6 +10,7 @@ use sha2::Sha256;
 pub struct PhotoSigningInfo {
     pub photo_id: i64,
     pub activity_id: i64,
+    pub user_id: i64,
     pub rnd: i64,
     pub iss: i64,
 }
@@ -36,10 +37,11 @@ impl PhotoSigningInfo {
         return Ok(photo_signing_info);
     }
 
-    pub fn to_jwt(photo_id: i64, activity_id: i64) -> Result<String, AppError> {
+    pub fn to_jwt(photo_id: i64, activity_id: i64, user_id: i64) -> Result<String, AppError> {
         let signing_info = PhotoSigningInfo {
             photo_id: photo_id,
             activity_id: activity_id,
+            user_id: user_id,
             iss: Utc::now().timestamp_millis(),
             rnd: rand::random::<i64>(),
         };

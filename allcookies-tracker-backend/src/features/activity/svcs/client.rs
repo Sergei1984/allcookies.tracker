@@ -310,7 +310,7 @@ where
                                 time: p.at,
                                 url: format!(
                                     "/client/activity/photo/{}",
-                                    PhotoSigningInfo::to_jwt(p.id, i.id).unwrap()
+                                    PhotoSigningInfo::to_jwt(p.id, i.id, self.current_user.id()).unwrap()
                                 ),
                             })
                             .collect(),

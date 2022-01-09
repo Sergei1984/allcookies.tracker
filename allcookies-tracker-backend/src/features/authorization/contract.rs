@@ -30,6 +30,15 @@ pub struct ManagerUserInfo {
     email: String,
 }
 
+impl ManagerUserInfo {
+    pub fn new_fake(id: i64) -> ManagerUserInfo {
+        ManagerUserInfo {
+            id: id,
+            email: "fake@email.com".to_string()
+        }
+    }
+}
+
 #[allow(unused)]
 pub struct AdminUserInfo {
     id: i64,
