@@ -1,11 +1,8 @@
-use crate::features::activity::repo::{
-    ActivityRepo, SellingPointCheckDto, SellingPointCheckPhotoInfo,
-};
+use crate::features::activity::repo::ActivityRepo;
+use crate::features::activity::svcs::utils::to_activity_info;
 use crate::features::{
-    ActiveUserInfo, Activity, ActivityInfo, CloseDayActivityInfo, ManagerUserInfo,
-    NewCloseDayActivity, NewOpenDayActivity, NewSellingPointCheckActivity, OpenDayActivityInfo,
-    PagedResult, Photo, PhotoSigningInfo, ProductCheckInfo, ProductRef, SellingPoint,
-    SellingPointCheckActivityInfo, SellingPointRef,
+    ActiveUserInfo, ActivityInfo, ManagerUserInfo, NewCloseDayActivity, NewOpenDayActivity,
+    NewSellingPointCheckActivity, PagedResult,
 };
 use crate::AppError;
 use chrono::Utc;
@@ -40,7 +37,8 @@ where
             .await
             .map_err(|e| AppError::internal_server_err(Some(&e.to_string())))?;
 
-        let activity = self.to_activity_info(data.data, info, selling_points, photos);
+        let activity =
+            to_activity_info(&self.current_user, data.data, info, selling_points, photos);
 
         Ok(PagedResult {
             data: activity,
@@ -242,81 +240,18 @@ where
                 )
             })?;
 
-        self.to_activity_info(vec![activity], check, selling_points, photos)
-            .into_iter()
-            .next()
-            .ok_or(AppError::new(
-                "New created activity is not found",
-                actix_web::http::StatusCode::from_u16(400).unwrap(),
-            ))
-    }
-
-    fn to_activity_info(
-        &self,
-        activity: Vec<Activity>,
-        selling_point_check: Vec<SellingPointCheckDto>,
-        selling_points: Vec<SellingPoint>,
-        photos: Vec<SellingPointCheckPhotoInfo>,
-    ) -> Vec<ActivityInfo> {
-        activity
-            .into_iter()
-            .map(|i| match i.activity_type.as_str() {
-                "open_day" => ActivityInfo::OpenDay(OpenDayActivityInfo {
-                    id: i.id,
-                    location: i.location,
-                    time: i.created_at,
-                    created_by: i.created_by,
-                }),
-                "close_day" => ActivityInfo::CloseDay(CloseDayActivityInfo {
-                    id: i.id,
-                    location: i.location,
-                    time: i.created_at,
-                    created_by: i.created_by,
-                }),
-                _ => {
-                    let selling_point = selling_points
-                        .iter()
-                        .find(|sp| sp.id == i.selling_point_id.unwrap())
-                        .unwrap();
-
-                    ActivityInfo::SellingPointCheck(SellingPointCheckActivityInfo {
-                        id: i.id,
-                        location: i.location,
-                        time: i.created_at,
-                        created_by: i.created_by,
-                        selling_point: SellingPointRef {
-                            id: selling_point.id,
-                            title: selling_point.title.clone(),
-                            address: selling_point.address.clone(),
-                            location: selling_point.location.clone(),
-                        },
-                        products: selling_point_check
-                            .iter()
-                            .filter(|c| c.activity_id == i.id)
-                            .map(|c| ProductCheckInfo {
-                                product: ProductRef {
-                                    id: c.product_id,
-                                    title: c.product_title.clone(),
-                                    image_url: c.product_image_url.clone(),
-                                },
-                                quantity: c.quantity,
-                            })
-                            .collect(),
-                        photos: photos
-                            .iter()
-                            .filter(|p| p.activity_id == i.id)
-                            .map(|p| Photo {
-                                id: p.id,
-                                time: p.at,
-                                url: format!(
-                                    "/client/activity/photo/{}",
-                                    PhotoSigningInfo::to_jwt(p.id, i.id, self.current_user.id()).unwrap()
-                                ),
-                            })
-                            .collect(),
-                    })
-                }
-            })
-            .collect()
+        to_activity_info(
+            &self.current_user,
+            vec![activity],
+            check,
+            selling_points,
+            photos,
+        )
+        .into_iter()
+        .next()
+        .ok_or(AppError::new(
+            "New created activity is not found",
+            actix_web::http::StatusCode::from_u16(400).unwrap(),
+        ))
     }
 }

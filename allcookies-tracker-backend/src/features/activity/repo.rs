@@ -148,6 +148,20 @@ pub trait ActivityRepo {
         AnError,
     >;
 
+    async fn get_all_activity(
+        &mut self,
+        skip: i64,
+        take: i64,
+    ) -> Result<
+        (
+            PagedResult<Activity>,
+            Vec<SellingPointCheckDto>,
+            Vec<SellingPoint>,
+            Vec<SellingPointCheckPhotoInfo>,
+        ),
+        AnError,
+    >;
+
     async fn create_activity(
         &mut self,
         activity_type: &str,
@@ -290,6 +304,63 @@ impl<'a, 'c> ActivityRepo for PersistentActivityRepo<'a, 'c> {
                     created_at desc
                 offset $2 limit $3 "#,
             current_user_id,
+            skip,
+            take
+        );
+
+        Ok((
+            PagedResult {
+                total: count,
+                data: act,
+            },
+            point_checks,
+            selling_points,
+            photos,
+        ))
+    }
+
+    async fn get_all_activity(
+        &mut self,
+        skip: i64,
+        take: i64,
+    ) -> Result<
+        (
+            PagedResult<Activity>,
+            Vec<SellingPointCheckDto>,
+            Vec<SellingPoint>,
+            Vec<SellingPointCheckPhotoInfo>,
+        ),
+        AnError,
+    > {
+        let (act, count) = select_with_count!(
+            Activity,
+            &mut *self.db,
+            r#"select
+                id,
+                activity_type,
+                at,
+                location as "location!: _",
+                selling_point_id,
+                amend_by_activity_id,
+                created_by,
+                created_at,
+                deleted_by,
+                deleted_at
+            from
+                activity
+            order by 
+                created_at desc
+            offset $1 limit $2
+                "#,
+            skip,
+            take
+        )?;
+
+        let (point_checks, selling_points, photos) = activity_info!(
+            &mut *self.db,
+            r#" order by 
+                    created_at desc
+                offset $1 limit $2 "#,
             skip,
             take
         );

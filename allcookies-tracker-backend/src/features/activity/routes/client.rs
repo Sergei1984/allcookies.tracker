@@ -3,8 +3,9 @@ use crate::features::{
     ActivityInfo, ClientActivityService, ManagerUserInfo, NewCloseDayActivity, NewOpenDayActivity,
     NewSellingPointCheckActivity, PagedResult, PhotoSigningInfo, SkipTake,
 };
-use actix_web::http::StatusCode;
-use actix_web::{dev::HttpResponseBuilder, error, get, post, web, web::Bytes, Responder, Scope};
+use actix_web::{
+    dev::HttpResponseBuilder, error, get, http::StatusCode, post, web, web::Bytes, Responder, Scope,
+};
 use serde::{Deserialize, Serialize};
 
 pub fn activity_client_route() -> Scope {
