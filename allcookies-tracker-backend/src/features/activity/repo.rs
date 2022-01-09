@@ -88,12 +88,41 @@ macro_rules! activity_info {
             .fetch_all($db)
             .await?;
 
-            (selling_point_check_dtos, selling_points, photos)
+            let users = sqlx::query_as!(
+                UserInfoRef,
+                r#"
+                select
+                    id, 
+                    login, 
+                    name
+                from
+                    user_account
+                where
+                    id in (
+                        select 
+                            created_by
+                        from
+                            activity "#  +
+                            $where +
+                            r#"                        
+                    )            
+                "#,
+                $($params,)*
+            )
+            .fetch_all($db)
+            .await?;
+
+            ActivityExtraData {
+                point_check: selling_point_check_dtos,
+                selling_points: selling_points,
+                photos: photos,
+                users: users
+            }
         }
     }
 }
 
-#[derive(Serialize, Deserialize, Clone)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct SellingPointCheckDto {
     pub id: i64,
     pub activity_id: i64,
@@ -111,6 +140,21 @@ pub struct SellingPointCheckPhotoInfo {
     pub at: DateTime<Utc>,
 }
 
+#[derive(Debug, Serialize, Deserialize)]
+pub struct UserInfoRef {
+    pub id: i64,
+    pub login: String,
+    pub name: String,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct ActivityExtraData {
+    pub point_check: Vec<SellingPointCheckDto>,
+    pub selling_points: Vec<SellingPoint>,
+    pub photos: Vec<SellingPointCheckPhotoInfo>,
+    pub users: Vec<UserInfoRef>,
+}
+
 #[async_trait::async_trait]
 pub trait ActivityRepo {
     async fn get_latest_activity(
@@ -123,44 +167,20 @@ pub trait ActivityRepo {
     async fn get_activity_info_by_id(
         &mut self,
         id: i64,
-    ) -> Result<
-        (
-            Activity,
-            Vec<SellingPointCheckDto>,
-            Vec<SellingPoint>,
-            Vec<SellingPointCheckPhotoInfo>,
-        ),
-        AnError,
-    >;
+    ) -> Result<(Activity, ActivityExtraData), AnError>;
 
     async fn get_my_activity(
         &mut self,
         current_user_id: i64,
         skip: i64,
         take: i64,
-    ) -> Result<
-        (
-            PagedResult<Activity>,
-            Vec<SellingPointCheckDto>,
-            Vec<SellingPoint>,
-            Vec<SellingPointCheckPhotoInfo>,
-        ),
-        AnError,
-    >;
+    ) -> Result<(PagedResult<Activity>, ActivityExtraData), AnError>;
 
     async fn get_all_activity(
         &mut self,
         skip: i64,
         take: i64,
-    ) -> Result<
-        (
-            PagedResult<Activity>,
-            Vec<SellingPointCheckDto>,
-            Vec<SellingPoint>,
-            Vec<SellingPointCheckPhotoInfo>,
-        ),
-        AnError,
-    >;
+    ) -> Result<(PagedResult<Activity>, ActivityExtraData), AnError>;
 
     async fn create_activity(
         &mut self,
@@ -260,15 +280,7 @@ impl<'a, 'c> ActivityRepo for PersistentActivityRepo<'a, 'c> {
         current_user_id: i64,
         skip: i64,
         take: i64,
-    ) -> Result<
-        (
-            PagedResult<Activity>,
-            Vec<SellingPointCheckDto>,
-            Vec<SellingPoint>,
-            Vec<SellingPointCheckPhotoInfo>,
-        ),
-        AnError,
-    > {
+    ) -> Result<(PagedResult<Activity>, ActivityExtraData), AnError> {
         let (act, count) = select_with_count!(
             Activity,
             &mut *self.db,
@@ -296,7 +308,7 @@ impl<'a, 'c> ActivityRepo for PersistentActivityRepo<'a, 'c> {
             take
         )?;
 
-        let (point_checks, selling_points, photos) = activity_info!(
+        let extra = activity_info!(
             &mut *self.db,
             r#" where 
                     created_by = $1 and deleted_by is null
@@ -313,9 +325,7 @@ impl<'a, 'c> ActivityRepo for PersistentActivityRepo<'a, 'c> {
                 total: count,
                 data: act,
             },
-            point_checks,
-            selling_points,
-            photos,
+            extra,
         ))
     }
 
@@ -323,15 +333,7 @@ impl<'a, 'c> ActivityRepo for PersistentActivityRepo<'a, 'c> {
         &mut self,
         skip: i64,
         take: i64,
-    ) -> Result<
-        (
-            PagedResult<Activity>,
-            Vec<SellingPointCheckDto>,
-            Vec<SellingPoint>,
-            Vec<SellingPointCheckPhotoInfo>,
-        ),
-        AnError,
-    > {
+    ) -> Result<(PagedResult<Activity>, ActivityExtraData), AnError> {
         let (act, count) = select_with_count!(
             Activity,
             &mut *self.db,
@@ -356,7 +358,7 @@ impl<'a, 'c> ActivityRepo for PersistentActivityRepo<'a, 'c> {
             take
         )?;
 
-        let (point_checks, selling_points, photos) = activity_info!(
+        let extra = activity_info!(
             &mut *self.db,
             r#" order by 
                     created_at desc
@@ -370,24 +372,14 @@ impl<'a, 'c> ActivityRepo for PersistentActivityRepo<'a, 'c> {
                 total: count,
                 data: act,
             },
-            point_checks,
-            selling_points,
-            photos,
+            extra,
         ))
     }
 
     async fn get_activity_info_by_id(
         &mut self,
         id: i64,
-    ) -> Result<
-        (
-            Activity,
-            Vec<SellingPointCheckDto>,
-            Vec<SellingPoint>,
-            Vec<SellingPointCheckPhotoInfo>,
-        ),
-        AnError,
-    > {
+    ) -> Result<(Activity, ActivityExtraData), AnError> {
         let activity = sqlx::query_as!(
             Activity,
             r#"select
@@ -411,10 +403,9 @@ impl<'a, 'c> ActivityRepo for PersistentActivityRepo<'a, 'c> {
         .fetch_one(&mut *self.db)
         .await?;
 
-        let (point_check, selling_points, photos) =
-            activity_info!(&mut *self.db, "where id = $1", id);
+        let extra = activity_info!(&mut *self.db, "where id = $1", id);
 
-        Ok((activity, point_check, selling_points, photos))
+        Ok((activity, extra))
     }
 
     async fn create_activity(

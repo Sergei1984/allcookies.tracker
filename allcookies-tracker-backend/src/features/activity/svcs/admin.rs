@@ -27,14 +27,13 @@ where
         skip: i64,
         take: i64,
     ) -> Result<PagedResult<ActivityInfo>, AppError> {
-        let (data, info, selling_points, photos) = self
+        let (data, extra) = self
             .repo
             .get_all_activity(skip, take)
             .await
             .map_err(|e| AppError::internal_server_err(Some(&e.to_string())))?;
 
-        let activity =
-            to_activity_info(&self.current_user, data.data, info, selling_points, photos);
+        let activity = to_activity_info(&self.current_user, data.data, extra);
 
         Ok(PagedResult {
             data: activity,
@@ -50,7 +49,7 @@ where
         let activity = self.get_activity_info_by_id(activity_id).await?;
 
         if let ActivityInfo::SellingPointCheck(selling_point_check) = activity {
-            if selling_point_check.created_by == self.current_user.id() {
+            if selling_point_check.created.id == self.current_user.id() {
                 let data = self
                     .repo
                     .get_photo(activity_id, photo_id)
@@ -68,7 +67,7 @@ where
         &mut self,
         activity_id: i64,
     ) -> Result<ActivityInfo, AppError> {
-        let (activity, check, selling_points, photos) = self
+        let (activity, extra) = self
             .repo
             .get_activity_info_by_id(activity_id)
             .await
@@ -79,18 +78,12 @@ where
                 )
             })?;
 
-        to_activity_info(
-            &self.current_user,
-            vec![activity],
-            check,
-            selling_points,
-            photos,
-        )
-        .into_iter()
-        .next()
-        .ok_or(AppError::new(
-            "New created activity is not found",
-            actix_web::http::StatusCode::from_u16(400).unwrap(),
-        ))
+        to_activity_info(&self.current_user, vec![activity], extra)
+            .into_iter()
+            .next()
+            .ok_or(AppError::new(
+                "New created activity is not found",
+                actix_web::http::StatusCode::from_u16(400).unwrap(),
+            ))
     }
 }
