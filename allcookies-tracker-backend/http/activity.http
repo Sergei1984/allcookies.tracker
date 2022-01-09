@@ -1,5 +1,5 @@
 @server=http://localhost:8088
-# @server=https://allcookies-tracker.a-dev.com
+@server=https://allcookies-tracker.a-dev.com
 
 ###
 GET {{server}}/health
@@ -17,7 +17,11 @@ Content-Type: application/json
 ### 
 # @name activity
 GET {{server}}/client/activity
+
+### 
+GET {{server}}{{activity.response.body.$.data[0].photos[0].url}}
 Authorization: {{auth.response.body.jwt}}
+
 
 ### 
 POST {{server}}/client/activity/open-day
@@ -56,10 +60,6 @@ Authorization: {{auth.response.body.jwt}}
 Content-Type: application/octet-stream
 
 < ./sample_photo.jpg
-
-### 
-GET {{server}}{{activity.response.body.$.data[0].photos[0].url}}
-Authorization: {{auth.response.body.jwt}}
 
 
 ### 

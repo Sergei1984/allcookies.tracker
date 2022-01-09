@@ -195,7 +195,6 @@ pub struct GetActivityPhotoPath {
 
 #[get("photo/{token}")]
 pub async fn get_photo(
-    current_user: ManagerUserInfo,
     path: web::Path<GetActivityPhotoPath>,
     pool: web::Data<sqlx::Pool<sqlx::Postgres>>,
 ) -> Result<impl Responder, actix_web::Error> {
