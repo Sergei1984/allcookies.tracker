@@ -1,10 +1,11 @@
-use crate::features::activity::repo::ActivityRepo;
-use crate::features::activity::repo::{SellingPointCheckDto, SellingPointCheckPhotoInfo};
+use crate::features::activity::repo::{
+    ActivityRepo, SellingPointCheckDto, SellingPointCheckPhotoInfo,
+};
 use crate::features::{
     ActiveUserInfo, Activity, ActivityInfo, CloseDayActivityInfo, ManagerUserInfo,
     NewCloseDayActivity, NewOpenDayActivity, NewSellingPointCheckActivity, OpenDayActivityInfo,
-    PagedResult, Photo, ProductCheckInfo, ProductRef, SellingPoint, SellingPointCheckActivityInfo,
-    SellingPointRef,
+    PagedResult, Photo, PhotoSigningInfo, ProductCheckInfo, ProductRef, SellingPoint,
+    SellingPointCheckActivityInfo, SellingPointRef,
 };
 use crate::AppError;
 use chrono::Utc;
@@ -307,7 +308,10 @@ where
                             .map(|p| Photo {
                                 id: p.id,
                                 time: p.at,
-                                url: format!("/client/activity/{}/photo/{}", i.id, p.id),
+                                url: format!(
+                                    "/client/activity/photo/{}",
+                                    PhotoSigningInfo::to_jwt(p.id, i.id).unwrap()
+                                ),
                             })
                             .collect(),
                     })

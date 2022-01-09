@@ -15,6 +15,7 @@ Content-Type: application/json
 }
 
 ### 
+# @name activity
 GET {{server}}/client/activity
 Authorization: {{auth.response.body.jwt}}
 
@@ -57,7 +58,7 @@ Content-Type: application/octet-stream
 < ./sample_photo.jpg
 
 ### 
-GET {{server}}/client/activity/15/photo/4
+GET {{server}}{{activity.response.body.$.data[0].photos[0].url}}
 Authorization: {{auth.response.body.jwt}}
 
 
