@@ -7,6 +7,7 @@ mod geo_primitives;
 mod products;
 mod selling_points;
 mod sqlx_helper_macros;
+mod user_accounts;
 
 pub use activity::*;
 pub use authentication::*;
@@ -16,3 +17,4 @@ pub use entities::*;
 pub use geo_primitives::*;
 pub use products::*;
 pub use selling_points::*;
+pub use user_accounts::*;

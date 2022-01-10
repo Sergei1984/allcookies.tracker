@@ -114,3 +114,12 @@ Content-Type: application/json
 ###
 DELETE {{server}}/admin/product/5
 Authorization: {{auth.response.body.jwt}}
+
+###
+# @name user_accounts
+GET {{server}}/admin/user-accounts
+Authorization: {{auth.response.body.jwt}}
+
+###
+GET {{server}}/admin/user-accounts/{{user_accounts.response.body.$.data[0].id}}
+Authorization: {{auth.response.body.jwt}}

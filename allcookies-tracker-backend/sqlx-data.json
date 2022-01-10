@@ -431,6 +431,45 @@
       ]
     }
   },
+  "53fb765ad8b45b6be79ede533500d5193ff1d3610638d7cec5b70dc3f085c010": {
+    "query": "select \n                    id, \n                    login,\n                    name,\n                    is_blocked\n                from \n                    user_account\n                where\n                    account_role <> 'admin' \n                offset $1 limit $2",
+    "describe": {
+      "columns": [
+        {
+          "ordinal": 0,
+          "name": "id",
+          "type_info": "Int8"
+        },
+        {
+          "ordinal": 1,
+          "name": "login",
+          "type_info": "Text"
+        },
+        {
+          "ordinal": 2,
+          "name": "name",
+          "type_info": "Text"
+        },
+        {
+          "ordinal": 3,
+          "name": "is_blocked",
+          "type_info": "Bool"
+        }
+      ],
+      "parameters": {
+        "Left": [
+          "Int8",
+          "Int8"
+        ]
+      },
+      "nullable": [
+        false,
+        false,
+        false,
+        false
+      ]
+    }
+  },
   "62e5732f937fc37fef1b32205a707b9495cb3a8d4f055a317c72c3dedd8693f0": {
     "query": "select\n                id,\n                activity_type,\n                at,\n                location as \"location!: _\",\n                selling_point_id,\n                amend_by_activity_id,\n                created_by,\n                created_at,\n                deleted_by,\n                deleted_at\n            from\n                activity\n            order by \n                created_at desc\n            offset $1 limit $2\n                ",
     "describe": {
@@ -1563,6 +1602,44 @@
         ]
       },
       "nullable": [
+        false,
+        false,
+        false
+      ]
+    }
+  },
+  "c7c16680afff9637be717f691421b28313fb488edc33915e271591d2eb26407c": {
+    "query": " select \n                    id, \n                    login,\n                    name,\n                    is_blocked\n                from \n                    user_account\n                where\n                    account_role <> 'admin' and id = $1\n                    ",
+    "describe": {
+      "columns": [
+        {
+          "ordinal": 0,
+          "name": "id",
+          "type_info": "Int8"
+        },
+        {
+          "ordinal": 1,
+          "name": "login",
+          "type_info": "Text"
+        },
+        {
+          "ordinal": 2,
+          "name": "name",
+          "type_info": "Text"
+        },
+        {
+          "ordinal": 3,
+          "name": "is_blocked",
+          "type_info": "Bool"
+        }
+      ],
+      "parameters": {
+        "Left": [
+          "Int8"
+        ]
+      },
+      "nullable": [
+        false,
         false,
         false,
         false

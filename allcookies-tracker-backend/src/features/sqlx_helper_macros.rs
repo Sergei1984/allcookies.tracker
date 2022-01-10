@@ -17,8 +17,8 @@ macro_rules! select_with_count {
 
                 let select_count = crate::features::sqlx_helper_macros::select_to_count($select);
 
-                let count: Count  = sqlx::query_as(
-                    &select_count                    
+                let count: crate::features::Count  = sqlx::query_as(
+                    &select_count
                 )
                 $(
                     .bind($params)
