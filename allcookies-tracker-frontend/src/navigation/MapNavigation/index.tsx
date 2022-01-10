@@ -11,7 +11,7 @@ const MapStack = createNativeStackNavigator();
 const MapNavigation = () => {
   return (
     <MapStack.Navigator>
-      <MapStack.Screen name="MapScreen" component={MapScreen} />
+      <MapStack.Screen name="Карты" component={MapScreen} />
     </MapStack.Navigator>
   );
 };

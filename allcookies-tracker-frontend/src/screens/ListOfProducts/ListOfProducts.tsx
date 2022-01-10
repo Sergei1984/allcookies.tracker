@@ -3,12 +3,14 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import React from "react";
 import { View, Text, FlatList, TouchableOpacity } from "react-native";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import { AppButton } from "../../components/AppButton";
 import { AppText } from "../../components/AppText";
 import { AppTextInput } from "../../components/AppTextInput";
 import { useAppDispatch } from "../../hooks/useAppDispatch";
 import { useAppSelector } from "../../hooks/useAppSelector";
 import { HomeStackParamList } from "../../navigation/HomeNavigation";
 import { getProductsThunk } from "../../store/product/thunk";
+import { Product } from "../../store/product/types";
 import createStyles from "./styles";
 
 type Props = NativeStackScreenProps<HomeStackParamList, "ListOfProducts">;
@@ -16,15 +18,22 @@ type Props = NativeStackScreenProps<HomeStackParamList, "ListOfProducts">;
 const ListOfProducts: React.FC<Props> = ({ route, navigation }) => {
   const styles = React.useMemo(() => createStyles(), []);
   const dispatch = useAppDispatch();
+
+  React.useEffect(() => {
+    (async () => {
+      await dispatch(getProductsThunk());
+    })();
+  }, []);
+
   const { data: dataOfProducts, total } = useAppSelector(
     (state) => state.productReducer
   );
 
-  React.useEffect(() => {
-    dispatch(getProductsThunk());
-  }, []);
+  const [products, setProducts] = React.useState<Product[]>([]);
 
-  const [products, setProducts] = React.useState(dataOfProducts);
+  React.useEffect(() => {
+    setProducts(dataOfProducts);
+  }, [dataOfProducts]);
 
   //   const handleIncrement = React.useCallback(
   //     (name) => {
@@ -86,10 +95,11 @@ const ListOfProducts: React.FC<Props> = ({ route, navigation }) => {
       <View>
         <FlatList
           data={products}
-          style={{ marginBottom: 100 }}
+          style={{ marginBottom: 20, height: "80%" }}
           renderItem={renderItem}
           keyExtractor={(item) => item.id.toString()}
         />
+        <AppButton name="Отправить отчет" />
       </View>
     );
   };

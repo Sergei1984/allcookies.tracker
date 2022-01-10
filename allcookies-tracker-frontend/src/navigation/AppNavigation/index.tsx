@@ -4,6 +4,7 @@ import { View } from "react-native";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import HomeNavigation from "../HomeNavigation";
 import MapNavigation from "../MapNavigation";
+import NotificationsNavigation from "../NotificationsNavigation";
 import ProfileNavigation from "../ProfileNavigation";
 
 export type MainStackParamList = {};
@@ -54,7 +55,7 @@ const AppNavigation = () => {
       })}
     >
       <Tab.Screen name="Главная" component={HomeNavigation} />
-      <Tab.Screen name="Уведомления" component={HomeNavigation} />
+      <Tab.Screen name="Уведомления" component={NotificationsNavigation} />
       <Tab.Screen name="Карты" component={MapNavigation} />
       <Tab.Screen name="Профиль" component={ProfileNavigation} />
     </Tab.Navigator>

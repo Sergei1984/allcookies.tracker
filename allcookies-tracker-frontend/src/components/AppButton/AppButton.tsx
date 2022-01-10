@@ -3,8 +3,8 @@ import { Text, TouchableOpacityProps, TouchableOpacity } from "react-native";
 import { GenericTouchableProps } from "react-native-gesture-handler/lib/typescript/components/touchables/GenericTouchable";
 import createStyles from "./styles";
 
-type Toucheble = TouchableOpacityProps & GenericTouchableProps;
-interface Props extends Toucheble {
+type Touchable = TouchableOpacityProps & GenericTouchableProps;
+interface Props extends Touchable {
   name: string;
   icon?: boolean;
   disabled?: boolean;

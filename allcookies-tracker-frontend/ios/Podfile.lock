@@ -297,8 +297,6 @@ PODS:
     - React
   - react-native-background-actions (2.6.5):
     - React-Core
-  - react-native-background-timer (2.4.1):
-    - React-Core
   - react-native-geolocation (2.0.2):
     - React
   - react-native-google-maps (0.29.4):
@@ -476,7 +474,6 @@ DEPENDENCIES:
   - React-logger (from `../node_modules/react-native/ReactCommon/logger`)
   - react-native-appearance (from `../node_modules/react-native-appearance`)
   - react-native-background-actions (from `../node_modules/react-native-background-actions`)
-  - react-native-background-timer (from `../node_modules/react-native-background-timer`)
   - "react-native-geolocation (from `../node_modules/@react-native-community/geolocation`)"
   - react-native-google-maps (from `../node_modules/react-native-maps`)
   - react-native-maps (from `../node_modules/react-native-maps`)
@@ -564,8 +561,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-appearance"
   react-native-background-actions:
     :path: "../node_modules/react-native-background-actions"
-  react-native-background-timer:
-    :path: "../node_modules/react-native-background-timer"
   react-native-geolocation:
     :path: "../node_modules/@react-native-community/geolocation"
   react-native-google-maps:
@@ -656,7 +651,6 @@ SPEC CHECKSUMS:
   React-logger: 933f80c97c633ee8965d609876848148e3fef438
   react-native-appearance: 0f0e5fc2fcef70e03d48c8fe6b00b9158c2ba8aa
   react-native-background-actions: a466fde06b54e52adf037ca9b217df460596f120
-  react-native-background-timer: 17ea5e06803401a379ebf1f20505b793ac44d0fe
   react-native-geolocation: c956aeb136625c23e0dce0467664af2c437888c9
   react-native-google-maps: 34517207071d54f3bc23c68752bbec0217bfc79e
   react-native-maps: a421fe6aeb74279597c4ea9598f25796108e2d89

@@ -11,7 +11,7 @@ const ProfileStack = createNativeStackNavigator();
 const ProfileNavigation = () => {
   return (
     <ProfileStack.Navigator>
-      <ProfileStack.Screen name="ProfileScreen" component={ProfileScreen} />
+      <ProfileStack.Screen name="Профиль" component={ProfileScreen} />
     </ProfileStack.Navigator>
   );
 };

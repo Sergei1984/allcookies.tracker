@@ -57,12 +57,27 @@ export const useTimer = () => {
         };
     }, [toggle]);
 
+    React.useEffect(() => {
+        (async () => {
+            const storageDate = await AsyncStorageLib.getItem('currentDate')
+       
+            if(storageDate && new Date(JSON.parse(storageDate!)).toLocaleDateString('uk-UA') !== new Date().toLocaleDateString('uk-UA')) {
+                setTimer(0);
+                await AsyncStorageLib.setItem("isActiveTimer", JSON.stringify(false));
+                await AsyncStorageLib.setItem("countOfSeconds", JSON.stringify(0));
+            }
+        })()
+    }, []);
+
+    
+
     const handleStart = async () => {
         setToggle(true);
         await AsyncStorageLib.setItem(
         "startTimer",
         new Date().getTime().toString()
         );
+        await AsyncStorageLib.setItem('currentDate', JSON.stringify(new Date()));
         await AsyncStorageLib.setItem("isActiveTimer", JSON.stringify(true));
         await AsyncStorageLib.setItem("countOfSeconds", JSON.stringify(timer));
     };
