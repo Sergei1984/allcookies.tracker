@@ -16,4 +16,8 @@ impl Config {
     pub fn jwt_secret() -> &'static [u8] {
         b"*kajsd23##434234,I900asd234"
     }
+
+    pub fn photo_token_validity_minutes() -> chrono::Duration {
+        chrono::Duration::hours(24)
+    }
 }

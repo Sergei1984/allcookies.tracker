@@ -20,7 +20,7 @@ pub struct OpenDayActivityInfo {
     pub id: i64,
     pub location: Option<LatLonPoint>,
     pub time: DateTime<Utc>,
-    pub created_by: i64,
+    pub created: UserActivityRef,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -28,7 +28,7 @@ pub struct CloseDayActivityInfo {
     pub id: i64,
     pub location: Option<LatLonPoint>,
     pub time: DateTime<Utc>,
-    pub created_by: i64,
+    pub created: UserActivityRef,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -36,7 +36,7 @@ pub struct SellingPointCheckActivityInfo {
     pub id: i64,
     pub location: Option<LatLonPoint>,
     pub time: DateTime<Utc>,
-    pub created_by: i64,
+    pub created: UserActivityRef,
     pub selling_point: SellingPointRef,
     pub products: Vec<ProductCheckInfo>,
     pub photos: Vec<Photo>,
@@ -68,4 +68,12 @@ pub struct Photo {
     pub id: i64,
     pub time: DateTime<Utc>,
     pub url: String,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct UserActivityRef {
+    pub id: i64,
+    pub login: String,
+    pub name: String,
+    pub at: DateTime<Utc>,
 }

@@ -1,11 +1,11 @@
 use crate::features::activity::repo::PersistentActivityRepo;
 use crate::features::{
     ActivityInfo, ClientActivityService, ManagerUserInfo, NewCloseDayActivity, NewOpenDayActivity,
-    NewSellingPointCheckActivity, PagedResult, SkipTake,
+    NewSellingPointCheckActivity, PagedResult, PhotoSigningInfo, SkipTake,
 };
-use actix_web::http::StatusCode;
-use actix_web::Responder;
-use actix_web::{dev::HttpResponseBuilder, error, get, post, web, web::Bytes, Scope};
+use actix_web::{
+    dev::HttpResponseBuilder, error, get, http::StatusCode, post, web, web::Bytes, Responder, Scope,
+};
 use serde::{Deserialize, Serialize};
 
 pub fn activity_client_route() -> Scope {
@@ -191,13 +191,11 @@ pub async fn add_photo(
 
 #[derive(Deserialize)]
 pub struct GetActivityPhotoPath {
-    pub activity_id: i64,
-    pub photo_id: i64,
+    pub token: String,
 }
 
-#[get("{activity_id}/photo/{photo_id}")]
+#[get("photo/{token}")]
 pub async fn get_photo(
-    current_user: ManagerUserInfo,
     path: web::Path<GetActivityPhotoPath>,
     pool: web::Data<sqlx::Pool<sqlx::Postgres>>,
 ) -> Result<impl Responder, actix_web::Error> {
@@ -205,11 +203,15 @@ pub async fn get_photo(
     let photo_data: Vec<u8>;
 
     {
-        let mut svc =
-            ClientActivityService::new(current_user, PersistentActivityRepo::new(&mut trans));
+        let photo_sign_info = PhotoSigningInfo::from_jwt(&path.token)?;
+
+        let mut svc = ClientActivityService::new(
+            ManagerUserInfo::new_fake(photo_sign_info.user_id),
+            PersistentActivityRepo::new(&mut trans),
+        );
 
         photo_data = svc
-            .get_photo(path.activity_id, path.photo_id)
+            .get_photo(photo_sign_info.activity_id, photo_sign_info.photo_id)
             .await
             .map_err(|e| error::ErrorBadRequest(e.to_string()))?;
 
