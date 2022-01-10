@@ -135,3 +135,12 @@ Content-Type: application/json
     "name": "Alex Doe",
     "is_blocked": false
 }
+
+###
+PATCH {{server}}/admin/user-accounts/4
+Authorization: {{auth.response.body.jwt}}
+Content-Type: application/json
+
+{
+    "password": "2233"
+}

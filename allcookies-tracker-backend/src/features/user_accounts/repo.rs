@@ -1,6 +1,9 @@
 use crate::features::UserAccountRepository;
-use crate::features::{NewUserAccount, PagedResult, UserAccountInfo};
-use crate::{select_with_count, AnError};
+use crate::features::{
+    NewUserAccount, PagedResult, Patch, UpdateUserAccount, UserAccount, UserAccountInfo,
+};
+use crate::{select_with_count, AnError, AppError};
+use sqlx::Done;
 use sqlx::PgPool;
 
 #[derive(Debug)]
@@ -87,5 +90,60 @@ impl<'a> UserAccountRepository for PersistentUserAccountRepository<'a> {
         .await?;
 
         Ok(rec.id)
+    }
+
+    async fn update_user_account(
+        &self,
+        user_account_id: i64,
+        patch: UpdateUserAccount,
+    ) -> Result<Option<()>, AnError> {
+        let user_account = sqlx::query_as!(
+            UserAccount,
+            r#" select 
+                    *
+                from 
+                    user_account
+                where
+                    account_role <> 'admin' and id = $1
+                    "#,
+            user_account_id
+        )
+        .fetch_optional(self.db)
+        .await?;
+
+        if let Some(existing) = user_account {
+            let updated = existing.patch(&patch);
+
+            let rec = sqlx::query!(
+                r#"
+                update user_account
+                set 
+                    login = $2,
+                    password_hash = $3,
+                    name = $4,
+                    is_blocked = $5
+                where
+                    account_role <> 'admin' and id = $1
+                "#,
+                user_account_id,
+                updated.login,
+                updated.password_hash,
+                updated.name,
+                updated.is_blocked
+            )
+            .execute(self.db)
+            .await?;
+
+            if rec.rows_affected() != 1 {
+                return Err(AppError::new_an_err(
+                    &format!("Can't update user account with id {}", user_account_id),
+                    actix_web::http::StatusCode::from_u16(400).unwrap(),
+                ));
+            }
+        } else {
+            return Ok(None);
+        }
+
+        Ok(Some(()))
     }
 }

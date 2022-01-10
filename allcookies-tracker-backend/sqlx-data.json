@@ -431,6 +431,56 @@
       ]
     }
   },
+  "46b1daa760810d51fe3f6cebadcecd0b38d48ce4612f8b947724790dfcdb0cbd": {
+    "query": " select \n                    *\n                from \n                    user_account\n                where\n                    account_role <> 'admin' and id = $1\n                    ",
+    "describe": {
+      "columns": [
+        {
+          "ordinal": 0,
+          "name": "id",
+          "type_info": "Int8"
+        },
+        {
+          "ordinal": 1,
+          "name": "login",
+          "type_info": "Text"
+        },
+        {
+          "ordinal": 2,
+          "name": "password_hash",
+          "type_info": "Text"
+        },
+        {
+          "ordinal": 3,
+          "name": "name",
+          "type_info": "Text"
+        },
+        {
+          "ordinal": 4,
+          "name": "is_blocked",
+          "type_info": "Bool"
+        },
+        {
+          "ordinal": 5,
+          "name": "account_role",
+          "type_info": "Bpchar"
+        }
+      ],
+      "parameters": {
+        "Left": [
+          "Int8"
+        ]
+      },
+      "nullable": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ]
+    }
+  },
   "53fb765ad8b45b6be79ede533500d5193ff1d3610638d7cec5b70dc3f085c010": {
     "query": "select \n                    id, \n                    login,\n                    name,\n                    is_blocked\n                from \n                    user_account\n                where\n                    account_role <> 'admin' \n                offset $1 limit $2",
     "describe": {
@@ -466,6 +516,29 @@
         false,
         false,
         false,
+        false
+      ]
+    }
+  },
+  "5d0d929d4a97ef768f7e5f429a353b325b612f3b1c1a4721f8f17592187b7260": {
+    "query": "\n            insert into user_account(\n                login, \n                password_hash, \n                name, \n                is_blocked, \n                account_role\n            )\n            values ($1, $2, $3, $4, 'mgr')\n            returning id\n            ",
+    "describe": {
+      "columns": [
+        {
+          "ordinal": 0,
+          "name": "id",
+          "type_info": "Int8"
+        }
+      ],
+      "parameters": {
+        "Left": [
+          "Text",
+          "Text",
+          "Text",
+          "Bool"
+        ]
+      },
+      "nullable": [
         false
       ]
     }
@@ -1606,6 +1679,22 @@
         false,
         false
       ]
+    }
+  },
+  "c57683204f98e5b695ed3d5f9e3ed245d3a58792a0ccb606e364c19434e7d069": {
+    "query": "\n                update user_account\n                set \n                    login = $2,\n                    password_hash = $3,\n                    name = $4,\n                    is_blocked = $5\n                where\n                    account_role <> 'admin' and id = $1\n                ",
+    "describe": {
+      "columns": [],
+      "parameters": {
+        "Left": [
+          "Int8",
+          "Text",
+          "Text",
+          "Text",
+          "Bool"
+        ]
+      },
+      "nullable": []
     }
   },
   "c7c16680afff9637be717f691421b28313fb488edc33915e271591d2eb26407c": {

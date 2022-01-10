@@ -1,4 +1,6 @@
-use crate::features::{AdminUserInfo, NewUserAccount, PagedResult, UserAccountInfo};
+use crate::features::{
+    AdminUserInfo, NewUserAccount, PagedResult, UpdateUserAccount, UserAccountInfo,
+};
 use crate::{AnError, AppError};
 
 #[async_trait::async_trait]
@@ -12,6 +14,12 @@ pub trait UserAccountRepository {
     async fn get_by_id(&self, id: i64) -> Result<Option<UserAccountInfo>, AnError>;
 
     async fn create_user_account(&self, user_account: NewUserAccount) -> Result<i64, AnError>;
+
+    async fn update_user_account(
+        &self,
+        user_account_id: i64,
+        patch: UpdateUserAccount,
+    ) -> Result<Option<()>, AnError>;
 }
 
 pub struct AdminUserAccountService<TRepo: UserAccountRepository + Send + Sync> {
@@ -66,5 +74,28 @@ where
             .map_err(|e| AppError::bad_request(&e.to_string()))?;
 
         self.get_by_id(id).await?.ok_or(AppError::not_found_err())
+    }
+
+    pub async fn update_user(
+        &self,
+        user_account_id: i64,
+        user_account_patch: UpdateUserAccount,
+    ) -> Result<UserAccountInfo, AppError> {
+        let user_account_patch_with_hash = UpdateUserAccount {
+            password: user_account_patch
+                .password
+                .map(|pwd| bcrypt::hash(pwd, bcrypt::DEFAULT_COST).unwrap()),
+            ..user_account_patch
+        };
+
+        let _ = self
+            .repo
+            .update_user_account(user_account_id, user_account_patch_with_hash)
+            .await
+            .map_err(|e| AppError::bad_request(&e.to_string()))?;
+
+        self.get_by_id(user_account_id)
+            .await?
+            .ok_or(AppError::not_found_err())
     }
 }
