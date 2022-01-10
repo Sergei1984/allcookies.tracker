@@ -1,5 +1,5 @@
 use crate::features::UserAccountRepository;
-use crate::features::{PagedResult, UserAccountInfo};
+use crate::features::{NewUserAccount, PagedResult, UserAccountInfo};
 use crate::{select_with_count, AnError};
 use sqlx::PgPool;
 
@@ -63,5 +63,29 @@ impl<'a> UserAccountRepository for PersistentUserAccountRepository<'a> {
         .await?;
 
         Ok(user_account)
+    }
+
+    async fn create_user_account(&self, user_account: NewUserAccount) -> Result<i64, AnError> {
+        let rec = sqlx::query!(
+            r#"
+            insert into user_account(
+                login, 
+                password_hash, 
+                name, 
+                is_blocked, 
+                account_role
+            )
+            values ($1, $2, $3, $4, 'mgr')
+            returning id
+            "#,
+            user_account.login,
+            user_account.password,
+            user_account.name,
+            user_account.is_blocked
+        )
+        .fetch_one(self.db)
+        .await?;
+
+        Ok(rec.id)
     }
 }

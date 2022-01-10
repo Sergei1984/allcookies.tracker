@@ -1,4 +1,4 @@
-use crate::features::{AdminUserInfo, PagedResult, UserAccountInfo};
+use crate::features::{AdminUserInfo, NewUserAccount, PagedResult, UserAccountInfo};
 use crate::{AnError, AppError};
 
 #[async_trait::async_trait]
@@ -10,22 +10,21 @@ pub trait UserAccountRepository {
     ) -> Result<PagedResult<UserAccountInfo>, AnError>;
 
     async fn get_by_id(&self, id: i64) -> Result<Option<UserAccountInfo>, AnError>;
+
+    async fn create_user_account(&self, user_account: NewUserAccount) -> Result<i64, AnError>;
 }
 
 pub struct AdminUserAccountService<TRepo: UserAccountRepository + Send + Sync> {
     repo: TRepo,
-    current_user: AdminUserInfo,
+    // current_user: AdminUserInfo,
 }
 
 impl<TRepo> AdminUserAccountService<TRepo>
 where
     TRepo: UserAccountRepository + Send + Sync,
 {
-    pub fn new(current_user: AdminUserInfo, repo: TRepo) -> Self {
-        AdminUserAccountService {
-            repo: repo,
-            current_user: current_user,
-        }
+    pub fn new(_current_user: AdminUserInfo, repo: TRepo) -> Self {
+        AdminUserAccountService { repo: repo }
     }
 
     pub async fn get_all(
@@ -49,5 +48,23 @@ where
             .await
             .map_err(|e| AppError::bad_request(&e.to_string()))?;
         Ok(result)
+    }
+
+    pub async fn create_user(
+        &self,
+        user_account: NewUserAccount,
+    ) -> Result<UserAccountInfo, AppError> {
+        let user_with_hash = NewUserAccount {
+            password: bcrypt::hash(user_account.password, bcrypt::DEFAULT_COST).unwrap(),
+            ..user_account
+        };
+
+        let id = self
+            .repo
+            .create_user_account(user_with_hash)
+            .await
+            .map_err(|e| AppError::bad_request(&e.to_string()))?;
+
+        self.get_by_id(id).await?.ok_or(AppError::not_found_err())
     }
 }

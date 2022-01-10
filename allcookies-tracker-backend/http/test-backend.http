@@ -123,3 +123,15 @@ Authorization: {{auth.response.body.jwt}}
 ###
 GET {{server}}/admin/user-accounts/{{user_accounts.response.body.$.data[0].id}}
 Authorization: {{auth.response.body.jwt}}
+
+###
+POST {{server}}/admin/user-accounts/
+Authorization: {{auth.response.body.jwt}}
+Content-Type: application/json
+
+{
+    "login": "somebody@manager.com",
+    "password": "test123",
+    "name": "Alex Doe",
+    "is_blocked": false
+}
