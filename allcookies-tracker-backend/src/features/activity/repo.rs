@@ -1,5 +1,5 @@
 use crate::features::SellingPointCheckPhotos;
-use crate::features::{Activity, Count, LatLonPoint, PagedResult, SellingPoint};
+use crate::features::{Activity, LatLonPoint, PagedResult, SellingPoint};
 use crate::{select_with_count, AnError};
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};

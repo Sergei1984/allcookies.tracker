@@ -1,4 +1,3 @@
-use crate::features::Count;
 use crate::features::{NewProduct, PagedResult, Product};
 use crate::{select_with_count, AnError, AppError};
 use async_trait::async_trait;

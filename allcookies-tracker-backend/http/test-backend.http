@@ -114,3 +114,33 @@ Content-Type: application/json
 ###
 DELETE {{server}}/admin/product/5
 Authorization: {{auth.response.body.jwt}}
+
+###
+# @name user_accounts
+GET {{server}}/admin/user-accounts
+Authorization: {{auth.response.body.jwt}}
+
+###
+GET {{server}}/admin/user-accounts/{{user_accounts.response.body.$.data[0].id}}
+Authorization: {{auth.response.body.jwt}}
+
+###
+POST {{server}}/admin/user-accounts/
+Authorization: {{auth.response.body.jwt}}
+Content-Type: application/json
+
+{
+    "login": "somebody@manager.com",
+    "password": "test123",
+    "name": "Alex Doe",
+    "is_blocked": false
+}
+
+###
+PATCH {{server}}/admin/user-accounts/4
+Authorization: {{auth.response.body.jwt}}
+Content-Type: application/json
+
+{
+    "password": "2233"
+}

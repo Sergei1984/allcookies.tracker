@@ -1,11 +1,12 @@
 mod config;
-mod features;
 mod error;
+mod features;
 
 use crate::config::Config;
 use crate::features::{
     activity_admin_route, activity_client_route, authentication_route, product_admin_route,
     product_client_route, profile_route, selling_point_admin_route, selling_point_client_route,
+    user_account_admin_route,
 };
 use actix_web::HttpResponse;
 
@@ -37,6 +38,7 @@ async fn main() -> std::io::Result<()> {
             .service(product_client_route())
             .service(activity_client_route())
             .service(activity_admin_route())
+            .service(user_account_admin_route())
     })
     .bind(Config::server_url())?
     .run()
