@@ -1,5 +1,5 @@
 import axiosInstance from "../shared/utils/axiosInstanceHelper";
-import { SellingPointData } from "../store/sellingPoint/types";
+import { CheckSellingPointData, SellingPointData } from "../store/sellingPoint/types";
 
 export class SellingPoints {
 
@@ -12,6 +12,12 @@ export class SellingPoints {
         let response = await axiosInstance.post('client/selling-point', data);
         return response.data;
     }
+
+    public checkSellingPoint = async (data: CheckSellingPointData) => {
+        let response  = await axiosInstance.post('client/activity/check-selling-point', data);
+        return response.data;
+    }
+
 }
 
 export const SellingPointsAPI = new SellingPoints();

@@ -10,7 +10,7 @@ interface Image {
 
 export const useGetImage = () => {
   const [image, setImage] = React.useState<Image | null>(null);
-
+  const [images, setImages] = React.useState<Image[]>([]);
   const pickSingleWithCamera = React.useCallback(
     async (cropping: boolean, mediaType: any = "photo") => {
       try {
@@ -38,8 +38,8 @@ export const useGetImage = () => {
     async (cropping: boolean, circular = false) => {
       try {
         const image = await ImagePicker.openPicker({
-          width: 500,
-          height: 500,
+          width: 100,
+          height: 100,
           cropping: cropping,
           cropperCircleOverlay: circular,
           sortOrder: "none",
@@ -53,12 +53,21 @@ export const useGetImage = () => {
           cropperActiveWidgetColor: "white",
           cropperToolbarWidgetColor: "#3498DB",
         });
-        setImage({
-          uri: image.path,
-          width: image.width,
-          height: image.height,
-          mime: image.mime,
-        });
+        setImages([
+          ...images,
+          {
+            uri: image.path,
+            width: image.width,
+            height: image.height,
+            mime: image.mime,
+          },
+        ]);
+        // setImage({
+        //   uri: image.path,
+        //   width: image.width,
+        //   height: image.height,
+        //   mime: image.mime,
+        // });
       } catch (error) {
         console.log(error);
       }
@@ -67,7 +76,7 @@ export const useGetImage = () => {
   );
 
   return {
-    data: { image },
+    data: { image, images },
     handle: {
       pickSingle,
       pickSingleWithCamera,

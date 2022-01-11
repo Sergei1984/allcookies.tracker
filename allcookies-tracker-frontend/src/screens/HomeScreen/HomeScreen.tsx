@@ -5,47 +5,27 @@ import {
   useTheme,
 } from "@react-navigation/native";
 import React from "react";
-import {
-  AppState,
-  Button,
-  FlatList,
-  Image,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { FlatList, Modal, TouchableOpacity, View } from "react-native";
 import { AppText } from "../../components/AppText";
 import createStyles from "./styles";
-import ImagePicker from "react-native-image-crop-picker";
-import { useGetImage } from "../../hooks/useGetImage";
-import { useDispatch } from "react-redux";
 import { getSellingPointsThunk } from "../../store/sellingPoint/thunk";
 import { useAppDispatch } from "../../hooks/useAppDispatch";
 import { useAppSelector } from "../../hooks/useAppSelector";
-import { SellingPoint } from "../../store/sellingPoint/types";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-import { useStopwatch } from "react-timer-hook";
 import { useTimer } from "../../hooks/useTimer";
-
+import { AppTextInput } from "../../components/AppTextInput/AppTextInput";
+import { SellingPoint } from "../../store/sellingPoint/types";
 interface IProps {
   navigation: NavigationProp<ParamListBase>;
 }
 const HomeScreen: React.FC<IProps> = ({ navigation }) => {
-  const dataCount = [
-    { name: "test1", count: 3 },
-    { name: "test2", count: 7 },
-    { name: "test3", count: 9 },
-  ];
-
   const { timerData, handlers } = useTimer();
-
-  const { data, handle } = useGetImage();
   const styles = React.useMemo(() => createStyles(), []);
-  // const { colors } = useTheme();
-  const [products, setProducts] = React.useState(dataCount);
 
   const dispatch = useAppDispatch();
 
+  const [shops, setShops] = React.useState<SellingPoint[]>();
+  const [modalVisible, setModalVisible] = React.useState(false);
   React.useEffect(() => {
     (async () => {
       await dispatch(getSellingPointsThunk());
@@ -56,36 +36,31 @@ const HomeScreen: React.FC<IProps> = ({ navigation }) => {
     (state) => state.sellingPointReducer
   );
 
-  const handleIncrement = React.useCallback(
-    (name) => {
-      let newProduct = products.map((el) =>
-        el.name === name ? { ...el, count: el.count + 1 } : el
-      );
-      setProducts(newProduct);
-    },
-    [products]
-  );
+  React.useEffect(() => {
+    setShops(sellingPointData);
+  }, [sellingPointData]);
 
-  const handleDecrement = React.useCallback(
-    (name) => {
-      let newProduct = products.map((el) =>
-        el.name === name
-          ? { ...el, count: el.count !== 0 ? el.count - 1 : 0 }
-          : el
-      );
-      setProducts(newProduct);
-    },
-    [products]
-  );
+  const searchShop = (value: string) => {
+    const data = sellingPointData.filter((item) =>
+      item.title.toLowerCase().includes(value.toLowerCase())
+    );
+    setShops(data);
+  };
+
+  const navigateToDetails = (title: string) => {
+    if (timerData.toggle) {
+      navigation.navigate("Список товаров", { title: title });
+      return;
+    }
+    setModalVisible(true);
+  };
 
   const renderShopPoints = () => {
     const renderItem = ({ item }: any) => {
       return (
         <TouchableOpacity
           style={styles.renderItemPoint}
-          onPress={() =>
-            navigation.navigate("Список товаров", { title: item.title })
-          }
+          onPress={() => navigateToDetails(item.title)}
         >
           <AppText style={styles.renderItemText} color="#fff">
             {item.title}
@@ -97,9 +72,10 @@ const HomeScreen: React.FC<IProps> = ({ navigation }) => {
     return (
       <View style={styles.pointsWrapper}>
         <FlatList
-          data={sellingPointData}
+          data={shops}
+          style={{ height: "60%" }}
+          numColumns={2}
           renderItem={renderItem}
-          horizontal={true}
           keyExtractor={(item) => item.id.toString()}
         />
       </View>
@@ -108,9 +84,6 @@ const HomeScreen: React.FC<IProps> = ({ navigation }) => {
 
   return (
     <View style={styles.body}>
-      {/* Magazine points */}
-      <AppText style={styles.title}>Список магазинов:</AppText>
-      {renderShopPoints()}
       {/* Timer to start work */}
       <AppText style={styles.title}>Таймер начала работы</AppText>
 
@@ -137,6 +110,59 @@ const HomeScreen: React.FC<IProps> = ({ navigation }) => {
           </TouchableOpacity>
         )}
       </View>
+
+      {/* Magazine points */}
+      <AppText style={styles.title}>Список магазинов:</AppText>
+      <View style={styles.searchWrapper}>
+        <MaterialIcons
+          name="search"
+          size={24}
+          color={"#9098B1"}
+          style={styles.searchIcon}
+        />
+        <AppTextInput
+          style={styles.searchInput}
+          placeholder="Поиск"
+          onChangeText={(value) => searchShop(value)}
+        />
+      </View>
+      {renderShopPoints()}
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(!modalVisible);
+        }}
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <View
+              style={{
+                borderBottomColor: "rgba(60, 60, 67, 0.29)",
+                borderBottomWidth: 1,
+                marginHorizontal: -35,
+                marginBottom: 16,
+              }}
+            >
+              <AppText style={[styles.modalText, { fontWeight: "600" }]}>
+                Включите таймер
+              </AppText>
+              <AppText style={styles.modalText}>
+                Прежде чем начать работать, пожалуйста, включите таймер.
+              </AppText>
+            </View>
+            <TouchableOpacity
+              style={[styles.button, styles.buttonClose]}
+              onPress={() => setModalVisible(!modalVisible)}
+            >
+              <AppText style={styles.textStyle}>OK</AppText>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
       {/* Count of products
       {products.map((item, index) => {
         return (

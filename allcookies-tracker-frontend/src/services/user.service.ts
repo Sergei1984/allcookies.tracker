@@ -12,6 +12,11 @@ class UserService {
         return response.data
     }
 
+    public uploadPhoto = async (id: number, photo: any) => {
+        const response = await axiosInstance.post(`client/activity/${id}/photo`);
+        return response.data;
+    }
+
     public openDay = async (data: IOpenCloseDay) => {
         const response = await axiosInstance.post('client/activity/open-day', data);
         return response.data;

@@ -26,3 +26,14 @@ export interface SellingPointData {
     location: Location,
     title: string
 }
+
+interface ProductToSending {
+    product_id: number,
+    quantity: number
+}
+export interface CheckSellingPointData {
+    location: Location,
+    time: Date,
+    selling_point_id: number,
+    products: ProductToSending[]
+}

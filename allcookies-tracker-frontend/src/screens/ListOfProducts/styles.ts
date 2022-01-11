@@ -57,6 +57,18 @@ const createStyles = () => StyleSheet.create({
         marginBottom: SIZES.paddingHorizontal,
         paddingLeft: 36
     },
+    imageWrapper: {
+        flexDirection: 'row',
+        marginTop: 8
+    },
+    avatar: {
+        paddingTop: 20,
+        height: 80,
+        width: 80,
+        borderRadius: 16,
+        padding: 20,
+        marginRight: 8
+    },
     searchIcon: {
         position: 'absolute',
         zIndex: 1,
@@ -65,7 +77,14 @@ const createStyles = () => StyleSheet.create({
     },
     searchWrapper: {
         position: 'relative'
-    }
+    },
+    title: {
+        color: '#59597C',
+        fontSize: RFValue(16),
+        fontWeight: '600',
+        marginTop: SIZES.paddingHorizontal,
+        marginBottom: 12
+    },
 })
 
 export default createStyles;

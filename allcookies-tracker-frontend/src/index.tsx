@@ -8,7 +8,7 @@ import { useColorScheme } from "react-native-appearance";
 import BackgroundService from "react-native-background-actions";
 import PushNotificationIOS from "@react-native-community/push-notification-ios";
 import { getDistance, getPreciseDistance } from "geolib";
-
+import RNLocation from "react-native-location";
 const sleep = (time: any) =>
   new Promise((resolve: any) => setTimeout(() => resolve(), time));
 
@@ -29,6 +29,62 @@ const veryIntensiveTask = async (taskDataArguments: any) => {
   });
 };
 
+RNLocation.configure({
+  distanceFilter: 100, // Meters
+  desiredAccuracy: {
+    ios: "best",
+    android: "balancedPowerAccuracy",
+  },
+  // Android only
+  androidProvider: "auto",
+  interval: 5000, // Milliseconds
+  fastestInterval: 10000, // Milliseconds
+  maxWaitTime: 5000, // Milliseconds
+  // iOS Only
+  activityType: "other",
+  allowsBackgroundLocationUpdates: false,
+  headingFilter: 1, // Degrees
+  headingOrientation: "portrait",
+  pausesLocationUpdatesAutomatically: false,
+  showsBackgroundLocationIndicator: true,
+});
+
+let locationSubscription: any = null;
+let locationTimeout: any = null;
+
+const locationTask = async (taskDataArguments: any) => {
+  const { delay } = taskDataArguments;
+  await new Promise(async (resolve) => {
+    for (let i = 0; BackgroundService.isRunning(); i++) {
+      RNLocation.requestPermission({
+        ios: "whenInUse",
+        android: {
+          detail: "fine",
+        },
+      }).then((granted) => {
+        console.log("Location Permissions: ", granted);
+        // if has permissions try to obtain location with RN location
+        if (granted) {
+          locationSubscription && locationSubscription();
+          locationSubscription = RNLocation.subscribeToLocationUpdates(
+            ([locations]) => {
+              console.log(locations);
+              locationSubscription();
+              locationTimeout && clearTimeout(locationTimeout);
+              console.log("asdasddsdas", locations);
+            }
+          );
+        } else {
+          locationSubscription && locationSubscription();
+          locationTimeout && clearTimeout(locationTimeout);
+          console.log("no permissions to obtain location");
+        }
+      });
+      await sleep(delay);
+    }
+  });
+};
+
 const options = {
   taskName: "Example",
   taskTitle: "ExampleTask title",
@@ -39,13 +95,14 @@ const options = {
   },
   color: "#ff00ff",
   parameters: {
-    delay: 10000,
+    delay: 1000,
   },
 };
+
 export default function App() {
   const store = setupStore();
   const schema = useColorScheme();
-
+  // useLocation();
   React.useEffect(() => {
     // PushNotificationIOS.addEventListener("register", onRegistered);
     // PushNotificationIOS.addEventListener(
@@ -96,7 +153,8 @@ export default function App() {
   const _handleAppStateChange = async (nextAppState: any) => {
     console.log(nextAppState);
     if (nextAppState === "background") {
-      await BackgroundService.start(veryIntensiveTask, options);
+      // await BackgroundService.start(veryIntensiveTask, options);
+      //await BackgroundService.start(locationTask, options);
     }
 
     if (nextAppState !== "background") {
