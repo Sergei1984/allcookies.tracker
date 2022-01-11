@@ -77,12 +77,12 @@ const ProfileScreen: React.FC = () => {
       }
     );
 
-    return () => {
-      PushNotificationIOS.removeEventListener("register");
-      PushNotificationIOS.removeEventListener("registrationError");
-      PushNotificationIOS.removeEventListener("notification");
-      PushNotificationIOS.removeEventListener("localNotification");
-    };
+    // return () => {
+    //   PushNotificationIOS.removeEventListener("register");
+    //   PushNotificationIOS.removeEventListener("registrationError");
+    //   PushNotificationIOS.removeEventListener("notification");
+    //   PushNotificationIOS.removeEventListener("localNotification");
+    // };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

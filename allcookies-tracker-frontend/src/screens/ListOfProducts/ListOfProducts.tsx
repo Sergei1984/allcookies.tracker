@@ -117,7 +117,23 @@ const ListOfProducts: React.FC<Props> = ({ route, navigation }) => {
     );
   };
 
-  console.log(data.images, "images");
+  const renderPhotos = () => {
+    const renderItem = ({ item }: any) => {
+      return <Image style={styles.avatar} source={item} />;
+    };
+    return (
+      <View>
+        <FlatList
+          data={data.images}
+          style={{ marginVertical: 10 }}
+          renderItem={renderItem}
+          horizontal={true}
+          keyExtractor={(item, index) => item.mime + index}
+        />
+      </View>
+    );
+  };
+
   return (
     <View style={styles.container}>
       <View style={{ marginBottom: 16 }}>
@@ -126,17 +142,7 @@ const ListOfProducts: React.FC<Props> = ({ route, navigation }) => {
           onPress={() => handle.pickSingle(true)}
         />
         {/* Photos */}
-        <View style={styles.imageWrapper}>
-          {data.images.map((item, index) => {
-            return (
-              <Image
-                key={"photo" + index}
-                style={styles.avatar}
-                source={item}
-              />
-            );
-          })}
-        </View>
+        {renderPhotos()}
       </View>
       <View>
         <AppText style={styles.title}>Список товаров:</AppText>

@@ -37,7 +37,7 @@ export const useGetImage = () => {
   const pickSingle = React.useCallback(
     async (cropping: boolean, circular = false) => {
       try {
-        const image = await ImagePicker.openPicker({
+        const selectedImages = await ImagePicker.openPicker({
           width: 100,
           height: 100,
           cropping: cropping,
@@ -52,15 +52,19 @@ export const useGetImage = () => {
           cropperToolbarColor: "white",
           cropperActiveWidgetColor: "white",
           cropperToolbarWidgetColor: "#3498DB",
+          multiple: true,
         });
         setImages([
           ...images,
-          {
-            uri: image.path,
-            width: image.width,
-            height: image.height,
-            mime: image.mime,
-          },
+          ...selectedImages.map((i) => {
+            console.log("received image", i);
+            return {
+              uri: i.path,
+              width: i.width,
+              height: i.height,
+              mime: i.mime,
+            };
+          }),
         ]);
         // setImage({
         //   uri: image.path,

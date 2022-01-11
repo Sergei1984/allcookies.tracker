@@ -24,24 +24,24 @@ const AppNavigation = () => {
                 </View>
               );
             }
-            case "Уведомления": {
-              return (
-                <View>
-                  <MaterialIcons
-                    name={"notifications"}
-                    size={30}
-                    color={color}
-                  />
-                </View>
-              );
-            }
-            case "Карты": {
-              return (
-                <View>
-                  <MaterialIcons name={"map"} size={30} color={color} />
-                </View>
-              );
-            }
+            // case "Уведомления": {
+            //   return (
+            //     <View>
+            //       <MaterialIcons
+            //         name={"notifications"}
+            //         size={30}
+            //         color={color}
+            //       />
+            //     </View>
+            //   );
+            // }
+            // case "Карты": {
+            //   return (
+            //     <View>
+            //       <MaterialIcons name={"map"} size={30} color={color} />
+            //     </View>
+            //   );
+            // }
             case "Профиль": {
               return (
                 <View>
@@ -55,8 +55,8 @@ const AppNavigation = () => {
       })}
     >
       <Tab.Screen name="Главная" component={HomeNavigation} />
-      <Tab.Screen name="Уведомления" component={NotificationsNavigation} />
-      <Tab.Screen name="Карты" component={MapNavigation} />
+      {/* <Tab.Screen name="Уведомления" component={NotificationsNavigation} />
+      <Tab.Screen name="Карты" component={MapNavigation} /> */}
       <Tab.Screen name="Профиль" component={ProfileNavigation} />
     </Tab.Navigator>
   );

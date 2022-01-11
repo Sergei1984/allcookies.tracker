@@ -5,7 +5,13 @@ import {
   useTheme,
 } from "@react-navigation/native";
 import React from "react";
-import { FlatList, Modal, TouchableOpacity, View } from "react-native";
+import {
+  FlatList,
+  Modal,
+  RefreshControl,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { AppText } from "../../components/AppText";
 import createStyles from "./styles";
 import { getSellingPointsThunk } from "../../store/sellingPoint/thunk";
@@ -26,6 +32,8 @@ const HomeScreen: React.FC<IProps> = ({ navigation }) => {
 
   const [shops, setShops] = React.useState<SellingPoint[]>();
   const [modalVisible, setModalVisible] = React.useState(false);
+  const [refreshing, setRefreshing] = React.useState(false);
+
   React.useEffect(() => {
     (async () => {
       await dispatch(getSellingPointsThunk());
@@ -55,6 +63,12 @@ const HomeScreen: React.FC<IProps> = ({ navigation }) => {
     setModalVisible(true);
   };
 
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    console.log("adadsad");
+    setRefreshing(false);
+  }, []);
+
   const renderShopPoints = () => {
     const renderItem = ({ item }: any) => {
       return (
@@ -77,6 +91,9 @@ const HomeScreen: React.FC<IProps> = ({ navigation }) => {
           numColumns={2}
           renderItem={renderItem}
           keyExtractor={(item) => item.id.toString()}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
         />
       </View>
     );
@@ -84,6 +101,17 @@ const HomeScreen: React.FC<IProps> = ({ navigation }) => {
 
   return (
     <View style={styles.body}>
+      {/* <View
+        style={{
+          position: "absolute",
+          top: 0,
+          bottom: 0,
+          left: 0,
+          right: 0,
+          backgroundColor: "rgba(0,0,0,0.2)",
+          zIndex: 1,
+        }}
+      ></View> */}
       {/* Timer to start work */}
       <AppText style={styles.title}>Таймер начала работы</AppText>
 
@@ -129,9 +157,10 @@ const HomeScreen: React.FC<IProps> = ({ navigation }) => {
       {renderShopPoints()}
 
       <Modal
-        animationType="slide"
+        animationType="fade"
         transparent={true}
         visible={modalVisible}
+        // presentationStyle="fullScreen"
         onRequestClose={() => {
           setModalVisible(!modalVisible);
         }}
@@ -162,34 +191,6 @@ const HomeScreen: React.FC<IProps> = ({ navigation }) => {
           </View>
         </View>
       </Modal>
-
-      {/* Count of products
-      {products.map((item, index) => {
-        return (
-          <ProductCount
-            key={"product" + index}
-            name={item.name}
-            count={item.count}
-            handleIncrement={handleIncrement}
-            handleDecrement={handleDecrement}
-          />
-        );
-      })}
-      <TouchableOpacity onPress={() => handle.pickSingle(true)}>
-        {data.image ? (
-          <Image style={styles.avatar} source={data.image} />
-        ) : (
-          <AppText>Choose photo</AppText>
-        )}
-      </TouchableOpacity>
-
-      <TouchableOpacity onPress={() => handle.pickSingleWithCamera(true)}>
-        {data.image ? (
-          <Image style={styles.avatar} source={data.image} />
-        ) : (
-          <AppText>Open camera</AppText>
-        )}
-      </TouchableOpacity> */}
     </View>
   );
 };
