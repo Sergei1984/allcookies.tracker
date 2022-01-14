@@ -25,5 +25,5 @@ pub struct NewSellingPointCheckActivity {
 #[derive(Debug, Serialize, Deserialize)]
 pub struct ProductCheck {
     pub product_id: i64,
-    pub quantity: i32,
+    pub quantity: Option<i32>,
 }

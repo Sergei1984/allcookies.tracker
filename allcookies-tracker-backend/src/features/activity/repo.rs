@@ -130,7 +130,7 @@ pub struct SellingPointCheckDto {
     pub product_title: String,
     pub product_image_url: Option<String>,
     pub product_is_disabled: bool,
-    pub quantity: i32,
+    pub quantity: Option<i32>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -195,7 +195,7 @@ pub trait ActivityRepo {
         &mut self,
         activity_id: i64,
         product_id: i64,
-        quantity: i32,
+        quantity: Option<i32>,
     ) -> Result<(), AnError>;
 
     async fn create_photo(&mut self, activity_id: i64, photo_bytes: &[u8]) -> Result<(), AnError>;
@@ -450,7 +450,7 @@ impl<'a, 'c> ActivityRepo for PersistentActivityRepo<'a, 'c> {
         &mut self,
         activity_id: i64,
         product_id: i64,
-        quantity: i32,
+        quantity: Option<i32>,
     ) -> Result<(), AnError> {
         let _ = sqlx::query!(
             r#"

@@ -51,7 +51,7 @@ Authorization: {{auth.response.body.jwt}}
     "selling_point_id": 7,
     "products": [
         { "product_id": 1, "quantity": 10 },
-        { "product_id": 5, "quantity": 1 }
+        { "product_id": 5, "quantity": null }
     ]
 }
 
