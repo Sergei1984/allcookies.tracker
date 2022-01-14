@@ -5,6 +5,7 @@ edition = "2021"
 publish = false
 
 [dependencies]
+actix-cors="0.5"
 actix-rt = "2.5"
 actix-web = { version = "3.3" }
 async-trait = "0.1"

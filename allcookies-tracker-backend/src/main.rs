@@ -10,6 +10,7 @@ use crate::features::{
 };
 use actix_web::HttpResponse;
 
+
 use actix_web::{middleware, web, App, HttpServer};
 pub use error::*;
 
@@ -26,6 +27,7 @@ async fn main() -> std::io::Result<()> {
             .data(web::PayloadConfig::new(10 * 1024 * 1024))
             .app_data(web::Data::new(pool.clone()))
             .wrap(middleware::Logger::new("%t %a %r %s %b %T"))
+            .wrap(actix_cors::Cors::permissive())
             .wrap(middleware::NormalizePath::new(
                 middleware::normalize::TrailingSlash::Trim,
             ))
