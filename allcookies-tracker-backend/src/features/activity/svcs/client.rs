@@ -6,6 +6,7 @@ use crate::features::{
 };
 use crate::AppError;
 use chrono::Utc;
+use validator::Validate;
 
 pub struct ClientActivityService<TActivityRepo>
 where
@@ -121,6 +122,10 @@ where
         point_check: NewSellingPointCheckActivity,
     ) -> Result<ActivityInfo, AppError> {
         let _ = self.is_day_open().await?;
+
+        if let Err(_) = point_check.validate() {
+            return Err(AppError::bad_request("Point check data is invalid"));
+        }
 
         let activity_id = self
             .repo
