@@ -10,7 +10,7 @@ interface Image {
 
 export const useGetImage = () => {
   const [image, setImage] = React.useState<Image | null>(null);
-  const [images, setImages] = React.useState<Image[]>([]);
+  const [images, setImages] = React.useState<Image[] | any>([]);
   const pickSingleWithCamera = React.useCallback(
     async (cropping: boolean, mediaType: any = "photo") => {
       try {
@@ -20,6 +20,7 @@ export const useGetImage = () => {
           height: 500,
           includeExif: true,
           mediaType,
+          includeBase64: true,
         });
         setImage({
           uri: image.path,
@@ -43,8 +44,8 @@ export const useGetImage = () => {
           cropping: cropping,
           cropperCircleOverlay: circular,
           sortOrder: "none",
-          compressImageMaxWidth: 1000,
-          compressImageMaxHeight: 1000,
+          compressImageMaxWidth: 100,
+          compressImageMaxHeight: 100,
           compressImageQuality: 1,
           compressVideoPreset: "MediumQuality",
           includeExif: true,
@@ -53,16 +54,18 @@ export const useGetImage = () => {
           cropperActiveWidgetColor: "white",
           cropperToolbarWidgetColor: "#3498DB",
           multiple: true,
+          includeBase64: true,
         });
         setImages([
           ...images,
-          ...selectedImages.map((i) => {
+          ...selectedImages.map((i: any) => {
             console.log("received image", i);
             return {
               uri: i.path,
               width: i.width,
               height: i.height,
               mime: i.mime,
+              data: i.data,
             };
           }),
         ]);

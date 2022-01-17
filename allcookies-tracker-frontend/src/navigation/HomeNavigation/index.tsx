@@ -9,7 +9,7 @@ import ListOfProducts from "../../screens/ListOfProducts/ListOfProducts";
 
 export type HomeStackParamList = {
   HomeScreen: undefined;
-  ListOfProducts: { title: string };
+  ListOfProducts: { title: string; sellingPointId: number };
 };
 
 const HomeStack = createNativeStackNavigator();

@@ -3,6 +3,7 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import React from "react";
 import { View, Text, FlatList, TouchableOpacity, Image } from "react-native";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { AppButton } from "../../components/AppButton";
 import { AppText } from "../../components/AppText";
 import { AppTextInput } from "../../components/AppTextInput";
@@ -14,12 +15,18 @@ import { getProductsThunk } from "../../store/product/thunk";
 import { Product } from "../../store/product/types";
 import ImagePicker from "react-native-image-crop-picker";
 import createStyles from "./styles";
+import { checkSellingPointThunk } from "../../store/sellingPoint/thunk";
+import useLocation from "../../hooks/useLocation";
+import { RFValue } from "react-native-responsive-fontsize";
+import { btoa, atob, toByteArray } from "react-native-quick-base64";
+import { uploadPhotoThunk } from "../../store/user/thunk";
 
 type Props = NativeStackScreenProps<HomeStackParamList, "ListOfProducts">;
 
 const ListOfProducts: React.FC<Props> = ({ route, navigation }) => {
   const styles = React.useMemo(() => createStyles(), []);
   const dispatch = useAppDispatch();
+  const location = useLocation();
   const { data, handle } = useGetImage();
 
   React.useEffect(() => {
@@ -35,7 +42,9 @@ const ListOfProducts: React.FC<Props> = ({ route, navigation }) => {
   const [products, setProducts] = React.useState<Product[]>([]);
 
   React.useEffect(() => {
-    setProducts(dataOfProducts.map((item) => ({ ...item, count: 0 })));
+    setProducts(
+      dataOfProducts.map((item) => ({ ...item, count: 0, isShow: true }))
+    );
   }, [dataOfProducts]);
 
   const handleIncrement = React.useCallback(
@@ -60,43 +69,83 @@ const ListOfProducts: React.FC<Props> = ({ route, navigation }) => {
     [products]
   );
 
-  console.log("products", products);
-
   const searchProduct = (value: string) => {
-    const data = dataOfProducts.filter((item) => item.title.includes(value));
+    const data = products.map((item) =>
+      item.title.includes(value)
+        ? { ...item, isShow: true }
+        : { ...item, isShow: false }
+    );
     setProducts(data);
   };
 
-  const sendReport = React.useCallback(() => {
-    console.log(
-      products.flatMap((item) =>
-        item.count !== 0 ? { product_id: item.id, quantity: item.count } : []
-      )
+  const sendReport = React.useCallback(async () => {
+    const data = products.flatMap((item) =>
+      item.count !== 0 ? { product_id: item.id, quantity: item.count } : []
     );
+
+    console.log(data);
+    // await dispatch(
+    //   checkSellingPointThunk({
+    //     location: location,
+    //     time: new Date(),
+    //     products: data,
+    //     selling_point_id: route.params.sellingPointId,
+    //   })
+    // );
   }, [products]);
 
   const renderProducts = () => {
     const renderItem = ({ item }: any) => {
       return (
         <View style={styles.productWrapper}>
-          <View style={styles.leftSide}></View>
+          <View style={styles.leftSide}>
+            <View style={{ justifyContent: "center", flexGrow: 1 }}>
+              <Image
+                source={{ uri: item.image_url }}
+                style={{ height: 80, width: 60, resizeMode: "contain" }}
+              />
+            </View>
+          </View>
           <View style={styles.rightSide}>
-            <AppText>{item.title}</AppText>
+            <AppText
+              color={"#24244A"}
+              style={{
+                fontSize: RFValue(14),
+                fontWeight: "600",
+                flexWrap: "wrap",
+                width: 150,
+              }}
+            >
+              {item.title}
+            </AppText>
             <View style={styles.countWrapper}>
               <TouchableOpacity
                 style={styles.countBtn}
                 onPress={() => handleDecrement(item.title)}
               >
-                <AppText style={styles.productName}>-</AppText>
+                <MaterialCommunityIcons
+                  name={"minus"}
+                  size={32}
+                  color={"#24244A"}
+                />
               </TouchableOpacity>
-              <AppText style={[styles.productName, { marginHorizontal: 10 }]}>
-                {item.count}
-              </AppText>
+              <View style={styles.productCount}>
+                <AppText
+                  style={[styles.productCountTitle, { marginHorizontal: 10 }]}
+                >
+                  {item.count}
+                </AppText>
+              </View>
+
               <TouchableOpacity
                 style={styles.countBtn}
                 onPress={() => handleIncrement(item.title)}
               >
-                <AppText style={styles.productName}>+</AppText>
+                <MaterialCommunityIcons
+                  name={"plus"}
+                  size={32}
+                  color={"#24244A"}
+                />
               </TouchableOpacity>
             </View>
           </View>
@@ -107,10 +156,13 @@ const ListOfProducts: React.FC<Props> = ({ route, navigation }) => {
     return (
       <View>
         <FlatList
-          data={products}
-          style={{ marginBottom: 20, height: "60%" }}
+          data={products.flatMap((item) => (item.isShow ? item : []))}
+          style={{
+            marginBottom: 20,
+            height: data.images.length ? "47%" : "60%",
+          }}
           renderItem={renderItem}
-          keyExtractor={(item) => item.id.toString()}
+          keyExtractor={(_, index) => "products" + index}
         />
         <AppButton name="Отправить отчет" onPress={sendReport} />
       </View>
@@ -133,6 +185,31 @@ const ListOfProducts: React.FC<Props> = ({ route, navigation }) => {
       </View>
     );
   };
+
+  const _base64ToArrayBuffer = (base64: any) => {
+    var binary_string = atob(base64);
+    var len = binary_string.length;
+    var bytes = new Uint8Array(len);
+    for (var i = 0; i < len; i++) {
+      bytes[i] = binary_string.charCodeAt(i);
+    }
+    return bytes.buffer;
+  };
+
+  React.useEffect(() => {
+    if (data.images.length !== 0) {
+      // let bytes = toByteArray(`${data.images[0].data}`);
+      // console.log(bytes);
+      const data1 = new FormData();
+      data1.append("file", data.images[0]);
+      dispatch(
+        uploadPhotoThunk({
+          id: route.params.sellingPointId,
+          photo: data.images[0],
+        })
+      );
+    }
+  }, [data.images]);
 
   return (
     <View style={styles.container}>

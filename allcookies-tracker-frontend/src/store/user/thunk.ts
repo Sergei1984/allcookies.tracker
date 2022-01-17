@@ -45,3 +45,14 @@ export const closeDayThunk = createAsyncThunk('user/closeDay', async (data: IOpe
         return thunkAPI.rejectWithValue(e.message)
     }
 })
+
+export const uploadPhotoThunk = createAsyncThunk('user/uploadPhoto', async (data: any, thunkAPI) => {
+    try {
+        const response = await UserAPI.uploadPhoto(data.id, data.photo);
+        console.log(response)
+        return response;
+    } catch (e) {
+        console.log(e);
+        return thunkAPI.rejectWithValue(e.message)
+    }
+})

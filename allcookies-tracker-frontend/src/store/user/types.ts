@@ -27,5 +27,5 @@ export interface IOpenCloseDay {
         lat: number,
         lon: number
     },
-    time: string
+    time: Date
 }

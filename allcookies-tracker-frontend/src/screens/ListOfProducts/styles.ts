@@ -11,6 +11,7 @@ const createStyles = () => StyleSheet.create({
     productWrapper: {
         flexDirection: 'row',
         alignItems: 'center',
+        justifyContent: 'center',
         // borderColor: Colors.PRIMARY,
         // borderRadius: SIZES.paddingHorizontal,
         // borderWidth: 1,
@@ -19,12 +20,14 @@ const createStyles = () => StyleSheet.create({
     },
     leftSide: {
         height: '100%',
-        width: 68,
-        backgroundColor: Colors.LIGHTGREY,
+        width: 72,
+        backgroundColor: Colors.WHITE,
         borderRightColor: Colors.PRIMARY,
         borderWidth: 1,
         borderTopLeftRadius: SIZES.paddingHorizontal,
         borderBottomLeftRadius: SIZES.paddingHorizontal,
+        // justifyContent: 'center',
+        alignItems: 'center',
     },
     rightSide: {
         flexDirection: 'row',
@@ -46,9 +49,24 @@ const createStyles = () => StyleSheet.create({
         fontSize: RFValue(24),
         fontWeight: '300',
     },
+    productCount: {
+        // width: 50,
+        // height: 35,
+        backgroundColor: Colors.VERYLIGHTBLUE,
+        borderRadius: 8,
+    },
+    productCountTitle: {
+        fontSize: RFValue(24),
+        fontWeight: '300',
+    },
+    decrement: {
+        fontSize: RFValue(36)
+    },
+    increment: {
+        fontSize: RFValue(36)
+    },
     countBtn: {
-        height: 40,
-        width: 40,
+      
         alignItems: 'center',
         justifyContent: 'center'
     },

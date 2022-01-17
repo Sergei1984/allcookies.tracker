@@ -10,6 +10,7 @@ export interface Product {
     deleted_by: string | null;
     deleted_at: string | null;
     count: number;
+    isShow: boolean;
 }
 
 export interface ProductState {

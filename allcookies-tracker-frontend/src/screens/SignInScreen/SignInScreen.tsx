@@ -15,6 +15,7 @@ import {
   TouchableOpacity,
   AppState,
   View,
+  Image,
 } from "react-native";
 import { AppButton } from "../../components/AppButton";
 import { AppText } from "../../components/AppText";
@@ -28,6 +29,7 @@ import TouchID from "react-native-touch-id";
 import { signInThunk } from "../../store/user/thunk";
 import createStyles from "./styles";
 import * as Keychain from "react-native-keychain";
+import images from "../../constants/images";
 
 interface IProps {
   navigation: NavigationProp<ParamListBase>;
@@ -143,7 +145,13 @@ export const SignInScreen: React.FC<IProps> = ({ navigation }) => {
           }
         >
           <View style={styles.mainContent}>
-            <AppText style={styles.title}>Войдите чтобы продолжить</AppText>
+            <View style={styles.logoWrapper}>
+              <Image source={images.LOGO} />
+            </View>
+            <AppText style={styles.title}>
+              Добро пожаловать в Allcookies
+            </AppText>
+            <AppText style={styles.preTitle}>Войдите чтобы продолжить</AppText>
             <AppTextInput
               value={formData.login}
               onChangeText={(value: string) => handleChange(value, "login")}
@@ -166,7 +174,7 @@ export const SignInScreen: React.FC<IProps> = ({ navigation }) => {
             ) : null}
             <AppButton
               onPress={handleSignIn}
-              name="Логин"
+              name="Войти"
               disabled={isLoading || !nextDisabled}
             />
           </View>

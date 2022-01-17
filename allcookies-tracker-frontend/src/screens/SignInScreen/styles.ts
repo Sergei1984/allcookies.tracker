@@ -12,11 +12,19 @@ const createStyles = () => StyleSheet.create({
         justifyContent:"center"
     },
     title: {
-        color: Colors.PRIMARY,
-        fontWeight: '600',
+        color: Colors.BLACK,
+        fontWeight: '700',
         fontSize: RFValue(16),
         textAlign: 'center',
-        marginBottom: 21
+        marginTop: 24,
+    },
+    preTitle: {
+        fontWeight: '400',
+        fontSize: RFValue(12),
+        color: Colors.LIGHTGREY,
+        marginTop: 8,
+        marginBottom: 28,
+        textAlign: 'center'
     },
     input: {
         marginVertical: SIZES.paddingHorizontal / 2,
@@ -29,6 +37,9 @@ const createStyles = () => StyleSheet.create({
         flex: 0.3,
         justifyContent: 'flex-end',
         paddingBottom: SIZES.marginBottomBig,
+    },
+    logoWrapper: {
+        alignItems: 'center',
     }
 })
 

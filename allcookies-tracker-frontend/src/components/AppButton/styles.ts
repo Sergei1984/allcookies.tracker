@@ -5,7 +5,7 @@ import { Colors } from "../../constants/colors";
 const createStyles = () => StyleSheet.create({
     buttonWrapper: {
         flexDirection: 'row',
-        backgroundColor: '#5B5B7E',
+        backgroundColor:  Colors.PRIMARY,
         justifyContent: 'center',
         alignItems: 'center',
         paddingVertical: 12,
@@ -13,7 +13,7 @@ const createStyles = () => StyleSheet.create({
       },
       buttonDisabled: {
         flexDirection: 'row',
-        backgroundColor: 'rgba(91, 91, 126, 0.3)',
+        backgroundColor: Colors.PRIMARY,
         justifyContent: 'center',
         alignItems: 'center',
         paddingVertical: 12,

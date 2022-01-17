@@ -16,6 +16,7 @@ import { useAppSelector } from "../../hooks/useAppSelector";
 import { userSlice } from "../../store/user/slice";
 import { getProfileThunk } from "../../store/user/thunk";
 import createStyles from "./styles";
+import { AppTextInput } from "../../components/AppTextInput";
 
 type ButtonProps = {
   onPress: () => void | Promise<void>;
@@ -182,22 +183,38 @@ const ProfileScreen: React.FC = () => {
   // };
   return (
     <View style={styles.body}>
-      <Text style={[styles.text, { color: colors.text }]}>Profile Screen</Text>
-      <AppText>Email {user?.email}</AppText>
-      <AppText>Name {user?.name}</AppText>
-      <AppText>Role {user?.account_role}</AppText>
-      <TouchableOpacity onPress={handleLogOut}>
-        <AppText>Logout</AppText>
+      <View>
+        <View>
+          <AppText style={styles.label}>Имя</AppText>
+          <AppTextInput
+            value={user?.name}
+            editable={false}
+            style={styles.input}
+          />
+        </View>
+        <View>
+          <AppText style={styles.label}>E-mail</AppText>
+          <AppTextInput
+            value={user?.email}
+            editable={false}
+            style={styles.input}
+          />
+        </View>
+      </View>
+      <TouchableOpacity onPress={handleLogOut} style={styles.logOutButton}>
+        <AppText style={styles.logOutTitle} color="#fff">
+          Выйти
+        </AppText>
       </TouchableOpacity>
 
       {/* <Button
         onPress={sendLocalNotification}
         label="Send fake local notification"
       /> */}
-      <Button
+      {/* <Button
         onPress={sendLocalNotificationWithSound}
         label="Send fake local notification with custom sound"
-      />
+      /> */}
     </View>
   );
 };

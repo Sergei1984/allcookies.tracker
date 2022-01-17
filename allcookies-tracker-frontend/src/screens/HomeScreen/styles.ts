@@ -22,7 +22,8 @@ const createStyles = () => StyleSheet.create({
         color: '#59597C',
         fontSize: RFValue(16),
         fontWeight: '600',
-        marginTop: SIZES.paddingHorizontal
+        marginTop: SIZES.paddingHorizontal,
+        marginBottom: 18
     },
     searchInput: {
         backgroundColor: Colors.WHITE,
@@ -43,18 +44,20 @@ const createStyles = () => StyleSheet.create({
         height: 150,
         width: '47%',
         borderWidth: 1,
-        backgroundColor: Colors.PRIMARY,
+        backgroundColor: Colors.CARDBLACK,
         borderRadius: 20,
         marginRight: 15,
         marginHorizontal: 0,
         alignItems: 'center',
         justifyContent: 'center',
-        marginBottom: SIZES.paddingHorizontal
+        marginBottom: SIZES.paddingHorizontal,
+        paddingHorizontal: SIZES.paddingHorizontal
     },
     renderItemText: {
         color: Colors.WHITE,
         fontSize: RFValue(14),
-        fontWeight: '600'
+        fontWeight: '600',
+        textAlign: 'center'
     },
     avatar: {
         paddingTop: 20,

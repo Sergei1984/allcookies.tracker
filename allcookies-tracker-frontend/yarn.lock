@@ -5726,6 +5726,11 @@ react-native-maps@^0.29.4:
   dependencies:
     "@types/geojson" "^7946.0.7"
 
+react-native-quick-base64@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/react-native-quick-base64/-/react-native-quick-base64-1.0.0.tgz#4d20f28aab8a2b4612d926b6bc293e504d21cb41"
+  integrity sha512-Ysqr4CLoJNBprSv5x1fGfUrKWQhnw7yTNgsg3LvGBOt2rw3HaoawPneZUro3mE4Pl5U2loqKbgZXYcXJhbLYvQ==
+
 react-native-reanimated@^2.3.1:
   version "2.3.1"
   resolved "https://registry.yarnpkg.com/react-native-reanimated/-/react-native-reanimated-2.3.1.tgz#c7abad48f9e6c84610b0d5e270088ecd61750382"

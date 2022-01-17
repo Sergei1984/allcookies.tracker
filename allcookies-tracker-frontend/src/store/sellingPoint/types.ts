@@ -20,6 +20,7 @@ export interface SellingPoint {
 export interface SellingPointState {
     total: number;
     data: SellingPoint[];
+    newSellingPoints: SellingPoint[];
 }
 
 export interface SellingPointData {

@@ -14,23 +14,28 @@ import {
 } from "react-native";
 import { AppText } from "../../components/AppText";
 import createStyles from "./styles";
-import { getSellingPointsThunk } from "../../store/sellingPoint/thunk";
+import {
+  getNewSellingPointsThunk,
+  getSellingPointsThunk,
+} from "../../store/sellingPoint/thunk";
 import { useAppDispatch } from "../../hooks/useAppDispatch";
 import { useAppSelector } from "../../hooks/useAppSelector";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { useTimer } from "../../hooks/useTimer";
 import { AppTextInput } from "../../components/AppTextInput/AppTextInput";
 import { SellingPoint } from "../../store/sellingPoint/types";
+import useLocation from "../../hooks/useLocation";
+import { AppButton } from "../../components/AppButton/AppButton";
 interface IProps {
   navigation: NavigationProp<ParamListBase>;
 }
 const HomeScreen: React.FC<IProps> = ({ navigation }) => {
   const { timerData, handlers } = useTimer();
   const styles = React.useMemo(() => createStyles(), []);
-
+  const location = useLocation();
   const dispatch = useAppDispatch();
 
-  const [shops, setShops] = React.useState<SellingPoint[]>();
+  const [shops, setShops] = React.useState<SellingPoint[]>([]);
   const [modalVisible, setModalVisible] = React.useState(false);
   const [refreshing, setRefreshing] = React.useState(false);
 
@@ -40,41 +45,56 @@ const HomeScreen: React.FC<IProps> = ({ navigation }) => {
     })();
   }, []);
 
-  const { data: sellingPointData, total } = useAppSelector(
-    (state) => state.sellingPointReducer
-  );
+  const {
+    data: sellingPointData,
+    total,
+    newSellingPoints,
+  } = useAppSelector((state) => state.sellingPointReducer);
 
   React.useEffect(() => {
     setShops(sellingPointData);
   }, [sellingPointData]);
 
-  const searchShop = (value: string) => {
-    const data = sellingPointData.filter((item) =>
-      item.title.toLowerCase().includes(value.toLowerCase())
-    );
-    setShops(data);
-  };
+  const searchShop = React.useCallback(
+    (value: string) => {
+      const data = sellingPointData.filter((item) =>
+        item.title.toLowerCase().includes(value.toLowerCase())
+      );
+      setShops(data);
+    },
+    [sellingPointData]
+  );
 
-  const navigateToDetails = (title: string) => {
-    if (timerData.toggle) {
-      navigation.navigate("Список товаров", { title: title });
-      return;
-    }
-    setModalVisible(true);
-  };
+  const navigateToDetails = React.useCallback(
+    (title: string, id: number) => {
+      if (timerData.toggle) {
+        navigation.navigate("Список товаров", {
+          title: title,
+          sellingPointId: id,
+        });
+        return;
+      }
+      setModalVisible(true);
+    },
+    [modalVisible, timerData.toggle]
+  );
 
-  const onRefresh = React.useCallback(() => {
+  const onRefresh = React.useCallback(async () => {
     setRefreshing(true);
-    console.log("adadsad");
+    await dispatch(getNewSellingPointsThunk(location));
     setRefreshing(false);
   }, []);
+
+  React.useEffect(() => {
+    setShops([...shops, ...newSellingPoints]);
+  }, [newSellingPoints]);
 
   const renderShopPoints = () => {
     const renderItem = ({ item }: any) => {
       return (
         <TouchableOpacity
           style={styles.renderItemPoint}
-          onPress={() => navigateToDetails(item.title)}
+          onPress={() => navigateToDetails(item.title, item.id)}
         >
           <AppText style={styles.renderItemText} color="#fff">
             {item.title}
@@ -101,21 +121,10 @@ const HomeScreen: React.FC<IProps> = ({ navigation }) => {
 
   return (
     <View style={styles.body}>
-      {/* <View
-        style={{
-          position: "absolute",
-          top: 0,
-          bottom: 0,
-          left: 0,
-          right: 0,
-          backgroundColor: "rgba(0,0,0,0.2)",
-          zIndex: 1,
-        }}
-      ></View> */}
       {/* Timer to start work */}
       <AppText style={styles.title}>Таймер начала работы</AppText>
 
-      <View style={styles.timerButtonWrapper}>
+      {/* <View style={styles.timerButtonWrapper}>
         <View style={styles.timerInnerWrapper}>
           <MaterialIcons name={"access-time"} size={30} color="#59597C" />
           <AppText style={styles.timerTitle} color="#59597C">
@@ -137,7 +146,20 @@ const HomeScreen: React.FC<IProps> = ({ navigation }) => {
             <MaterialIcons name={"play-arrow"} size={30} color="#fff" />
           </TouchableOpacity>
         )}
-      </View>
+      </View> */}
+      {!timerData.toggle ? (
+        <AppButton
+          onPress={handlers.handleStart}
+          name="Начать день"
+          icon={"play-arrow"}
+        />
+      ) : (
+        <AppButton
+          onPress={handlers.handleStop}
+          name="Закончить день"
+          icon={"stop"}
+        />
+      )}
 
       {/* Magazine points */}
       <AppText style={styles.title}>Список магазинов:</AppText>
@@ -160,7 +182,6 @@ const HomeScreen: React.FC<IProps> = ({ navigation }) => {
         animationType="fade"
         transparent={true}
         visible={modalVisible}
-        // presentationStyle="fullScreen"
         onRequestClose={() => {
           setModalVisible(!modalVisible);
         }}

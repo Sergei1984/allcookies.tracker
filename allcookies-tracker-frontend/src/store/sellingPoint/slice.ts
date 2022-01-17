@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { initialState } from "./store";
-import { getSellingPointsThunk } from "./thunk";
+import { checkSellingPointThunk, getNewSellingPointsThunk, getSellingPointsThunk } from "./thunk";
 import { SellingPointState } from "./types";
 
 export const sellingPointSlice = createSlice({
@@ -14,6 +14,9 @@ export const sellingPointSlice = createSlice({
             state.data = action.payload.data,
             state.total = action.payload.total
         },
+        [getNewSellingPointsThunk.fulfilled.type]: (state, action: PayloadAction<SellingPointState>) => {
+            state.newSellingPoints = action.payload.data
+        }
     }
 })
 

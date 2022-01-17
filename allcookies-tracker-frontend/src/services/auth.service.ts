@@ -7,6 +7,7 @@ class AuthService {
         const response = await axios.post('https://allcookies-tracker.a-dev.com/auth/sign-in', data);
         return response.data;
     }
+    
 }
 
 export const AuthAPI = new AuthService();

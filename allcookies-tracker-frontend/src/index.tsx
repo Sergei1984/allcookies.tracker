@@ -29,6 +29,24 @@ const veryIntensiveTask = async (taskDataArguments: any) => {
   });
 };
 
+const testTask = async (taskDataArguments: any) => {
+  const { delay } = taskDataArguments;
+  await new Promise(async (resolve) => {
+    for (let i = 0; BackgroundService.isRunning(); i++) {
+      console.log("asdasdads");
+      PushNotificationIOS.addNotificationRequest({
+        id: "notificationWithSound",
+        title: "Sample Title",
+        subtitle: "Sample Subtitle",
+        body: "Sample local notification with custom sound",
+        sound: "customSound.wav",
+        badge: 12,
+      });
+      await sleep(delay);
+    }
+  });
+};
+
 RNLocation.configure({
   distanceFilter: 100, // Meters
   desiredAccuracy: {
@@ -95,7 +113,7 @@ const options = {
   },
   color: "#ff00ff",
   parameters: {
-    delay: 1000,
+    delay: 10000,
   },
 };
 
@@ -155,6 +173,7 @@ export default function App() {
     if (nextAppState === "background") {
       // await BackgroundService.start(veryIntensiveTask, options);
       //await BackgroundService.start(locationTask, options);
+      await BackgroundService.start(testTask, options);
     }
 
     if (nextAppState !== "background") {
@@ -162,20 +181,29 @@ export default function App() {
     }
   };
 
-  // React.useEffect(() => {
-  //   AppState.addEventListener("change", _handleAppStateChange);
-  //   return () => {
-  //     AppState.removeEventListener("change", _handleAppStateChange);
-  //   };
-  // }, []);
+  React.useEffect(() => {
+    AppState.addEventListener("change", _handleAppStateChange);
+    return () => {
+      AppState.removeEventListener("change", _handleAppStateChange);
+    };
+  }, []);
 
-  // React.useEffect(() => {
-  //   let dis = getDistance(
-  //     { latitude: 50.026828, longitude: 36.222655 },
-  //     { latitude: 50.034019, longitude: 36.220494 }
-  //   );
-  //   Alert.alert(`Distance\n\n${dis} Meter\nOR\n${dis / 1000} KM`);
-  // }, []);
+  React.useEffect(() => {
+    let dis = getDistance(
+      { latitude: 50.026828, longitude: 36.222655 },
+      { latitude: 50.034019, longitude: 36.220494 }
+    );
+    if (dis < 800) {
+      PushNotificationIOS.addNotificationRequest({
+        id: "notificationWithSound",
+        title: "Sample Title",
+        subtitle: "Sample Subtitle",
+        body: "Sample local notification with custom sound",
+        sound: "customSound.wav",
+        badge: 12,
+      });
+    }
+  }, []);
 
   return (
     <Provider store={store}>
