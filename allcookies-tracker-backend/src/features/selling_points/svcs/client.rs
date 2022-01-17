@@ -1,16 +1,11 @@
-use crate::features::authorization::ActiveUserInfo;
-use crate::features::contract::Patch;
-use crate::features::geo_primitives::LatLonPoint;
 use crate::features::selling_points::repos::SellingPointRepository;
-use crate::features::ManagerUserInfo;
-use crate::features::NewSellingPoint;
-use crate::features::PagedResult;
-use crate::features::SellingPoint;
-use crate::features::SellingPointClientService;
-use crate::features::UpdateSellingPoint;
-use crate::AnError;
-use crate::AppError;
+use crate::features::{
+    ActiveUserInfo, LatLonPoint, ManagerUserInfo, NewSellingPoint, PagedResult, Patch,
+    SellingPoint, SellingPointClientService, UpdateSellingPoint,
+};
+use crate::{AnError, AppError};
 use async_trait::async_trait;
+use validator::Validate;
 
 pub struct SellingPointClientServiceImpl<TSellingPointRepo: SellingPointRepository + Send + Sync> {
     selling_point_repo: TSellingPointRepo,
@@ -66,6 +61,10 @@ where
     }
 
     async fn create(&self, item: NewSellingPoint) -> Result<SellingPoint, AnError> {
+        if let Err(_) = item.validate() {
+            return Err(Box::new(AppError::bad_request("Selling point is invalid")));
+        }
+
         let mut new_point = NewSellingPoint { ..item };
         new_point.is_disabled = false;
 

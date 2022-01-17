@@ -53,7 +53,7 @@ pub struct SellingPointRef {
 #[derive(Debug, Serialize, Deserialize)]
 pub struct ProductCheckInfo {
     pub product: ProductRef,
-    pub quantity: i32,
+    pub quantity: Option<i32>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
