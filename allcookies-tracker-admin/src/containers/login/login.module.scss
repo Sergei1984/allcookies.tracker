@@ -1,3 +1,106 @@
-.wrapper {
+body{
+  background: #F0F2FA;
+}
+
+input {
+
+}
+
+.form {
+  position: absolute;
+  width: 370px;
+  height: 300px;
+  left: 40%;
+  top: 35%;
+  background:white;
+  padding: 35px;
+}
+
+.hello {
+  position: absolute;
+  width: 418px;
+  height: 459px;
+  left: 43%;
+  top: 20%;
+}
+
+.errorEmail {
+  color: red;
+}
+
+.button {
   display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 10px 20px;
+  color: white;
+
+  position: absolute;
+  width: 370px;
+  height: 44px;
+
+
+  background: #5B5B7E;
+  border-radius: 4px;
+}
+
+.inputField{
+  display: flex;
+  flex-direction: column;
+  justify-content: left;
+}
+
+.inputFieldError{
+  display: flex;
+  flex-direction: column;
+  justify-content: left;
+  border-color: red;
+}
+
+input{
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  padding: 5px 16px;
+
+  position: center;
+  width: 338px;
+  height: 44px;
+  left: 551px;
+  top: 593px;
+
+  /* Input-background */
+
+  background: #EFF0F6;
+  border-radius: 8px
+}
+
+
+.rememberMe{
+  position: static;
+  left: 28px;
+  right: 0;
+  top: 0;
+  bottom: 0;
+
+  font-family: Inter;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 24px;
+  /* identical to box height, or 171% */
+
+
+  /* Body */
+
+  color: #767676;
+
+
+  /* Inside auto layout */
+
+  flex: none;
+  order: 1;
+  flex-grow: 0;
+  margin: 0 12px;
 }

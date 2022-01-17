@@ -1,3 +1,3 @@
 import { RootStore } from "../rootStore";
 
-export const selectCount = (store: RootStore) => store.countStore.count;
+export const selectCount = (store: RootStore) => store.countStore

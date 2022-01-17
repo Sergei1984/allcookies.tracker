@@ -1,35 +1,21 @@
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { setDecrementAction, setIncrementAction } from "./store/count/actions";
-import { selectCount } from "./store/count/selectors";
+import {Provider} from "react-redux";
+import {store} from "./store/rootStore";
+import {BrowserRouter, Route, Routes} from "react-router-dom";
+import Login from "./containers/login/login";
+import Dashboard from "./containers/dashboard/dashboard";
 
-const App = () => {
-  const dispatch = useDispatch();
-  const count = useSelector(selectCount);
 
-  const handleIncrement = () => {
-    dispatch(setIncrementAction(1));
-  };
+const App = () => (
+	<Provider store={store}>
+		<BrowserRouter>
+			<Routes>
 
-  const handleDecrement = () => {
-    dispatch(setDecrementAction(1));
-  };
-  return (
-    <div className="App">
-      <p>Test React</p>
-      <p>{count}</p>
-      <button onClick={handleIncrement}>Increment</button>
-      <button onClick={handleDecrement}>Decrement</button>
-      {/* <Routes>
-        {routes.map((routeProps, index) => (
-          <Route {...routeProps} key={index} />
-        ))}
-        {privateRoutes.map((routeProps, index) => (
-          <PrivateRoute {...routeProps} key={index} />
-        ))}
-      </Routes> */}
-    </div>
-  );
-};
+				<Route path="/login" element={<Login/>}/>
+				<Route path="/" element={<Dashboard/>}/>
+			</Routes>
+		</BrowserRouter>
+	</Provider>
+);
 
 export default App;
