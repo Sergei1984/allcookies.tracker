@@ -82,16 +82,14 @@ const ListOfProducts: React.FC<Props> = ({ route, navigation }) => {
     const data = products.flatMap((item) =>
       item.count !== 0 ? { product_id: item.id, quantity: item.count } : []
     );
-
-    console.log(data);
-    // await dispatch(
-    //   checkSellingPointThunk({
-    //     location: location,
-    //     time: new Date(),
-    //     products: data,
-    //     selling_point_id: route.params.sellingPointId,
-    //   })
-    // );
+    await dispatch(
+      checkSellingPointThunk({
+        location: location,
+        time: new Date(),
+        products: data,
+        selling_point_id: route.params.sellingPointId,
+      })
+    );
   }, [products]);
 
   const renderProducts = () => {
@@ -186,37 +184,35 @@ const ListOfProducts: React.FC<Props> = ({ route, navigation }) => {
     );
   };
 
-  const _base64ToArrayBuffer = (base64: any) => {
-    var binary_string = atob(base64);
-    var len = binary_string.length;
-    var bytes = new Uint8Array(len);
-    for (var i = 0; i < len; i++) {
-      bytes[i] = binary_string.charCodeAt(i);
-    }
-    return bytes.buffer;
-  };
+  // const _base64ToArrayBuffer = (base64: any) => {
+  //   var binary_string = atob(base64);
+  //   var len = binary_string.length;
+  //   var bytes = new Uint8Array(len);
+  //   for (var i = 0; i < len; i++) {
+  //     bytes[i] = binary_string.charCodeAt(i);
+  //   }
+  //   return bytes.buffer;
+  // };
 
   React.useEffect(() => {
-    if (data.images.length !== 0) {
-      // let bytes = toByteArray(`${data.images[0].data}`);
-      // console.log(bytes);
+    if (data.image) {
       const data1 = new FormData();
-      data1.append("file", data.images[0]);
+      data1.append("file", data.image);
       dispatch(
         uploadPhotoThunk({
           id: route.params.sellingPointId,
-          photo: data.images[0],
+          photo: data1,
         })
       );
     }
-  }, [data.images]);
+  }, [data.image]);
 
   return (
     <View style={styles.container}>
       <View style={{ marginBottom: 16 }}>
         <AppButton
           name="Сделать фото"
-          onPress={() => handle.pickSingle(true)}
+          onPress={() => handle.pickSingleWithCamera(true)}
         />
         {/* Photos */}
         {renderPhotos()}

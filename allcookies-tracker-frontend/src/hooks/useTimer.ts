@@ -11,14 +11,14 @@ export const useTimer = () => {
     const location = useLocation();
     const dispatch = useAppDispatch();
 
-    // React.useEffect(() => {
-    //     (async () => {
-    //     let countOfSeconds = await AsyncStorageLib.getItem("countOfSeconds");
-    //     if (countOfSeconds && JSON.parse(countOfSeconds) !== 0) {
-    //         setTimer(JSON.parse(countOfSeconds));
-    //     }
-    //     })();
-    // }, []);
+    React.useEffect(() => {
+        (async () => {
+            let isActiveTimer = await AsyncStorageLib.getItem("isActiveTimer");
+            if (isActiveTimer && JSON.parse(isActiveTimer) === true) {
+                setToggle(true);
+            }
+        })();
+    }, []);
 
     const _handleAppStateChange = async (nextAppState: any) => {
         console.log(nextAppState);
