@@ -56,11 +56,25 @@ Authorization: {{auth.response.body.jwt}}
 }
 
 ### 
-POST {{server}}/client/activity/15/photo
+POST {{server}}/client/activity/41/photo
 Authorization: {{auth.response.body.jwt}}
 Content-Type: application/octet-stream
 
 < ./sample_photo.jpg
+
+### 
+POST {{server}}/client/activity/41/photo
+Authorization: {{auth.response.body.jwt}}
+Content-Type: multipart/form-data; boundary=BOUNDARY
+
+--BOUNDARY
+Content-Disposition: form-data; name="file"; filename="Audio.mp3"
+
+< ./sample_photo.jpg
+
+--BOUNDARY--
+
+
 
 
 ### 
