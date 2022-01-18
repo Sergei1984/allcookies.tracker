@@ -1,21 +1,13 @@
 import React from "react";
-import {Provider} from "react-redux";
-import {BrowserRouter, Route, Routes} from "react-router-dom";
-import PrivateRoute from "./components/PrivateRoute/PrivateRoute";
-import {DASHBOARD} from "./routes/urls";
-import {store} from "./store/rootStore";
+import { Provider } from "react-redux";
+import { store } from "./store/rootStore";
 
+import AppRoutes from "./routes";
 
 const App = () => (
-	<Provider store={store}>
-		<BrowserRouter>
-			<Routes>
-				<Route  element={<PrivateRoute/>}>
-					<Route path={DASHBOARD} element={<div>Test</div>}/>
-				</Route>
-			</Routes>
-		</BrowserRouter>
-	</Provider>
+  <Provider store={store}>
+    <AppRoutes />
+  </Provider>
 );
 
 export default App;

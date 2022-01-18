@@ -1,11 +1,10 @@
-import axios from "axios";
-import {ILogin} from "../../store/auth/types";
+import axiosInstance from "../../api";
+import { ILogin } from "../../store/auth/types";
 
 class AuthService {
-
-	public signIn = async (body: ILogin) => {
-		return await axios.post('https://allcookies-tracker.a-dev.com/auth/sign-in', body, {});
-	}
+  public signIn = async (body: ILogin) => {
+    return await axiosInstance.post("/auth/sign-in", body, {});
+  };
 }
 
 export const AuthAPI = new AuthService();

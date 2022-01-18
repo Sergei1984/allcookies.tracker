@@ -1,2 +1,31 @@
-export const DASHBOARD = '/dashboard';
-export const LOGIN = '/';
+export interface ProductRouteParams {
+  id: string;
+}
+export interface OrderRouteParams {
+  id: string;
+}
+export interface CustomerRouteParams {
+  id: string;
+}
+
+// AUTH
+export const SignInRoute: string = "/signin";
+export const SignUpRoute: string = "/signup";
+export const ForgotPasswordRoute: string = "/forgot-password";
+// HOME
+export const HomeRoute: string = "/";
+// PRODUCTS
+export const ProductsRoute: string = "/products";
+export const ProductRoute = {
+  template: `${ProductsRoute}/:id`,
+  format: ({ id }: ProductRouteParams): string => `${ProductsRoute}/${id}`,
+};
+
+// DASHBOARD
+export const DashboardRoute: string = "/dashboard";
+
+export const SettingsRoute: string = "/settings";
+
+export const ProfileRoute: string = "/profile";
+export const UsersRoute: string = "/users";
+export const SellingPointsRoute: string = "/selling-points";
