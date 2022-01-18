@@ -1,4 +1,4 @@
-body{
+body {
   background: #F0F2FA;
 }
 
@@ -12,7 +12,7 @@ input {
   height: 300px;
   left: 40%;
   top: 35%;
-  background:white;
+  background: white;
   padding: 35px;
 }
 
@@ -45,20 +45,20 @@ input {
   border-radius: 4px;
 }
 
-.inputField{
+.inputField {
   display: flex;
   flex-direction: column;
   justify-content: left;
 }
 
-.inputFieldError{
+.inputFieldError {
   display: flex;
   flex-direction: column;
   justify-content: left;
   border-color: red;
 }
 
-input{
+input {
   display: flex;
   flex-direction: row;
   align-items: flex-start;
@@ -77,7 +77,7 @@ input{
 }
 
 
-.rememberMe{
+.rememberMe {
   position: static;
   left: 28px;
   right: 0;

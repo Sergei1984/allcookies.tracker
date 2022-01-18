@@ -2,7 +2,7 @@ import React from "react";
 import classes from "./login.module.scss";
 import {Formik, Field, Form} from "formik";
 import * as yup from 'yup';
-import { ILogin } from '../../store/auth/types'
+import {ILogin} from '../../store/auth/types'
 import {useDispatch} from "react-redux";
 import {authThunk} from "../../store/auth/thunk/authThunk"
 import {useNavigate} from "react-router-dom";
@@ -22,7 +22,6 @@ const defaultLogin = {
 
 const Login: React.FC = () => {
 	const dispatch = useDispatch();
-	const navigate = useNavigate();
 
 
 
@@ -43,13 +42,16 @@ const Login: React.FC = () => {
 			{({errors, touched}) => (
 				<Form className={classes.form}>
 					<label className={classes.email} htmlFor="login">Email</label>
-					<Field name="login" className={errors.login && touched.login ? classes.inputFieldError : classes.inputField   } placeholder="Введите ваш Email"/>
+					<Field name="login" className={errors.login && touched.login ? classes.inputFieldError : classes.inputField}
+								 placeholder="Введите ваш Email"/>
 					{errors.login && touched.login ? (
 						<p className={classes.errorEmail}>{errors.login}</p>
 					) : null}
 
 					<label className={classes.password} htmlFor="password">Пароль</label>
-					<Field type="password" className={errors.password && touched.password ? classes.inputFieldError : classes.inputField } name="password" placeholder="Введите ваш пароль"/>
+					<Field type="password"
+								 className={errors.password && touched.password ? classes.inputFieldError : classes.inputField}
+								 name="password" placeholder="Введите ваш пароль"/>
 					{errors.password && touched.password ? (
 						<p className={classes.errorEmail}>некорректный пароль</p>
 					) : null}
