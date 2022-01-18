@@ -937,33 +937,6 @@
       ]
     }
   },
-  "870e734d40bbb9f191159c1d279453878c9ac84965f948d0993f305984d7a68a": {
-    "query": "select count(1) as \"count!\"\n            from \n                selling_point \n            where \n                    title ilike $1 \n                and is_disabled = false \n                and deleted_at is null\n                and ((st_distancesphere(location::geometry, $2)) < $3 or $2 is null)",
-    "describe": {
-      "columns": [
-        {
-          "ordinal": 0,
-          "name": "count!",
-          "type_info": "Int8"
-        }
-      ],
-      "parameters": {
-        "Left": [
-          "Text",
-          {
-            "Custom": {
-              "name": "geometry",
-              "kind": "Simple"
-            }
-          },
-          "Float8"
-        ]
-      },
-      "nullable": [
-        null
-      ]
-    }
-  },
   "8ec518d5de4c8a9657515cf2bb060e027313463b7a8a40bba7437bf7039222b1": {
     "query": "\n                select\n                    id, \n                    activity_id, \n                    at\n                from\n                    selling_point_check_photos\n                where\n                    activity_id in (\n                        select \n                            id\n                        from\n                            activity where id = $1                        \n                    )            \n                ",
     "describe": {
@@ -1745,6 +1718,26 @@
         ]
       },
       "nullable": []
+    }
+  },
+  "d353feb327a4082e365d9b20937b30200a165b14e86bf56c34b47854ed232b40": {
+    "query": "select count(1) as \"count!\"\n            from \n                selling_point \n            where \n                    title ilike $1 \n                and is_disabled = false \n                and deleted_at is null\n            ",
+    "describe": {
+      "columns": [
+        {
+          "ordinal": 0,
+          "name": "count!",
+          "type_info": "Int8"
+        }
+      ],
+      "parameters": {
+        "Left": [
+          "Text"
+        ]
+      },
+      "nullable": [
+        null
+      ]
     }
   },
   "d5e3a89ec105db47add9116384f846b8bfd6e688ce394720daa4841684866aaa": {

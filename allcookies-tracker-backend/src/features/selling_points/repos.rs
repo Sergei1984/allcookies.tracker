@@ -14,7 +14,6 @@ pub trait SellingPointRepository {
         &self,
         search_by_name: Option<String>,
         location: Option<LatLonPoint>,
-        radius_meters: f64,
         skip: i64,
         take: i64,
     ) -> Result<PagedResult<SellingPoint>, AnError>;
@@ -47,7 +46,6 @@ impl<'a> SellingPointRepository for PersistentSellingPointRepository<'a> {
         &self,
         search_by_name: Option<String>,
         location: Option<LatLonPoint>,
-        radius_meters: f64,
         skip: i64,
         take: i64,
     ) -> Result<PagedResult<SellingPoint>, AnError> {
@@ -95,10 +93,8 @@ impl<'a> SellingPointRepository for PersistentSellingPointRepository<'a> {
                     title ilike $1 
                 and is_disabled = false 
                 and deleted_at is null
-                and ((st_distancesphere(location::geometry, $2)) < $3 or $2 is null)"#,
+            "#,
             title,
-            location as _,
-            radius_meters
         )
         .fetch_one(self.db)
         .await?;
