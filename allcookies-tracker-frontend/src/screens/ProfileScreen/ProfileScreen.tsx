@@ -185,7 +185,9 @@ const ProfileScreen: React.FC = () => {
     <View style={styles.body}>
       <View>
         <View>
-          <AppText style={styles.label}>Имя</AppText>
+          <AppText style={styles.label} color="#262C30">
+            Имя
+          </AppText>
           <AppTextInput
             value={user?.name}
             editable={false}
@@ -193,7 +195,9 @@ const ProfileScreen: React.FC = () => {
           />
         </View>
         <View>
-          <AppText style={styles.label}>E-mail</AppText>
+          <AppText style={styles.label} color="#262C30">
+            E-mail
+          </AppText>
           <AppTextInput
             value={user?.email}
             editable={false}

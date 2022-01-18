@@ -148,10 +148,12 @@ export const SignInScreen: React.FC<IProps> = ({ navigation }) => {
             <View style={styles.logoWrapper}>
               <Image source={images.LOGO} />
             </View>
-            <AppText style={styles.title}>
+            <AppText style={styles.title} color="#262C30">
               Добро пожаловать в Allcookies
             </AppText>
-            <AppText style={styles.preTitle}>Войдите чтобы продолжить</AppText>
+            <AppText style={styles.preTitle} color="#9098B1">
+              Войдите чтобы продолжить
+            </AppText>
             <AppTextInput
               value={formData.login}
               onChangeText={(value: string) => handleChange(value, "login")}

@@ -11,12 +11,13 @@ class UserService {
 
     public getActivity = async () => {
         const response = await axiosInstance.get('client/activity');
+        console.log(response.data)
         return response.data
     }
 
     public uploadPhoto = async (id: number, data: any) => {
         const headers = {
-            'Content-Type': 'application/octet-stream',
+            'Content-Type': 'multipart/form-data',
             'Authorization': await AsyncStorageLib.getItem('token') as string
           }
           console.log(id, data)
@@ -24,6 +25,7 @@ class UserService {
         const response = await axios.post(`https://allcookies-tracker.a-dev.com/client/activity/${id}/photo`, data, {
             headers: headers
           })
+          console.log(response)
         return response.data;
     }
 

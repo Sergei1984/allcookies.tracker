@@ -25,7 +25,8 @@ const createStyles = () => StyleSheet.create({
         backgroundColor: Colors.VERYLIGHTBLUE,
         padding: SIZES.h5,
         borderWidth: 0,
-        marginBottom: SIZES.paddingHorizontal
+        marginBottom: SIZES.paddingHorizontal,
+        color: Colors.BLACK
       },
       label: {
         marginBottom: 5

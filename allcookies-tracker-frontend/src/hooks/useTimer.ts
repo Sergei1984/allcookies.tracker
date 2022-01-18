@@ -1,21 +1,28 @@
 import AsyncStorageLib from "@react-native-async-storage/async-storage";
 import React from "react";
 import { AppState } from "react-native";
+import { userSlice } from "../store/user/slice";
 import { closeDayThunk, openDayThunk } from "../store/user/thunk";
 import { useAppDispatch } from "./useAppDispatch";
+import { useAppSelector } from "./useAppSelector";
 import useLocation from "./useLocation";
 
 export const useTimer = () => {
     const [timer, setTimer] = React.useState(0);
     const [toggle, setToggle] = React.useState(false);
+    const activity = useAppSelector((state) => state.userReducer.activity);
+    const { setCurrentActivity } = userSlice.actions;
     const location = useLocation();
     const dispatch = useAppDispatch();
 
     React.useEffect(() => {
         (async () => {
             let isActiveTimer = await AsyncStorageLib.getItem("isActiveTimer");
+            let currentActivity = await AsyncStorageLib.getItem('currentActivity');
             if (isActiveTimer && JSON.parse(isActiveTimer) === true) {
                 setToggle(true);
+                console.log('qweqweqew', currentActivity && JSON.parse(currentActivity))
+                await dispatch(setCurrentActivity(currentActivity && JSON.parse(currentActivity)))
             }
         })();
     }, []);
@@ -29,6 +36,7 @@ export const useTimer = () => {
         (async () => {
             // let time = await AsyncStorageLib.getItem("startTimer");
             let isActiveTimer = await AsyncStorageLib.getItem("isActiveTimer");
+            let currentActivity = await AsyncStorageLib.getItem('currentActivity');
             // let countOfSeconds = await AsyncStorageLib.getItem("countOfSeconds");
             if (isActiveTimer && JSON.parse(isActiveTimer) === true) {
             // setTimer(
@@ -36,6 +44,7 @@ export const useTimer = () => {
             //     JSON.parse(countOfSeconds!)
             // );
             setToggle(true);
+            await dispatch(setCurrentActivity(currentActivity && JSON.parse(currentActivity)))
             }
         })();
         }
@@ -85,6 +94,8 @@ export const useTimer = () => {
         // await AsyncStorageLib.setItem('currentDate', JSON.stringify(new Date()));
         await AsyncStorageLib.setItem("isActiveTimer", JSON.stringify(true));
         await dispatch(openDayThunk({location: location, time: new Date()}))
+        // console.log('lol', activity && activity)
+        // await AsyncStorageLib.setItem("currentActivity", JSON.stringify(activity && activity))
         // await AsyncStorageLib.setItem("countOfSeconds", JSON.stringify(timer));
     };
 
@@ -92,6 +103,7 @@ export const useTimer = () => {
         setToggle(false);
         await AsyncStorageLib.setItem("isActiveTimer", JSON.stringify(false));
         await dispatch(closeDayThunk({location: location, time: new Date()}))
+        // await AsyncStorageLib.setItem("currentActivity", JSON.stringify(null))
         // await AsyncStorageLib.setItem("countOfSeconds", JSON.stringify(timer));
     };
 

@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { initialState } from "./store"
-import { getProfileThunk, signInThunk } from "./thunk"
+import { getProfileThunk, openDayThunk, signInThunk } from "./thunk"
 import { IUser } from "./types"
 
 export const userSlice = createSlice({
@@ -14,6 +14,10 @@ export const userSlice = createSlice({
         },
         setIsAuthorized: (state) => {
             state.isAuthorized = true
+        },
+        setCurrentActivity: (state, action: PayloadAction<any>) => {
+            console.log('payload', action.payload)
+            state.activity = action.payload
         }
     },
     extraReducers: {
@@ -33,6 +37,9 @@ export const userSlice = createSlice({
         },
         [getProfileThunk.fulfilled.type]: (state, action: PayloadAction<IUser>) => {
             state.user = action.payload
+        },
+        [openDayThunk.fulfilled.type]: (state, action: PayloadAction<any>) => {
+            state.activity = action.payload
         }
     }
 })

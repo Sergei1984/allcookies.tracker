@@ -28,6 +28,7 @@ const createStyles = () => StyleSheet.create({
     },
     input: {
         marginVertical: SIZES.paddingHorizontal / 2,
+        color: Colors.BLACK
     },
     container: {
         flex: 1,

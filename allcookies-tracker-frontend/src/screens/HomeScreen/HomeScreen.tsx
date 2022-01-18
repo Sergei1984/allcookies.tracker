@@ -26,6 +26,7 @@ import { AppTextInput } from "../../components/AppTextInput/AppTextInput";
 import { SellingPoint } from "../../store/sellingPoint/types";
 import useLocation from "../../hooks/useLocation";
 import { AppButton } from "../../components/AppButton/AppButton";
+import { UserAPI } from "../../services/user.service";
 interface IProps {
   navigation: NavigationProp<ParamListBase>;
 }
@@ -118,6 +119,28 @@ const HomeScreen: React.FC<IProps> = ({ navigation }) => {
       </View>
     );
   };
+
+  // React.useEffect(() => {
+  //   (async () => {
+  //     await UserAPI.getActivity();
+  //   })();
+  // }, []);
+
+  const activity = useAppSelector((state) => state.userReducer.activity);
+
+  React.useEffect(() => {
+    (async () => {
+      if (timerData.toggle) {
+        console.log("activtiys", activity && activity);
+        await AsyncStorageLib.setItem(
+          "currentActivity",
+          JSON.stringify(activity && activity)
+        );
+        return;
+      }
+      // await AsyncStorageLib.setItem("currentActivity", JSON.stringify(null));
+    })();
+  }, [timerData.toggle, activity]);
 
   return (
     <View style={styles.body}>

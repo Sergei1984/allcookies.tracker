@@ -5,8 +5,8 @@ export const darkTheme: ITheme = {
     colors: {
         primary: '#42A6A6',
         background: '#ffffff',
-        text: '#ffffff',
-        card: '#000023',
+        text: '#161616',
+        card: '#fff',
         border: '#42A6A6',
         notification: '#000023',
     }

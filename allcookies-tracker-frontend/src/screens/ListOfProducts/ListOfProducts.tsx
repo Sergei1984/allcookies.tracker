@@ -184,15 +184,7 @@ const ListOfProducts: React.FC<Props> = ({ route, navigation }) => {
     );
   };
 
-  // const _base64ToArrayBuffer = (base64: any) => {
-  //   var binary_string = atob(base64);
-  //   var len = binary_string.length;
-  //   var bytes = new Uint8Array(len);
-  //   for (var i = 0; i < len; i++) {
-  //     bytes[i] = binary_string.charCodeAt(i);
-  //   }
-  //   return bytes.buffer;
-  // };
+  const activity = useAppSelector((state) => state.userReducer.activity);
 
   React.useEffect(() => {
     if (data.image) {
@@ -200,7 +192,7 @@ const ListOfProducts: React.FC<Props> = ({ route, navigation }) => {
       data1.append("file", data.image);
       dispatch(
         uploadPhotoThunk({
-          id: route.params.sellingPointId,
+          id: activity.id,
           photo: data1,
         })
       );
