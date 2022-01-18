@@ -27,7 +27,7 @@ GET {{server}}/client/selling-point
 Authorization: {{auth.response.body.jwt}}
 
 ###
-GET {{server}}/client/selling-point?lat=36.23&lon=49.99&title=e
+GET {{server}}/client/selling-point?lat=10.23&lon=30.99
 Authorization: {{auth.response.body.jwt}}
 
 ###

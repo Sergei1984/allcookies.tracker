@@ -75,13 +75,11 @@ impl<'a> SellingPointRepository for PersistentSellingPointRepository<'a> {
                     title ilike $1::text 
                 and is_disabled = false 
                 and deleted_at is null 
-                and ((st_distancesphere(location::geometry, $2)) < $3 or $2 is null)
+               order by st_distancesphere(location::geometry, $2), title
 
-               order by title
-               offset $4::bigint limit $5::bigint"#,
+               offset $3::bigint limit $4::bigint"#,
             title,
             location as _,
-            radius_meters,
             skip,
             take
         )

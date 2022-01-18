@@ -375,6 +375,105 @@
       ]
     }
   },
+  "41f9f9767fdfe8befa0a083021acd8f0a183d0ac91d72c351b8d909ef7c0b276": {
+    "query": "select \n                    id, \n                    title, \n                    description, \n                    address, \n                    location as \"location!: _\", \n                    is_disabled, \n                    created_by, \n                    created_at, \n                    modified_by, \n                    modified_at, \n                    deleted_by, \n                    deleted_at \n               from selling_point \n               where \n                    title ilike $1::text \n                and is_disabled = false \n                and deleted_at is null \n               order by st_distancesphere(location::geometry, $2), title\n\n               offset $3::bigint limit $4::bigint",
+    "describe": {
+      "columns": [
+        {
+          "ordinal": 0,
+          "name": "id",
+          "type_info": "Int8"
+        },
+        {
+          "ordinal": 1,
+          "name": "title",
+          "type_info": "Text"
+        },
+        {
+          "ordinal": 2,
+          "name": "description",
+          "type_info": "Text"
+        },
+        {
+          "ordinal": 3,
+          "name": "address",
+          "type_info": "Text"
+        },
+        {
+          "ordinal": 4,
+          "name": "location!: _",
+          "type_info": {
+            "Custom": {
+              "name": "geometry",
+              "kind": "Simple"
+            }
+          }
+        },
+        {
+          "ordinal": 5,
+          "name": "is_disabled",
+          "type_info": "Bool"
+        },
+        {
+          "ordinal": 6,
+          "name": "created_by",
+          "type_info": "Int8"
+        },
+        {
+          "ordinal": 7,
+          "name": "created_at",
+          "type_info": "Timestamptz"
+        },
+        {
+          "ordinal": 8,
+          "name": "modified_by",
+          "type_info": "Int8"
+        },
+        {
+          "ordinal": 9,
+          "name": "modified_at",
+          "type_info": "Timestamptz"
+        },
+        {
+          "ordinal": 10,
+          "name": "deleted_by",
+          "type_info": "Int8"
+        },
+        {
+          "ordinal": 11,
+          "name": "deleted_at",
+          "type_info": "Timestamptz"
+        }
+      ],
+      "parameters": {
+        "Left": [
+          "Text",
+          {
+            "Custom": {
+              "name": "geometry",
+              "kind": "Simple"
+            }
+          },
+          "Int8",
+          "Int8"
+        ]
+      },
+      "nullable": [
+        false,
+        false,
+        true,
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        true
+      ]
+    }
+  },
   "45b1d79f6516c2e6a03ccd544e75974fca62745df24086fbf32e23c6e41ccdfa": {
     "query": "\n                select\n                    spc.id,\n                    spc.activity_id,\n                    spc.product_id,\n                    p.title as \"product_title!\",\n                    p.image_url as product_image_url,\n                    p.is_disabled product_is_disabled,\n                    spc.quantity\n                from\n                    selling_point_check spc inner join\n                    product p on spc.product_id = p.id\n                where\n                    spc.activity_id in ( select id from activity where id = $1 ) ",
     "describe": {
@@ -777,106 +876,6 @@
       "nullable": [
         false,
         false,
-        true,
-        false,
-        false,
-        false,
-        false,
-        false,
-        true,
-        true
-      ]
-    }
-  },
-  "7b2d73a45e91b315a83c29cc60efc8c6b226e4c7d512dbd76f9714be5e44505f": {
-    "query": "select \n                    id, \n                    title, \n                    description, \n                    address, \n                    location as \"location!: _\", \n                    is_disabled, \n                    created_by, \n                    created_at, \n                    modified_by, \n                    modified_at, \n                    deleted_by, \n                    deleted_at \n               from selling_point \n               where \n                    title ilike $1::text \n                and is_disabled = false \n                and deleted_at is null \n                and ((st_distancesphere(location::geometry, $2)) < $3 or $2 is null)\n\n               order by title\n               offset $4::bigint limit $5::bigint",
-    "describe": {
-      "columns": [
-        {
-          "ordinal": 0,
-          "name": "id",
-          "type_info": "Int8"
-        },
-        {
-          "ordinal": 1,
-          "name": "title",
-          "type_info": "Text"
-        },
-        {
-          "ordinal": 2,
-          "name": "description",
-          "type_info": "Text"
-        },
-        {
-          "ordinal": 3,
-          "name": "address",
-          "type_info": "Text"
-        },
-        {
-          "ordinal": 4,
-          "name": "location!: _",
-          "type_info": {
-            "Custom": {
-              "name": "geometry",
-              "kind": "Simple"
-            }
-          }
-        },
-        {
-          "ordinal": 5,
-          "name": "is_disabled",
-          "type_info": "Bool"
-        },
-        {
-          "ordinal": 6,
-          "name": "created_by",
-          "type_info": "Int8"
-        },
-        {
-          "ordinal": 7,
-          "name": "created_at",
-          "type_info": "Timestamptz"
-        },
-        {
-          "ordinal": 8,
-          "name": "modified_by",
-          "type_info": "Int8"
-        },
-        {
-          "ordinal": 9,
-          "name": "modified_at",
-          "type_info": "Timestamptz"
-        },
-        {
-          "ordinal": 10,
-          "name": "deleted_by",
-          "type_info": "Int8"
-        },
-        {
-          "ordinal": 11,
-          "name": "deleted_at",
-          "type_info": "Timestamptz"
-        }
-      ],
-      "parameters": {
-        "Left": [
-          "Text",
-          {
-            "Custom": {
-              "name": "geometry",
-              "kind": "Simple"
-            }
-          },
-          "Float8",
-          "Int8",
-          "Int8"
-        ]
-      },
-      "nullable": [
-        false,
-        false,
-        true,
-        true,
         true,
         false,
         false,
