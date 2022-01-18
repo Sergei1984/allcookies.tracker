@@ -28,11 +28,20 @@ export const useGetImage = () => {
           height: image.height,
           mime: image.mime,
         });
+        setImages([
+          ...images,
+          {
+            uri: image.path,
+            width: image.width,
+            height: image.height,
+            mime: image.mime,
+          },
+        ]);
       } catch (error) {
         console.log(error);
       }
     },
-    []
+    [images]
   );
 
   const pickSingle = React.useCallback(
