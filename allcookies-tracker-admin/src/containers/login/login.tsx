@@ -1,11 +1,10 @@
+import {Field, Form, Formik} from "formik";
 import React from "react";
-import classes from "./login.module.scss";
-import {Formik, Field, Form} from "formik";
-import * as yup from 'yup';
-import {ILogin} from '../../store/auth/types'
 import {useDispatch} from "react-redux";
+import * as yup from 'yup';
 import {authThunk} from "../../store/auth/thunk/authThunk"
-import {useNavigate} from "react-router-dom";
+import {ILogin} from '../../store/auth/types'
+import classes from "./login.module.scss";
 
 
 const loginSchema = yup.object().shape({
@@ -39,6 +38,7 @@ const Login: React.FC = () => {
 			validationSchema={loginSchema}
 			onSubmit={handleLogin}
 		>
+
 			{({errors, touched}) => (
 				<Form className={classes.form}>
 					<label className={classes.email} htmlFor="login">Email</label>

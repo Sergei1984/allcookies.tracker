@@ -1,17 +1,18 @@
 import React from "react";
 import {Provider} from "react-redux";
-import {store} from "./store/rootStore";
 import {BrowserRouter, Route, Routes} from "react-router-dom";
-import Login from "./containers/login/login";
-import Dashboard from "./containers/dashboard/dashboard";
+import PrivateRoute from "./components/PrivateRoute/PrivateRoute";
+import {DASHBOARD} from "./routes/urls";
+import {store} from "./store/rootStore";
 
 
 const App = () => (
 	<Provider store={store}>
 		<BrowserRouter>
 			<Routes>
-				<Route path="/" element={<Login/>}/>
-				<Route path="/dashboard" element={<Dashboard/>}/>
+				<Route  element={<PrivateRoute/>}>
+					<Route path={DASHBOARD} element={<div>Test</div>}/>
+				</Route>
 			</Routes>
 		</BrowserRouter>
 	</Provider>

@@ -1,4 +1,4 @@
-import {LOGIN_TYPE, LoginAction} from "./types";
+import {LoginAction, LOGIN_TYPE} from "./types";
 
 export const setUserAction = (payload: boolean): LoginAction => {
 	return {

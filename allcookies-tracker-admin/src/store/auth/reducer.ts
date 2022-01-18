@@ -1,5 +1,5 @@
 import {authState} from "./store";
-import {AuthType, AuthState, LOGIN_TYPE} from "./types";
+import {AuthState, AuthType, LOGIN_TYPE} from "./types";
 
 export const authReducer = (state: AuthState = authState, action: AuthType): AuthState => {
 	switch (action.type) {

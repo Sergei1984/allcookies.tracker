@@ -1,5 +1,5 @@
-import {ILogin} from "../../store/auth/types";
 import axios from "axios";
+import {ILogin} from "../../store/auth/types";
 
 class AuthService {
 

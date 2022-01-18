@@ -1,6 +1,6 @@
+import Dashboard from "../containers/dashboard/dashboard";
 import Login from '../containers/login/login';
 import * as urls from './urls';
-import Dashboard from "../containers/dashboard/dashboard";
 
 
 export const privateRoutes = [
