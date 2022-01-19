@@ -1,0 +1,4 @@
+image:
+  repository: "docker-registry.a-dev.com/allcookies-tracker-admin"
+  tag: ""
+host: "allcookies-admin.a-dev.com"

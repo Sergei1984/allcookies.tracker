@@ -37,7 +37,7 @@ helm upgrade \
     --set "deployInfo.deployedFrom=$(hostname)" \
     --create-namespace \
     --description "Commit ${GIT_COMMIT} branch ${GIT_BRANCH}" \
-    allcookies-tracker \
+    allcookies-tracker-admin \
     "${DIR}/k8s/app/allcookies-tracker"
 
-kubectl rollout restart deployment -n allcookies-tracker
+kubectl rollout restart deployment -n allcookies-tracker-admin
