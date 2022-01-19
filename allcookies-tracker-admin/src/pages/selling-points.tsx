@@ -1,15 +1,14 @@
 import React from "react";
 import DashboardLayout from "../layouts/dashboard";
 
-import SellingPointsTable from "../components/sellings-points-table";
+import SellingPointsContainer from "../containers/selling-points-container";
 
 interface SellingPointsPageProps {}
 
 const SellingPointsPage = ({}: SellingPointsPageProps): JSX.Element => {
   return (
     <DashboardLayout>
-      <h3>SellingPoints page</h3>
-      <SellingPointsTable />
+      <SellingPointsContainer />
     </DashboardLayout>
   );
 };

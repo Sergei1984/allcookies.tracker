@@ -6,9 +6,7 @@ import TableBody from "@mui/material/TableBody";
 import TableCell, { tableCellClasses } from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
-import TablePagination from "@mui/material/TablePagination";
-import TableRow, { tableRowClasses } from "@mui/material/TableRow";
-import TableSortLabel from "@mui/material/TableSortLabel";
+import TableRow from "@mui/material/TableRow";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Paper from "@mui/material/Paper";
@@ -17,9 +15,16 @@ import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
 import DeleteIcon from "@mui/icons-material/Delete";
 import FilterListIcon from "@mui/icons-material/FilterList";
+import Button from "@mui/material/Button";
 
+import { formatToTableValue, formatValueToDate } from "../utils";
 // ICONS
-import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
+import AddBusinessIcon from "@mui/icons-material/AddBusiness";
+import CustomPagination from "./pagination";
+import TableDotsPopover from "./popover";
+import CustomCheckbox from "./custom-checkbox";
+import CustomizedInput from "./custom-input";
+import { CustomizedTableSelect } from "./table-select";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -34,162 +39,23 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   // hide last border
+  "&.MuiTableRow-root:hover": {
+    backgroundColor: "#E6F9F9",
+  },
   "&:last-child td, &:last-child th": {
     border: 0,
   },
-  "&:hover": {
-    backgroundColor: "red",
-  },
   "&.Mui-selected": {
-    backgroundColor: "#DFEBF2",
+    backgroundColor: "#E6F9F9",
+    borderLeft: 0,
+    borderRight: 0,
   },
 }));
-
-// export default function SellingPointsTable() {
-//   const [order, setOrder] = React.useState<any>("asc");
-//   const [orderBy, setOrderBy] = React.useState<keyof any>("calories");
-//   const [selected, setSelected] = React.useState<readonly string[]>([]);
-//   const [page, setPage] = React.useState(0);
-//   const [rowsPerPage, setRowsPerPage] = React.useState(5);
-
-//   const handleRequestSort = (
-//     event: React.MouseEvent<unknown>,
-//     property: keyof any
-//   ) => {
-//     const isAsc = orderBy === property && order === "asc";
-//     setOrder(isAsc ? "desc" : "asc");
-//     setOrderBy(property);
-//   };
-
-//   const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
-//     if (event.target.checked) {
-//       const newSelecteds = rows.map((n) => n.title);
-//       setSelected(newSelecteds);
-//       return;
-//     }
-//     setSelected([]);
-//   };
-
-//   const handleClick = (event: React.MouseEvent<unknown>, name: string) => {
-//     const selectedIndex = selected.indexOf(name);
-//     let newSelected: readonly string[] = [];
-
-//     if (selectedIndex === -1) {
-//       newSelected = newSelected.concat(selected, name);
-//     } else if (selectedIndex === 0) {
-//       newSelected = newSelected.concat(selected.slice(1));
-//     } else if (selectedIndex === selected.length - 1) {
-//       newSelected = newSelected.concat(selected.slice(0, -1));
-//     } else if (selectedIndex > 0) {
-//       newSelected = newSelected.concat(
-//         selected.slice(0, selectedIndex),
-//         selected.slice(selectedIndex + 1)
-//       );
-//     }
-
-//     setSelected(newSelected);
-//   };
-
-//   const handleChangePage = (event: unknown, newPage: number) => {
-//     setPage(newPage);
-//   };
-
-//   const handleChangeRowsPerPage = (
-//     event: React.ChangeEvent<HTMLInputElement>
-//   ) => {
-//     setRowsPerPage(parseInt(event.target.value, 10));
-//     setPage(0);
-//   };
-
-//   const isSelected = (name: string) => selected.indexOf(name) !== -1;
-
-//   return (
-//     <TableContainer component={Paper}>
-//       <Table sx={{ minWidth: 700 }} aria-label="customized table">
-//         <TableHead>
-//           <TableRow>
-//             <StyledTableCell> Inputs and filters</StyledTableCell>
-//           </TableRow>
-//           <TableRow sx={{ backgroundColor: "transparent" }}>
-//             <StyledTableCell align="left" padding="checkbox">
-//               <Checkbox
-//                 color="primary"
-//                 indeterminate={numSelected > 0 && numSelected < rowCount}
-//                 checked={rowCount > 0 && numSelected === rowCount}
-//                 onChange={onSelectAllClick}
-//                 inputProps={{
-//                   "aria-label": "select all desserts",
-//                 }}
-//               />
-//             </StyledTableCell>
-//             <StyledTableCell
-//               sx={{ backgroundColor: "transparent" }}
-//               align="left"
-//             >
-//               Магазин
-//             </StyledTableCell>
-//             <StyledTableCell align="right">Адрес</StyledTableCell>
-//             <StyledTableCell align="right">Время работы</StyledTableCell>
-//             <StyledTableCell align="center">Доп.</StyledTableCell>
-//           </TableRow>
-//           <TableRow>
-//             <StyledTableCell align="left">Add customer</StyledTableCell>
-//           </TableRow>
-//         </TableHead>
-//         <TableBody>
-//           {rows.map((row, index) => {
-//             const isItemSelected = isSelected(row.title);
-//             const labelId = `enhanced-table-checkbox-${index}`;
-//             return (
-//               <StyledTableRow
-//                 key={row.id}
-//                 onClick={(event) => handleClick(event, row.title)}
-//                 role="checkbox"
-//                 aria-checked={isItemSelected}
-//                 tabIndex={-1}
-//                 selected={isItemSelected}
-//               >
-//                 <StyledTableCell
-//                   padding="checkbox"
-//                   component="th"
-//                   align="left"
-//                   scope="row"
-//                 >
-//                   <Checkbox
-//                     color="primary"
-//                     checked={isItemSelected}
-//                     inputProps={{
-//                       "aria-labelledby": labelId,
-//                     }}
-//                   />
-//                 </StyledTableCell>
-//                 <StyledTableCell component="th" align="left" scope="row">
-//                   {row.title}
-//                 </StyledTableCell>
-//                 <StyledTableCell align="left">{row.address}</StyledTableCell>
-//                 <StyledTableCell align="center">
-//                   {row.created_at}
-//                 </StyledTableCell>
-//                 <StyledTableCell align="center">
-//                   <IconButton
-//                     color="inherit"
-//                     aria-label="open drawer"
-//                     onClick={() => {
-//                       console.log("Открыто доп. панель");
-//                     }}
-//                     edge="start"
-//                   >
-//                     <MoreHorizIcon sx={{ color: "#B9B9B9" }} />
-//                   </IconButton>
-//                 </StyledTableCell>
-//               </StyledTableRow>
-//             );
-//           })}
-//         </TableBody>
-//       </Table>
-//     </TableContainer>
-//   );
-// }
+const PaginationBox = styled(Box)(({ theme }) => ({
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "flex-end",
+}));
 
 const rows = [
   {
@@ -406,16 +272,31 @@ interface EnhancedTableProps {
   rowCount: number;
 }
 
-function EnhancedTableHead(props: EnhancedTableProps) {
+const EnhancedTableHead = (props: EnhancedTableProps): JSX.Element => {
   const { onSelectAllClick, order, numSelected, rowCount } = props;
 
   return (
     <TableHead>
-      <TableRow>Inputs and filters</TableRow>
-      <TableRow>
-        <TableCell padding="checkbox">
-          <Checkbox
-            color="primary"
+      {/* <TableRow>
+        <TableCell colSpan={7}>
+        <CustomizedInput />
+        </TableCell>
+      </TableRow> */}
+      <TableRow
+        style={{ backgroundColor: "#EFF0F6", boxShadow: "0px 1px 0px #DADBE4" }}
+      >
+        <TableCell
+          padding="checkbox"
+          style={{
+            fontWeight: 500,
+            fontSize: "14px",
+            lineHeight: "140%",
+            letterSpacing: "-0.3px",
+            color: "#767676",
+          }}
+        >
+          <CustomCheckbox
+            style={{ color: "#67cfcf" }}
             indeterminate={numSelected > 0 && numSelected < rowCount}
             checked={rowCount > 0 && numSelected === rowCount}
             onChange={onSelectAllClick}
@@ -424,25 +305,32 @@ function EnhancedTableHead(props: EnhancedTableProps) {
             }}
           />
         </TableCell>
-        <TableCell sx={{ backgroundColor: "transparent" }} align="left">
-          Магазин
-        </TableCell>
-        <TableCell align="right">Адрес</TableCell>
-        <TableCell align="right">Время работы</TableCell>
-        <TableCell align="center">Доп.</TableCell>
+        <TableCell align="left">Магазин</TableCell>
+        <TableCell align="left">Описание</TableCell>
+        <TableCell align="center">Адрес</TableCell>
+        <TableCell align="center">Добавлен</TableCell>
+        <TableCell align="center">Изменен</TableCell>
+        <TableCell align="right">Доп.</TableCell>
       </TableRow>
       <TableRow>
-        <TableCell align="left">Add customer</TableCell>
+        <TableCell colSpan={7}>
+          <Button>
+            <AddBusinessIcon sx={{ color: "#42A6A6", ml: 3, mr: 2 }} />
+            Добавить магазин
+          </Button>
+        </TableCell>
       </TableRow>
     </TableHead>
   );
-}
+};
 
 interface EnhancedTableToolbarProps {
   numSelected: number;
 }
 
-const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
+const EnhancedTableToolbar = (
+  props: EnhancedTableToolbarProps
+): JSX.Element => {
   const { numSelected } = props;
 
   return (
@@ -450,6 +338,8 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
       sx={{
         pl: { sm: 2 },
         pr: { xs: 1, sm: 1 },
+        display: "flex",
+        justifyContent: "space-between",
         ...(numSelected > 0 && {
           bgcolor: (theme) =>
             alpha(
@@ -466,7 +356,7 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
           variant="subtitle1"
           component="div"
         >
-          {numSelected} selected
+          {numSelected} выбрано
         </Typography>
       ) : (
         <Typography
@@ -475,9 +365,12 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
           id="tableTitle"
           component="div"
         >
-          Nutrition
+          Выбрано
         </Typography>
       )}
+      <CustomizedInput />
+      <CustomizedTableSelect />
+      <CustomizedTableSelect />
       {numSelected > 0 ? (
         <Tooltip title="Delete">
           <IconButton>
@@ -495,7 +388,7 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
   );
 };
 
-function SellingPointsTable() {
+const SellingPointsTable = (): JSX.Element => {
   const [order, setOrder] = React.useState<Order>("asc");
   const [selected, setSelected] = React.useState<readonly string[]>([]);
   const [page, setPage] = React.useState(0);
@@ -554,7 +447,7 @@ function SellingPointsTable() {
         <EnhancedTableToolbar numSelected={selected.length} />
         <TableContainer>
           <Table
-            sx={{ minWidth: 750 }}
+            sx={{ minWidth: 320 }}
             aria-labelledby="tableTitle"
             size={dense ? "small" : "medium"}
           >
@@ -581,7 +474,7 @@ function SellingPointsTable() {
                     selected={isItemSelected}
                   >
                     <StyledTableCell padding="checkbox">
-                      <Checkbox
+                      <CustomCheckbox
                         color="primary"
                         onClick={(event) => handleClick(event, row.title)}
                         checked={isItemSelected}
@@ -592,39 +485,33 @@ function SellingPointsTable() {
                     </StyledTableCell>
                     <StyledTableCell
                       component="th"
-                      id={labelId}
+                      align="left"
+                      // id={labelId}
                       scope="row"
-                      padding="none"
+                      // padding="none"
                     >
-                      {row.title}
+                      {formatToTableValue(row.title)}
+                    </StyledTableCell>
+                    <StyledTableCell align="left">
+                      {formatToTableValue(row.description)}
+                    </StyledTableCell>
+                    <StyledTableCell align="center">
+                      {formatToTableValue(row.address)}
+                    </StyledTableCell>
+                    <StyledTableCell align="center">
+                      {formatValueToDate(row.created_at)}
+                    </StyledTableCell>
+                    <StyledTableCell align="center">
+                      {formatValueToDate(row.modified_at)}
                     </StyledTableCell>
                     <StyledTableCell align="right">
-                      {row.address}
-                    </StyledTableCell>
-                    <StyledTableCell align="right">
-                      {row.created_at}
-                    </StyledTableCell>
-                    <StyledTableCell align="right">
-                      <IconButton
-                        color="inherit"
-                        aria-label="open drawer"
-                        onClick={() => {
-                          console.log("Открыто доп. панель");
-                        }}
-                        edge="start"
-                      >
-                        <MoreHorizIcon sx={{ color: "#B9B9B9" }} />
-                      </IconButton>
+                      <TableDotsPopover />
                     </StyledTableCell>
                   </StyledTableRow>
                 );
               })}
               {emptyRows > 0 && (
-                <StyledTableRow
-                  style={{
-                    height: (dense ? 33 : 53) * emptyRows,
-                  }}
-                >
+                <StyledTableRow>
                   <StyledTableCell colSpan={6} />
                 </StyledTableRow>
               )}
@@ -632,8 +519,11 @@ function SellingPointsTable() {
           </Table>
         </TableContainer>
       </Paper>
+      <PaginationBox>
+        <CustomPagination count={5} disabled={false} />
+      </PaginationBox>
     </Box>
   );
-}
+};
 
 export default SellingPointsTable;

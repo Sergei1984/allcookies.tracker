@@ -10,7 +10,6 @@ import { styled, useTheme } from "@mui/material/styles";
 import Toolbar from "@mui/material/Toolbar";
 import * as React from "react";
 
-
 import { CloseMenuIcon } from "../assets/icons";
 import logos from "../assets/svg/logo.svg";
 
@@ -20,6 +19,8 @@ const drawerWidth = 240;
 const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })<{
   open?: boolean;
 }>(({ theme, open }) => ({
+  backgroundColor: "#E6F9F9",
+  minHeight: "100vh",
   flexGrow: 1,
   padding: theme.spacing(3),
   transition: theme.transitions.create("margin", {
@@ -43,6 +44,7 @@ interface AppBarProps extends MuiAppBarProps {
 const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== "open",
 })<AppBarProps>(({ theme, open }) => ({
+  backgroundColor: "#E6F9F9",
   transition: theme.transitions.create(["margin", "width"], {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
@@ -67,7 +69,7 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 }));
 
 interface DashboardLayoutProps {
-  children:  React.ReactNode;
+  children: React.ReactNode;
 }
 const DashboardLayout = ({ children }: DashboardLayoutProps): JSX.Element => {
   const theme = useTheme();
@@ -91,7 +93,10 @@ const DashboardLayout = ({ children }: DashboardLayoutProps): JSX.Element => {
             aria-label="open drawer"
             onClick={handleDrawerOpen}
             edge="start"
-            sx={{ mr: 2, ...(open && { display: "none" }) }}
+            sx={{
+              mr: 2,
+              ...(open && { display: "none" }),
+            }}
           >
             <MenuIcon color="success" />
           </IconButton>
@@ -112,16 +117,14 @@ const DashboardLayout = ({ children }: DashboardLayoutProps): JSX.Element => {
       >
         <DrawerHeader>
           <img src={logos} alt="" />
-          <IconButton
-            onClick={handleDrawerClose}
-          >
+          <IconButton onClick={handleDrawerClose}>
             <CloseMenuIcon />
           </IconButton>
         </DrawerHeader>
         <Divider />
         <Navigation />
       </Drawer>
-      <Main open={open} style={{ backgroundColor: "#D0D0D0", minHeight: '100vh' }}>
+      <Main open={open}>
         <DrawerHeader />
         {children}
       </Main>
