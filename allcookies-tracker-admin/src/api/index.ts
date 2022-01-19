@@ -7,7 +7,7 @@ import {
 import { config } from "../config/config";
 
 const axiosInstance = axios.create({
-  baseURL: config.BASE_URL + "/api",
+  baseURL: config.BASE_URL,
   headers: {
     "Content-Type": "application/json",
   },
@@ -33,6 +33,7 @@ axiosInstance.interceptors.response.use(
   },
   (error) => {
     if (error.response.status === 401) {
+      window.location.href = '/signin';
       clearToken();
       return Promise.reject(error);
     }

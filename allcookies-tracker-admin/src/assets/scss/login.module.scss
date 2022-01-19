@@ -1,9 +1,14 @@
 body {
-  background: #F0F2FA;
+  background: #E6F9F9;
 }
 
-input {
-
+.box {
+  display:inline-block;
+  width:19px;
+  height:19px;
+  margin:-1px 4px 0 0;
+  vertical-align:middle;
+  cursor:pointer
 }
 
 .form {
@@ -41,7 +46,7 @@ input {
   height: 44px;
 
 
-  background: #5B5B7E;
+  background: #42A6A6;
   border-radius: 4px;
 }
 
@@ -103,3 +108,5 @@ input {
   flex-grow: 0;
   margin: 0 12px;
 }
+
+

@@ -1,10 +1,13 @@
 import {Field, Form, Formik} from "formik";
 import React from "react";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
+import {useNavigate} from "react-router-dom";
 import * as yup from 'yup';
-import {authThunk} from "../../store/auth/thunk/authThunk"
-import {ILogin} from '../../store/auth/types'
-import classes from "./login.module.scss";
+import classes from "../assets/scss/login.module.scss";
+import {ProductsRoute} from "../routes/urls";
+import {authThunk} from "../store/auth/thunk/authThunk"
+import {ILogin} from '../store/auth/types'
+import {RootStore} from "../store/rootStore";
 
 
 const loginSchema = yup.object().shape({
@@ -21,9 +24,13 @@ const defaultLogin = {
 
 const Login: React.FC = () => {
 	const dispatch = useDispatch();
-
-
-
+	const isLogin = useSelector((store: RootStore) => store.authStore.isLogin);
+	const navigate = useNavigate();
+	React.useEffect(() => {
+		if(isLogin) {
+			navigate(ProductsRoute)
+		}
+	}, [isLogin])
 	const handleLogin = (values: ILogin): void => {
 		dispatch(authThunk(values));
 	}
@@ -57,7 +64,7 @@ const Login: React.FC = () => {
 					) : null}
 
 					<label htmlFor="rememberMe" className={classes.rememberMe}>Запомнить меня</label>
-					<Field type="checkbox" className={classes.inputField} name="checked" value="rememberMe">
+					<Field type="checkbox" className={classes.box} name="checked" value="rememberMe">
 
 					</Field>
 					<button className={classes.button} type="submit">Войти</button>

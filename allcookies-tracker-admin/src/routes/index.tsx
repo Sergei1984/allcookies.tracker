@@ -1,16 +1,16 @@
 import React from "react";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import Dashboard from "../containers/dashboard/dashboard";
-import * as urls from "./urls";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import PrivateRoute from "../components/PrivateRoute/PrivateRoute";
+import * as urls from "./urls";
 
 // PAGES
+import Login from "../pages/login";
 import {
   ProductsPage,
-  SellingPointsPage,
   ProfilePage,
-  UsersPage,
+  SellingPointsPage,
   SettingsPage,
+  UsersPage,
 } from "../pages";
 
 const AppRoutes = () => {
@@ -18,7 +18,7 @@ const AppRoutes = () => {
     <BrowserRouter>
       <Routes>
         <Route />
-        <Route path={urls.SignInRoute} element={<div>Login page</div>} />
+        <Route path={urls.SignInRoute} element={<Login />} />
         <Route element={<PrivateRoute />}>
           <Route path={urls.ProductsRoute} element={<ProductsPage />} />
           <Route
