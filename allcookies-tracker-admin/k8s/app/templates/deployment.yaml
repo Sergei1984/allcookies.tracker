@@ -12,8 +12,6 @@ spec:
       labels:
         app: allcookies-admin
     spec:
-      nodeSelector:
-        AppGroup: internal
       containers:
         - name: allcookies-admin-nginx
           image: "{{ .Values.image.repository }}:{{ required "Image tag is required" .Values.image.tag }}"
