@@ -1,14 +1,20 @@
 #!/bin/bash
 
-# DOCKER_REGISTRY=docker-registry.a-dev.com
-# REG_USER=antx
-# REG_PWD=Qwe344Jklld09
+DOCKER_REGISTRY=docker-registry.a-dev.com
+REG_USER=antx
+REG_PWD=Qwe344Jklld09
 
 GIT_BRANCH=$(git branch --show-current)
 GIT_COMMIT=$(git show -s --format=%H)
 
-
+###
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+
+export RELEASE=${GIT_COMMIT}
+
+docker-compose build && docker-compose push
+
+###
 
 export KUBECONFIG="${DIR}/k8s/kubeconfig"
 
