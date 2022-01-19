@@ -10,9 +10,15 @@ GIT_COMMIT=$(git show -s --format=%H)
 ###
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
+###
+
+docker login -u $REG_USER -p $REG_PWD $DOCKER_REGISTRY
+
 export RELEASE=${GIT_COMMIT}
 
-docker-compose build && docker-compose push
+docker-compose -f "${DIR}/docker-compose.yml" build --progress plain && \
+docker-compose -f "${DIR}/docker-compose.yml" push
+
 
 ###
 
@@ -29,7 +35,7 @@ helm upgrade \
     --set "deployInfo.deployedAt=$(date)" \
     --set "deployInfo.deployedFrom=$(hostname)" \
     --description "Commit ${GIT_COMMIT} branch ${GIT_BRANCH}" \
-    allcookies-tracker-api \
+    allcookies-tracker-admin \
     "${DIR}/k8s/app"
 
-# kubectl rollout restart deployment -n allcookies-tracker
+kubectl rollout restart deployment -n allcookies-tracker
