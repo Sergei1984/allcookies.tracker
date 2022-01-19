@@ -16,8 +16,8 @@ export const useGetImage = () => {
       try {
         const image = await ImagePicker.openCamera({
           cropping: cropping,
-          width: 500,
-          height: 500,
+          width: 100,
+          height: 100,
           includeExif: true,
           mediaType,
           includeBase64: true,
@@ -35,6 +35,7 @@ export const useGetImage = () => {
             width: image.width,
             height: image.height,
             mime: image.mime,
+            index: images.length + 1,
           },
         ]);
       } catch (error) {
@@ -67,14 +68,13 @@ export const useGetImage = () => {
         });
         setImages([
           ...images,
-          ...selectedImages.map((i: any) => {
-            console.log("received image", i);
+          ...selectedImages.map((i: any, index) => {
             return {
               uri: i.path,
               width: i.width,
               height: i.height,
               mime: i.mime,
-              data: i.data,
+              index: index,
             };
           }),
         ]);
@@ -96,6 +96,7 @@ export const useGetImage = () => {
     handle: {
       pickSingle,
       pickSingleWithCamera,
+      setImages,
     },
   };
 };

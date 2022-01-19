@@ -1,5 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { SellingPointsAPI } from "../../services/sellingPoints.service";
+import { UserAPI } from "../../services/user.service";
 import { CheckSellingPointData, Location, SellingPointData } from "./types";
 
 export const getSellingPointsThunk = createAsyncThunk('sellingPoints/getSellingPoints', async (_, thunkAPI) => {
@@ -25,6 +26,14 @@ export const createSellingPointThunk = createAsyncThunk('sellingPoints/createSel
 export const checkSellingPointThunk = createAsyncThunk('sellingPoints/checkSellingPoint', async (data: CheckSellingPointData, thunkAPI) => {
     try {
         const response = await SellingPointsAPI.checkSellingPoint(data);
+        if(response && data.images.length !== 0) {
+            data.images.map(async (item: any) => {
+                const data1 = new FormData();
+                data1.append("file", item);
+                console.log(data1);
+                await UserAPI.uploadPhoto(response.id, data1)
+            });
+        }
         return response
     } catch (e) {
         console.log(e);

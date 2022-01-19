@@ -16,6 +16,9 @@ export const sellingPointSlice = createSlice({
         },
         [getNewSellingPointsThunk.fulfilled.type]: (state, action: PayloadAction<SellingPointState>) => {
             state.newSellingPoints = action.payload.data
+        },
+        [checkSellingPointThunk.fulfilled.type]: (state, action: PayloadAction<any>) => {
+            state.activityId = action.payload.id
         }
     }
 })

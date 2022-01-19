@@ -87,6 +87,22 @@ const createStyles = () => StyleSheet.create({
         padding: 20,
         marginRight: 8
     },
+    photoWrapper: {
+        position: 'relative'
+    },
+    deletePhoto: {
+        width: 20,
+        height: 20,
+        backgroundColor: 'white',
+        borderRadius: 50,
+        justifyContent: "center",
+        borderWidth: 1,
+        borderColor: '#232323',
+        alignItems: 'center',
+        position: 'absolute',
+        zIndex: 999,
+        left: 68
+    },
     searchIcon: {
         position: 'absolute',
         zIndex: 1,

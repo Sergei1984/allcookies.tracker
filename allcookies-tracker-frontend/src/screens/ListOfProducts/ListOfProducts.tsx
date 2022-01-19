@@ -1,4 +1,4 @@
-import { useRoute } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import React from "react";
 import { View, Text, FlatList, TouchableOpacity, Image } from "react-native";
@@ -27,6 +27,7 @@ const ListOfProducts: React.FC<Props> = ({ route, navigation }) => {
   const styles = React.useMemo(() => createStyles(), []);
   const dispatch = useAppDispatch();
   const location = useLocation();
+  const navigate = useNavigation();
   const { data, handle } = useGetImage();
 
   React.useEffect(() => {
@@ -78,19 +79,39 @@ const ListOfProducts: React.FC<Props> = ({ route, navigation }) => {
     setProducts(data);
   };
 
+  const activity = useAppSelector(
+    (state) => state.sellingPointReducer.activityId
+  );
+
   const sendReport = React.useCallback(async () => {
-    const data = products.flatMap((item) =>
+    const dataProducts = products.flatMap((item) =>
       item.count !== 0 ? { product_id: item.id, quantity: item.count } : []
     );
     await dispatch(
       checkSellingPointThunk({
         location: location,
         time: new Date(),
-        products: data,
+        products: dataProducts,
         selling_point_id: route.params.sellingPointId,
+        images: data.images,
       })
     );
-  }, [products]);
+    // console.log(activity);
+    // if (activity) {
+    //   data.images.map(async (item: any) => {
+    //     const data1 = new FormData();
+    //     data1.append("file", item);
+    //     console.log(data1);
+    //     await dispatch(
+    //       uploadPhotoThunk({
+    //         id: activity,
+    //         photo: data1,
+    //       })
+    //     );
+    //   });
+    // }
+    navigation.navigate("Главная");
+  }, [products, activity, data.images]);
 
   const renderProducts = () => {
     const renderItem = ({ item }: any) => {
@@ -169,7 +190,23 @@ const ListOfProducts: React.FC<Props> = ({ route, navigation }) => {
 
   const renderPhotos = () => {
     const renderItem = ({ item }: any) => {
-      return <Image style={styles.avatar} source={item} />;
+      const deletePhoto = (index: number) => {
+        handle.setImages(
+          data.images.filter((item: any) => item.index !== index)
+        );
+      };
+
+      return (
+        <View style={styles.photoWrapper}>
+          <TouchableOpacity
+            style={styles.deletePhoto}
+            onPress={() => deletePhoto(item.index)}
+          >
+            <MaterialIcons name="close" size={16} color={"#232323"} />
+          </TouchableOpacity>
+          <Image style={styles.avatar} source={item} />
+        </View>
+      );
     };
     return (
       <View>
@@ -184,27 +221,27 @@ const ListOfProducts: React.FC<Props> = ({ route, navigation }) => {
     );
   };
 
-  const activity = useAppSelector((state) => state.userReducer.activity);
-
-  React.useEffect(() => {
-    if (data.image) {
-      const data1 = new FormData();
-      data1.append("file", data.image);
-      dispatch(
-        uploadPhotoThunk({
-          id: activity.id,
-          photo: data1,
-        })
-      );
-    }
-  }, [data.image]);
+  // React.useEffect(() => {
+  //   if (data.images.length) {
+  //     const data1 = new FormData();
+  //     data1.append("file", data.image);
+  //     (async () => {
+  //       await dispatch(
+  //         uploadPhotoThunk({
+  //           id: activity,
+  //           photo: data1,
+  //         })
+  //       );
+  //     })();
+  //   }
+  // }, [data.images]);
 
   return (
     <View style={styles.container}>
       <View style={{ marginBottom: 16 }}>
         <AppButton
           name="Сделать фото"
-          onPress={() => handle.pickSingleWithCamera(true)}
+          onPress={() => handle.pickSingle(true)}
         />
         {/* Photos */}
         {renderPhotos()}

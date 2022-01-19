@@ -15,6 +15,7 @@ export class SellingPoints {
 
     public checkSellingPoint = async (data: CheckSellingPointData) => {
         let response  = await axiosInstance.post('client/activity/check-selling-point', data);
+        console.log('asdasd', response.data)
         return response.data;
     }
 

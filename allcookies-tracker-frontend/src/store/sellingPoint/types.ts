@@ -21,6 +21,7 @@ export interface SellingPointState {
     total: number;
     data: SellingPoint[];
     newSellingPoints: SellingPoint[];
+    activityId: number | null;
 }
 
 export interface SellingPointData {
@@ -36,5 +37,6 @@ export interface CheckSellingPointData {
     location: Location,
     time: Date,
     selling_point_id: number,
-    products: ProductToSending[]
+    products: ProductToSending[],
+    images: any
 }
