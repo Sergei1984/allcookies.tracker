@@ -10,7 +10,6 @@ use crate::features::{
 };
 use actix_web::HttpResponse;
 
-
 use actix_web::{middleware, web, App, HttpServer};
 pub use error::*;
 

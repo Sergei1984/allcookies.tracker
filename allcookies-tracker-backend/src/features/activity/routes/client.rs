@@ -6,6 +6,7 @@ use crate::features::{
 use actix_web::{
     dev::HttpResponseBuilder, error, get, http::StatusCode, post, web, web::Bytes, Responder, Scope,
 };
+use futures::stream::StreamExt;
 use serde::{Deserialize, Serialize};
 
 pub fn activity_client_route() -> Scope {
@@ -14,7 +15,8 @@ pub fn activity_client_route() -> Scope {
         .service(open_day)
         .service(close_day)
         .service(check_selling_point)
-        .service(add_photo)
+        // .service(add_photo)
+        .service(add_photo_form)
         .service(get_photo)
 }
 
@@ -179,6 +181,49 @@ pub async fn add_photo(
             .map_err(|e| error::ErrorBadRequest(e.to_string()))?;
 
         drop(svc);
+    }
+
+    trans
+        .commit()
+        .await
+        .map_err(|e| error::ErrorBadRequest(e))?;
+
+    return Ok(HttpResponseBuilder::new(StatusCode::from_u16(204).unwrap()).finish());
+}
+
+#[post("{activity_id}/photo")]
+pub async fn add_photo_form(
+    current_user: ManagerUserInfo,
+    activity: web::Path<ActivityIdPath>,
+    mut form: actix_multipart::Multipart,
+    pool: web::Data<sqlx::Pool<sqlx::Postgres>>,
+) -> Result<impl Responder, actix_web::Error> {
+    let mut trans = pool.begin().await.map_err(|e| error::ErrorBadRequest(e))?;
+
+    {
+        if let Some(file) = form.next().await {
+            if let Ok(mut field) = file {
+                let mut data: Vec<u8> = vec![];
+
+                while let Some(chunk) = field.next().await {
+                    if let Ok(chunk_data) = chunk {
+                        data.extend_from_slice(&chunk_data);
+                    } else {
+                        return Err(error::ErrorBadRequest("Error reading form data"));
+                    }
+                }
+
+                let mut svc = ClientActivityService::new(
+                    current_user,
+                    PersistentActivityRepo::new(&mut trans),
+                );
+
+                let _ = svc
+                    .add_photo(activity.activity_id, &data[..])
+                    .await
+                    .map_err(|e| error::ErrorBadRequest(e.to_string()))?;
+            }
+        };
     }
 
     trans

@@ -1,11 +1,13 @@
+import {Field, Form, Formik} from "formik";
 import React from "react";
-import classes from "./login.module.scss";
-import {Formik, Field, Form} from "formik";
-import * as yup from 'yup';
-import { ILogin } from '../../store/auth/types'
-import {useDispatch} from "react-redux";
-import {authThunk} from "../../store/auth/thunk/authThunk"
+import {useDispatch, useSelector} from "react-redux";
 import {useNavigate} from "react-router-dom";
+import * as yup from 'yup';
+import classes from "../assets/scss/login.module.scss";
+import {ProductsRoute} from "../routes/urls";
+import {authThunk} from "../store/auth/thunk/authThunk"
+import {ILogin} from '../store/auth/types'
+import {RootStore} from "../store/rootStore";
 
 
 const loginSchema = yup.object().shape({
@@ -22,10 +24,13 @@ const defaultLogin = {
 
 const Login: React.FC = () => {
 	const dispatch = useDispatch();
+	const isLogin = useSelector((store: RootStore) => store.authStore.isLogin);
 	const navigate = useNavigate();
-
-
-
+	React.useEffect(() => {
+		if(isLogin) {
+			navigate(ProductsRoute)
+		}
+	}, [isLogin])
 	const handleLogin = (values: ILogin): void => {
 		dispatch(authThunk(values));
 	}
@@ -40,22 +45,26 @@ const Login: React.FC = () => {
 			validationSchema={loginSchema}
 			onSubmit={handleLogin}
 		>
+
 			{({errors, touched}) => (
 				<Form className={classes.form}>
 					<label className={classes.email} htmlFor="login">Email</label>
-					<Field name="login" className={errors.login && touched.login ? classes.inputFieldError : classes.inputField   } placeholder="Введите ваш Email"/>
+					<Field name="login" className={errors.login && touched.login ? classes.inputFieldError : classes.inputField}
+								 placeholder="Введите ваш Email"/>
 					{errors.login && touched.login ? (
 						<p className={classes.errorEmail}>{errors.login}</p>
 					) : null}
 
 					<label className={classes.password} htmlFor="password">Пароль</label>
-					<Field type="password" className={errors.password && touched.password ? classes.inputFieldError : classes.inputField } name="password" placeholder="Введите ваш пароль"/>
+					<Field type="password"
+								 className={errors.password && touched.password ? classes.inputFieldError : classes.inputField}
+								 name="password" placeholder="Введите ваш пароль"/>
 					{errors.password && touched.password ? (
 						<p className={classes.errorEmail}>некорректный пароль</p>
 					) : null}
 
 					<label htmlFor="rememberMe" className={classes.rememberMe}>Запомнить меня</label>
-					<Field type="checkbox" className={classes.inputField} name="checked" value="rememberMe">
+					<Field type="checkbox" className={classes.box} name="checked" value="rememberMe">
 
 					</Field>
 					<button className={classes.button} type="submit">Войти</button>

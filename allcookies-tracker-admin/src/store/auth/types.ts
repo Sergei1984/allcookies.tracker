@@ -1,7 +1,8 @@
+export const LOGIN_TYPE = 'LOGIN_TYPE';
 
 export interface ILogin {
-	login:string;
-	password:string;
+	login: string;
+	password: string;
 }
 
 export interface AuthState {
@@ -9,12 +10,12 @@ export interface AuthState {
 }
 
 export interface IData {
-	jwt:string;
+	jwt: string;
 	ok: boolean
 }
 
 export interface IError {
-data: string
+	data: string
 }
 
 export interface IResponse {
@@ -22,10 +23,8 @@ export interface IResponse {
 	status: number;
 }
 
-export const loginType = 'LOGIN_TYPE';
-
 export interface LoginAction {
-	type: typeof loginType;
+	type: typeof LOGIN_TYPE;
 	payload: boolean;
 }
 

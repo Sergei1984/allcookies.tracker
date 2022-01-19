@@ -1,5 +1,5 @@
 @server=http://localhost:8088
-# @server=https://allcookies-tracker.a-dev.com
+@server=https://allcookies-tracker.a-dev.com
 
 ###
 GET {{server}}/health
@@ -55,12 +55,26 @@ Authorization: {{auth.response.body.jwt}}
     ]
 }
 
+# ### 
+# POST {{server}}/client/activity/41/photo
+# Authorization: {{auth.response.body.jwt}}
+# Content-Type: application/octet-stream
+
+# < ./sample_photo.jpg
+
 ### 
-POST {{server}}/client/activity/15/photo
+POST {{server}}/client/activity/42/photo
 Authorization: {{auth.response.body.jwt}}
-Content-Type: application/octet-stream
+Content-Type: multipart/form-data; boundary=BOUNDARY
+
+--BOUNDARY
+Content-Disposition: form-data; name="file"; filename="Audio.mp3"
 
 < ./sample_photo.jpg
+
+--BOUNDARY--
+
+
 
 
 ### 

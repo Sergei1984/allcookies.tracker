@@ -1,14 +1,15 @@
 import {authState} from "./store";
-import {AuthType, AuthState, loginType} from "./types";
+import {AuthState, AuthType, LOGIN_TYPE} from "./types";
 
-export const countReducer = (state: AuthState = authState, action: AuthType): AuthState => {
-	switch(action.type) {
-		case loginType: {
+export const authReducer = (state: AuthState = authState, action: AuthType): AuthState => {
+	switch (action.type) {
+		case LOGIN_TYPE: {
 			return {
 				...state,
 				isLogin: action.payload
 			}
 		}
-		default: return state
+		default:
+			return state
 	}
 }

@@ -1,5 +1,5 @@
 import {AuthState} from "./types";
 
-export const authState:AuthState = {
+export const authState: AuthState = {
 	isLogin: false
 }
