@@ -12,6 +12,8 @@ spec:
       labels:
         app: allcookies-admin
     spec:
+      imagePullSecrets:
+        - name: docker-private-reg
       containers:
         - name: allcookies-admin-nginx
           image: "{{ .Values.image.repository }}:{{ required "Image tag is required" .Values.image.tag }}"
