@@ -1,0 +1,60 @@
+.fromAddUser {
+  position: static;
+  background: white;
+  padding: 35px;
+}
+
+.firstName {
+  display: flex;
+  flex-direction: column;
+}
+
+.value {
+  display: flex;
+}
+
+.email {
+  display: flex;
+  flex-direction: column;
+  margin-left: 50px;
+  margin-bottom: 50px;
+}
+
+.errorEmail {
+  color: red;
+}
+
+.lastname{
+  margin-top: 12px;
+}
+
+.button {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 10px 20px;
+  color: white;
+  margin-top: 12px;
+
+
+  width: 340px;
+  height: 44px;
+
+
+  background: #42A6A6;
+  border-radius: 4px;
+}
+
+.inputField {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 12px;
+}
+
+.inputFieldError {
+  margin-top: 12px;
+  display: flex;
+  border-color: red;
+}
+
