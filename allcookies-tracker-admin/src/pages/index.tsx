@@ -1,12 +1,14 @@
+import AddUser from "./add-user"
 import ProductsPage from "./products";
-import SellingPointsPage from "./selling-points";
 import ProfilePage from "./profile";
-import UsersPage from "./users";
+import SellingPointsPage from "./selling-points";
 import SettingsPage from "./settings";
+import UsersPage from "./users";
 
 
 
 export {
+    AddUser,
     ProductsPage,
     SellingPointsPage,
     ProfilePage,

@@ -1,79 +1,24 @@
+import React from "react";
 import MenuIcon from "@mui/icons-material/Menu";
-import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
 
-import Divider from "@mui/material/Divider";
-import Drawer from "@mui/material/Drawer";
 import IconButton from "@mui/material/IconButton";
-import { styled, useTheme } from "@mui/material/styles";
+import { useTheme } from "@mui/material/styles";
 import Toolbar from "@mui/material/Toolbar";
-import * as React from "react";
 
-import { CloseMenuIcon } from "../assets/icons";
-import logos from "../assets/svg/logo.svg";
-
-import Navigation from "../components/navigation";
+import DrawerHeader from "../components/app-drawer/drawer-header";
+import Main from "../components/main";
+import AppDrawer from "../components/app-drawer/app-drawer";
+import AppBar from "../components/app-bar";
 const drawerWidth = 240;
-
-const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })<{
-  open?: boolean;
-}>(({ theme, open }) => ({
-  backgroundColor: "#E6F9F9",
-  minHeight: "100vh",
-  flexGrow: 1,
-  padding: theme.spacing(3),
-  transition: theme.transitions.create("margin", {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen,
-  }),
-  marginLeft: `-${drawerWidth}px`,
-  ...(open && {
-    transition: theme.transitions.create("margin", {
-      easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-    marginLeft: 0,
-  }),
-}));
-
-interface AppBarProps extends MuiAppBarProps {
-  open?: boolean;
-}
-
-const AppBar = styled(MuiAppBar, {
-  shouldForwardProp: (prop) => prop !== "open",
-})<AppBarProps>(({ theme, open }) => ({
-  backgroundColor: "#E6F9F9",
-  transition: theme.transitions.create(["margin", "width"], {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen,
-  }),
-  ...(open && {
-    width: `calc(100% - ${drawerWidth}px)`,
-    marginLeft: `${drawerWidth}px`,
-    transition: theme.transitions.create(["margin", "width"], {
-      easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-  }),
-}));
-
-const DrawerHeader = styled("div")(({ theme }) => ({
-  display: "flex",
-  alignItems: "center",
-  padding: theme.spacing(0, 1),
-  // necessary for content to be below app bar
-  ...theme.mixins.toolbar,
-  justifyContent: "flex-end",
-}));
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
 }
 const DashboardLayout = ({ children }: DashboardLayoutProps): JSX.Element => {
   const theme = useTheme();
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = React.useState(true);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -86,7 +31,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps): JSX.Element => {
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
-      <AppBar position="fixed" open={open}>
+      <AppBar position="fixed" open={open} drawerwidth={drawerWidth}>
         <Toolbar>
           <IconButton
             color="inherit"
@@ -98,11 +43,11 @@ const DashboardLayout = ({ children }: DashboardLayoutProps): JSX.Element => {
               ...(open && { display: "none" }),
             }}
           >
-            <MenuIcon color="success" />
+            <MenuIcon sx={{ color: "#42A6A6" }} />
           </IconButton>
         </Toolbar>
       </AppBar>
-      <Drawer
+      <AppDrawer
         sx={{
           width: drawerWidth,
           flexShrink: 0,
@@ -111,20 +56,13 @@ const DashboardLayout = ({ children }: DashboardLayoutProps): JSX.Element => {
             boxSizing: "border-box",
           },
         }}
+        drawerwidth={drawerWidth}
         variant="persistent"
         anchor="left"
-        open={open}
-      >
-        <DrawerHeader>
-          <img src={logos} alt="" />
-          <IconButton onClick={handleDrawerClose}>
-            <CloseMenuIcon />
-          </IconButton>
-        </DrawerHeader>
-        <Divider />
-        <Navigation />
-      </Drawer>
-      <Main open={open}>
+        isOpen={open}
+        handleDrawerClose={handleDrawerClose}
+      />
+      <Main open={open} drawerwidth={drawerWidth}>
         <DrawerHeader />
         {children}
       </Main>

@@ -4,14 +4,15 @@ import PrivateRoute from "../components/PrivateRoute/PrivateRoute";
 import * as urls from "./urls";
 
 // PAGES
-import Login from "../pages/login";
 import {
+  AddUser,
   ProductsPage,
   ProfilePage,
   SellingPointsPage,
   SettingsPage,
   UsersPage,
 } from "../pages";
+import Login from "../pages/login";
 
 const AppRoutes = () => {
   return (
@@ -28,6 +29,7 @@ const AppRoutes = () => {
           <Route path={urls.ProfileRoute} element={<ProfilePage />} />
           <Route path={urls.UsersRoute} element={<UsersPage />} />
           <Route path={urls.SettingsRoute} element={<SettingsPage />} />
+          <Route path={urls.AddUserRoute} element={<AddUser />} />
         </Route>
         <Route path="*" element={<Navigate to={urls.ProductsRoute} />} />
       </Routes>
