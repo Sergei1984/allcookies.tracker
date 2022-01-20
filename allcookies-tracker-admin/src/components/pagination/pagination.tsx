@@ -11,6 +11,10 @@ const List = styled("ul")({
   padding: 0,
   margin: 0,
   display: "flex",
+
+  "& > li:last-child > button": {
+    marginRight: 0,
+  },
 });
 
 interface CustomPaginationProps extends PaginationProps {}

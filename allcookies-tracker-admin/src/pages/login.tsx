@@ -3,7 +3,7 @@ import React from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {useNavigate} from "react-router-dom";
 import * as yup from 'yup';
-import classes from "../assets/scss/login.module.scss";
+import classes from "../assets/styles/scss/login.module.scss";
 import {ProductsRoute} from "../routes/urls";
 import {authThunk} from "../store/auth/thunk/authThunk"
 import {ILogin} from '../store/auth/types'
