@@ -115,8 +115,8 @@ const createStyles = () => StyleSheet.create({
         margin: 20,
         backgroundColor: "white",
         borderRadius: 20,
-        padding: 35,
-        alignItems: "center",
+        paddingHorizontal: 30,
+        paddingVertical: 15,
         shadowColor: "#000",
         shadowOffset: {
           width: 0,
@@ -127,7 +127,7 @@ const createStyles = () => StyleSheet.create({
         elevation: 5
       },
       button: {
-     
+        padding: 10,
       },
       buttonOpen: {
         // backgroundColor: "#F194FF",

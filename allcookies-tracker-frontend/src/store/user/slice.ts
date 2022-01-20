@@ -16,8 +16,10 @@ export const userSlice = createSlice({
             state.isAuthorized = true
         },
         setCurrentActivity: (state, action: PayloadAction<any>) => {
-            console.log('payload', action.payload)
             state.activity = action.payload
+        },
+        clearError: (state) => {
+            state.error = ''
         }
     },
     extraReducers: {
@@ -32,7 +34,7 @@ export const userSlice = createSlice({
         },
         [signInThunk.rejected.type]: (state, action: PayloadAction<string>) => {
             state.isLoading = false,
-            state.error = action.payload,
+            state.error = 'Wrong email or password',
             state.isAuthorized = false
         },
         [getProfileThunk.fulfilled.type]: (state, action: PayloadAction<IUser>) => {
