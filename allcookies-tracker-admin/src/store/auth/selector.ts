@@ -1,3 +1,3 @@
-import {RootStore} from "../rootStore";
+import { RootStore } from "../rootStore";
 
-export const selectAuth = (store: RootStore) => store.authStore
+export const selectAuth = (store: RootStore) => store.authStore;

@@ -1,34 +1,18 @@
-import { AxiosResponse } from "axios";
-import axiosInstance from "../../api";
-import { Dispatch } from "redux";
-import { RootStore } from "../rootStore";
+import {
+  CHANGE_SELLING_PAGE,
+  GET_SELLING_POINTS,
+  GetSellingPointsAction,
+  ChangeSellingPageAction,
+} from "./types";
 
-import { StatusEnum } from "../../core/enums";
-import { getSellingPointsAction } from "./action-types";
+export const getSellingPointsAction = (data: any): GetSellingPointsAction => ({
+  type: GET_SELLING_POINTS,
+  payload: data,
+});
 
-export const getSellingPointsActionAsync = () => {
-  return async (dispatch: Dispatch, getState: () => RootStore) => {
-    try {
-      dispatch(getSellingPointsAction({ status: StatusEnum.running }));
-      const response: AxiosResponse = await axiosInstance({
-        method: "GET",
-        url: `/admin/selling-point/`,
-      });
-      if (response.status === 200 || response.status === 201) {
-        dispatch(
-          getSellingPointsAction({
-            status: StatusEnum.success,
-            data: response.data.data,
-          })
-        );
-      }
-    } catch (error: any) {
-      dispatch(
-        getSellingPointsAction({
-          status: StatusEnum.error,
-          error: error.response,
-        })
-      );
-    }
-  };
-};
+export const changePagePointsAction = (
+  page: number
+): ChangeSellingPageAction => ({
+  type: CHANGE_SELLING_PAGE,
+  payload: page,
+});

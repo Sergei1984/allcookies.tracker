@@ -1,21 +1,10 @@
-import { GET_SELLING_POINTS } from "./types";
-import { StatusEnum } from "../../core/enums";
+import {
+  GET_SELLING_POINTS,
+  CHANGE_SELLING_PAGE,
+  SellingPointsState,
+} from "./types";
 import { ActionType } from "../../core/types";
-import { SellingPointModel } from "../../models/selling-point.model";
-
-export interface SellingPointsState {
-  status: StatusEnum;
-  data: SellingPointModel[];
-  error?: any;
-  page: number;
-}
-
-const initialState = {
-  status: StatusEnum.initial,
-  data: [] as SellingPointModel[],
-  error: null,
-  page: 1,
-};
+import { initialState } from "./store";
 
 const sellingPointsReducer = (
   state: SellingPointsState = initialState,
@@ -24,7 +13,8 @@ const sellingPointsReducer = (
   switch (action.type) {
     case GET_SELLING_POINTS:
       return { ...state, ...action.payload };
-
+    case CHANGE_SELLING_PAGE:
+      return { ...state, page: action.payload };
     default:
       return state;
   }
