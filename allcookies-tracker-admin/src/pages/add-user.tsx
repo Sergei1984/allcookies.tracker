@@ -6,6 +6,10 @@ import classes from "../assets/styles/scss/addUser.module.scss";
 import DashboardLayout from "../layouts/dashboard";
 import { UsersRoute } from "../routes/urls";
 import { IUser } from "../store/addUsers/types";
+import {ILogin} from "../store/auth/types";
+import {authThunk} from "../store/auth/thunk/authThunk";
+import {getAllUserThunk} from "../store/addUsers/thunk/userThunk";
+import {useDispatch} from "react-redux";
 
 const defaultUser = {
   firstName: "",
@@ -22,9 +26,10 @@ const loginSchema = yup.object().shape({
 });
 
 const AddUser = () => {
-  const handleLogin = (values: IUser): void => {
-    console.log(values);
-  };
+  const dispatch = useDispatch();
+  const handleLogin = (): void => {
+    console.log(dispatch(getAllUserThunk()));
+  }
 
   return (
     <DashboardLayout>

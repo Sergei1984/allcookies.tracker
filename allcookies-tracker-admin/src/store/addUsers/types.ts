@@ -1,4 +1,4 @@
-export const USER = 'USER'
+export const GET_ALL_USER_TYPE = 'USER'
 
 export interface IUser {
 	firstName: string;
@@ -8,6 +8,8 @@ export interface IUser {
 }
 
 export interface UserAction {
-	type: typeof USER;
-	payload: boolean;
+	type: typeof GET_ALL_USER_TYPE;
+	payload:[] ;
 }
+
+export type UserType = UserAction
