@@ -96,20 +96,6 @@ const ListOfProducts: React.FC<Props> = ({ route, navigation }) => {
         images: data.images,
       })
     );
-    // console.log(activity);
-    // if (activity) {
-    //   data.images.map(async (item: any) => {
-    //     const data1 = new FormData();
-    //     data1.append("file", item);
-    //     console.log(data1);
-    //     await dispatch(
-    //       uploadPhotoThunk({
-    //         id: activity,
-    //         photo: data1,
-    //       })
-    //     );
-    //   });
-    // }
     navigation.navigate("Главная");
   }, [products, activity, data.images]);
 
@@ -183,7 +169,11 @@ const ListOfProducts: React.FC<Props> = ({ route, navigation }) => {
           renderItem={renderItem}
           keyExtractor={(_, index) => "products" + index}
         />
-        <AppButton name="Отправить отчет" onPress={sendReport} />
+        <AppButton
+          name="Отправить отчет"
+          onPress={sendReport}
+          disabled={!products.find((item) => item.count !== 0)}
+        />
       </View>
     );
   };
@@ -241,7 +231,7 @@ const ListOfProducts: React.FC<Props> = ({ route, navigation }) => {
       <View style={{ marginBottom: 16 }}>
         <AppButton
           name="Сделать фото"
-          onPress={() => handle.pickSingle(true)}
+          onPress={() => handle.pickSingleWithCamera(true)}
         />
         {/* Photos */}
         {renderPhotos()}
