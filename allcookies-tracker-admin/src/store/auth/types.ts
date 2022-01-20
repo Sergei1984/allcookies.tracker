@@ -14,10 +14,6 @@ export interface IData {
 	ok: boolean
 }
 
-export interface IError {
-	data: string
-}
-
 export interface IResponse {
 	data: IData
 	status: number;

@@ -1,5 +1,7 @@
 import {DataGrid, GridColDef} from '@mui/x-data-grid';
 import * as React from 'react';
+import {NavLink} from "react-router-dom";
+import {AddUserRoute} from "../routes/urls";
 
 
 const columns: GridColDef[] = [
@@ -76,8 +78,10 @@ const rows = [
 ];
 
 export default function UserPageTable() {
+
 	return (
 			<div style={{height: '80%', width: '100%'}}>
+				<NavLink to={AddUserRoute}>Добавление пользователя</NavLink>
 				<DataGrid
 					rows={rows}
 					columns={columns}

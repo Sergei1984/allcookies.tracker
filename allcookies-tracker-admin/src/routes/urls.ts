@@ -28,4 +28,5 @@ export const SettingsRoute: string = "/settings";
 
 export const ProfileRoute: string = "/profile";
 export const UsersRoute: string = "/users";
+export const AddUserRoute: string = "/users/addUsers"
 export const SellingPointsRoute: string = "/selling-points";
