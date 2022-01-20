@@ -87,7 +87,7 @@ const HomeScreen: React.FC<IProps> = ({ navigation }) => {
   }, []);
 
   React.useEffect(() => {
-    setShops([...shops, ...newSellingPoints]);
+    setShops(newSellingPoints);
   }, [newSellingPoints]);
 
   const renderShopPoints = () => {
