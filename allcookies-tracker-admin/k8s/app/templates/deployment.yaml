@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: allcookies-admin
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: allcookies-admin
+  template:
+    metadata:
+      labels:
+        app: allcookies-admin
+    spec:
+      imagePullSecrets:
+        - name: docker-private-reg
+      containers:
+        - name: allcookies-admin-nginx
+          image: "{{ .Values.image.repository }}:{{ required "Image tag is required" .Values.image.tag }}"
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http

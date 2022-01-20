@@ -1,12 +1,14 @@
 import React from "react";
-import { Route, Navigate } from "react-router-dom";
+import {Navigate, Outlet} from "react-router-dom";
+import dashboard from "../../layouts/dashboard";
+import {getAccessToken} from "../../services/localStorage/localStorage.service";
 
-const PrivateRoute: React.FC<{
-  component: React.FC;
-  path: string;
-  exact: boolean;
-}> = (props) => {
-  let token = true;
-  return token ? <Route {...props} /> : <Navigate to="/login" />;
+const PrivateRoute = () => {
+  const token = getAccessToken();
+  if (!token){
+    return <Navigate to={"/signin"}/>
+  }
+  return <Outlet context={dashboard}/>
 };
+
 export default PrivateRoute;
