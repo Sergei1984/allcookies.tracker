@@ -492,7 +492,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = allcookiesTracker/allcookiesTracker.entitlements;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = 8KSG3VT4HA;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = allcookiesTracker/Info.plist;
@@ -520,7 +520,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = allcookiesTracker/allcookiesTrackerRelease.entitlements;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = 69949DM6UQ;
 				INFOPLIST_FILE = allcookiesTracker/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
