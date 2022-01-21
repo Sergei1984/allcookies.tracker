@@ -2,6 +2,7 @@ import {
   GET_SELLING_POINTS,
   CHANGE_SELLING_PAGE,
   SellingPointsState,
+  ADD_SELLING_POINT,
 } from "./types";
 import { ActionType } from "../../core/types";
 import { initialState } from "./store";
@@ -15,6 +16,8 @@ const sellingPointsReducer = (
       return { ...state, ...action.payload };
     case CHANGE_SELLING_PAGE:
       return { ...state, page: action.payload };
+    case ADD_SELLING_POINT:
+      return { ...state, ...action.payload };
     default:
       return state;
   }

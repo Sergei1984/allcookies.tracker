@@ -4,9 +4,11 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Button from "@mui/material/Button";
 
+import { useNavigate } from "react-router-dom";
 // ICONS
 import AddBusinessIcon from "@mui/icons-material/AddBusiness";
 import CustomCheckbox from "../custom-checkbox";
+import { AddSellingPointRoute } from "../../routes/urls";
 
 type Order = "asc" | "desc";
 
@@ -19,16 +21,17 @@ interface EnhancedTableProps {
 }
 
 const EnhancedTableHead = (props: EnhancedTableProps): JSX.Element => {
+  const navigate = useNavigate();
+
+  const handleBackClick = () => {
+    navigate(AddSellingPointRoute);
+  };
+
   const { onSelectAllClick, order, numSelected, rowCount, handleOpenModal } =
     props;
 
   return (
     <TableHead>
-      {/* <TableRow>
-        <TableCell colSpan={7}>
-        <CustomizedInput />
-        </TableCell>
-      </TableRow> */}
       <TableRow
         style={{ backgroundColor: "#EFF0F6", boxShadow: "0px 1px 0px #DADBE4" }}
       >
@@ -70,7 +73,7 @@ const EnhancedTableHead = (props: EnhancedTableProps): JSX.Element => {
               lineHeight: "140%",
               fontWeight: 500,
             }}
-            onClick={handleOpenModal}
+            onClick={handleBackClick}
           >
             <AddBusinessIcon sx={{ color: "#42A6A6", ml: 2, mr: 1 }} />
             Добавить магазин

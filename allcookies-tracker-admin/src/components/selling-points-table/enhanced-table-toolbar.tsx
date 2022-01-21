@@ -4,12 +4,14 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
+import Box from "@mui/material/Box";
 import DeleteIcon from "@mui/icons-material/Delete";
-import FilterListIcon from "@mui/icons-material/FilterList";
-
+import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
+import NestedTableOptionsList from "../more-options";
 // ICONS
 import CustomizedInput from "../custom-input";
 import { CustomizedTableSelect } from "../table-select";
+import TableDotsPopover from "../popover";
 
 type Order = "asc" | "desc";
 
@@ -31,57 +33,46 @@ const EnhancedTableToolbar = (
   const { numSelected } = props;
 
   return (
-    <Toolbar
+    <Box
+      display="flex"
+      justifyContent="space-between"
       sx={{
-        pl: { sm: 2 },
-        pr: { xs: 1, sm: 1 },
-        display: "flex",
-        justifyContent: "space-between",
-        ...(numSelected > 0 && {
-          bgcolor: (theme) =>
-            alpha(
-              theme.palette.primary.main,
-              theme.palette.action.activatedOpacity
-            ),
-        }),
+        padding: "10px",
       }}
     >
-      {numSelected > 0 ? (
-        <Typography
-          sx={{ flex: "1 1 100%" }}
-          color="inherit"
-          variant="subtitle1"
-          component="div"
-        >
-          {numSelected} выбрано
-        </Typography>
-      ) : (
-        <Typography
-          sx={{ flex: "1 1 100%" }}
-          variant="h6"
-          id="tableTitle"
-          component="div"
-        >
-          Выбрано
-        </Typography>
-      )}
-      <CustomizedInput />
-      <CustomizedTableSelect />
-      <CustomizedTableSelect />
-      {numSelected > 0 ? (
-        <Tooltip title="Delete">
-          <IconButton>
-            <DeleteIcon />
-          </IconButton>
-        </Tooltip>
-      ) : (
-        <Tooltip title="Filter list">
-          <IconButton>
-            <FilterListIcon />
-          </IconButton>
-        </Tooltip>
-      )}
-    </Toolbar>
+      <Box
+        display="flex"
+        justifyContent="space-between"
+        sx={{
+          padding: "10px",
+        }}
+      >
+        <CustomizedInput />
+      </Box>
+      <Box
+        display="flex"
+        justifyContent="space-between"
+        sx={{
+          padding: "10px",
+        }}
+      >
+        <Box>
+          <CustomizedTableSelect />
+        </Box>
+        <Box>
+          <CustomizedTableSelect />
+        </Box>
+        <Box>
+          <TableDotsPopover>
+            <NestedTableOptionsList
+              title={`Выбрано: ${numSelected}`}
+              item={{ is_disabled: true }}
+              multiple
+            />
+          </TableDotsPopover>
+        </Box>
+      </Box>
+    </Box>
   );
 };
 

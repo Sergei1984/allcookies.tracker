@@ -8,7 +8,6 @@ import {
   changePageThunk,
 } from "../store/selling-points/thunk";
 import { useDispatch, useSelector } from "react-redux";
-import AppModal from "../components/app-modal";
 import { selectSellingPointsStore } from "../store/selling-points/selectors";
 import { SellingPointsState } from "../store/selling-points/types";
 
@@ -45,13 +44,6 @@ const SellingPointsContainer =
           changePage={changePage}
           handleOpenModal={handleOpenModal}
         />
-        <AppModal
-          title="Modal"
-          open={isOpenModal}
-          handleClose={handleCloseModal}
-        >
-          Modal
-        </AppModal>
       </>
     );
   };

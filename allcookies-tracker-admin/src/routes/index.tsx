@@ -11,6 +11,7 @@ import {
   SellingPointsPage,
   SettingsPage,
   UsersPage,
+  AddSellingPointPage,
 } from "../pages";
 import Login from "../pages/login";
 
@@ -25,6 +26,10 @@ const AppRoutes = () => {
           <Route
             path={urls.SellingPointsRoute}
             element={<SellingPointsPage />}
+          />
+          <Route
+            path={urls.AddSellingPointRoute}
+            element={<AddSellingPointPage />}
           />
           <Route path={urls.ProfileRoute} element={<ProfilePage />} />
           <Route path={urls.UsersRoute} element={<UsersPage />} />

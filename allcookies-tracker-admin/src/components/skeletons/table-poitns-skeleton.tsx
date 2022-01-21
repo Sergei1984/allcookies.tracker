@@ -1,8 +1,7 @@
 import React from "react";
 import Skeleton from "@mui/material/Skeleton";
 
-import StyledTableCell from "../styled-table-cell";
-import StyledTableRow from "../styled-table-row";
+import { TableRow, TableCell } from "@mui/material";
 
 interface TablePointsSkeletonProps {
   count?: number;
@@ -16,29 +15,29 @@ const TablePointsSkeleton = ({
     <>
       {countArray?.map((item, index) => {
         return (
-          <StyledTableRow key={index} hover role="checkbox" tabIndex={-1}>
-            <StyledTableCell padding="checkbox">
+          <TableRow key={index} hover role="checkbox" tabIndex={-1}>
+            <TableCell padding="checkbox">
               <Skeleton variant="text" />
-            </StyledTableCell>
-            <StyledTableCell component="th" align="left" scope="row">
+            </TableCell>
+            <TableCell component="th" align="left" scope="row">
               <Skeleton variant="text" />
-            </StyledTableCell>
-            <StyledTableCell align="left">
+            </TableCell>
+            <TableCell align="left">
               <Skeleton variant="text" />
-            </StyledTableCell>
-            <StyledTableCell align="center">
+            </TableCell>
+            <TableCell align="center">
               <Skeleton variant="text" />
-            </StyledTableCell>
-            <StyledTableCell align="center">
+            </TableCell>
+            <TableCell align="center">
               <Skeleton variant="text" />
-            </StyledTableCell>
-            <StyledTableCell align="center">
+            </TableCell>
+            <TableCell align="center">
               <Skeleton variant="text" />
-            </StyledTableCell>
-            <StyledTableCell align="right">
+            </TableCell>
+            <TableCell align="right">
               <Skeleton variant="text" />
-            </StyledTableCell>
-          </StyledTableRow>
+            </TableCell>
+          </TableRow>
         );
       })}
     </>

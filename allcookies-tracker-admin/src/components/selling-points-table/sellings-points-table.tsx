@@ -17,6 +17,7 @@ import PaginationBox from "../pagination/pagination-box";
 import { TablePointsSkeleton } from "../skeletons";
 import EnhancedTableHead from "./enhanced-table-head";
 import EnhancedTableToolbar from "./enhanced-table-toolbar";
+import NestedTableOptionsList from "../more-options";
 
 type Order = "asc" | "desc";
 
@@ -161,17 +162,22 @@ const SellingPointsTable = ({
                         {formatValueToDate(row.modified_at)}
                       </StyledTableCell>
                       <StyledTableCell align="right">
-                        <TableDotsPopover />
+                        <TableDotsPopover>
+                          <NestedTableOptionsList
+                            title={"Доп операции: " + row.id}
+                            item={row}
+                          />
+                        </TableDotsPopover>
                       </StyledTableCell>
                     </StyledTableRow>
                   );
                 })
               )}
-              {emptyRows > 0 && (
+              {/* {emptyRows > 0 && (
                 <StyledTableRow>
                   <StyledTableCell colSpan={6} />
                 </StyledTableRow>
-              )}
+              )} */}
             </TableBody>
           </Table>
         </TableContainer>
