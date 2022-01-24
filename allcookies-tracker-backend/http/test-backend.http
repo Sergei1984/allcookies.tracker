@@ -36,7 +36,7 @@ Authorization: {{auth.response.body.jwt}}
 Content-Type: application/json
 
 {
-    "title": "A",
+    "title": "A1234",
     "is_disabled": false
 }
 
@@ -46,7 +46,8 @@ Authorization: {{auth.response.body.jwt}}
 Content-Type: application/json
 
 {
-    "title": "Test point2",
+    "title": "Test point2-2233",
+    "is_disabled": false,
     "location": {
         "lon": 50,
         "lat": 33
