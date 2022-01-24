@@ -1,6 +1,5 @@
 import React from "react";
 
-import SellingPointsTable from "../components/selling-points-table/sellings-points-table";
 import PageTitle from "../components/page-title";
 
 import {
@@ -10,17 +9,22 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { selectSellingPointsStore } from "../store/selling-points/selectors";
 import { SellingPointsState } from "../store/selling-points/types";
+import CustomTable from "../components/custom-table";
+
+const tableHead = [
+  "Магазин",
+  "Описание",
+  "Адрес",
+  "Добавлен",
+  "Изменен",
+  "Доп.",
+];
 
 interface SellingPointsContainerProps {}
 
 const SellingPointsContainer =
   ({}: SellingPointsContainerProps): JSX.Element => {
-    const [isOpenModal, setOpenModal] = React.useState(false);
-
     const dispatch = useDispatch();
-
-    const handleOpenModal = () => setOpenModal(true);
-    const handleCloseModal = () => setOpenModal(false);
 
     const data: SellingPointsState = useSelector(selectSellingPointsStore);
 
@@ -34,15 +38,15 @@ const SellingPointsContainer =
     return (
       <>
         <PageTitle title="Магазины" />
-        <SellingPointsTable
-          getPoints={getPoints}
+        <CustomTable
+          getPageData={getPoints}
           page={data.page}
           limit={data.limit}
           total={data.total || 0}
           data={data.data}
           loading={data.status === "running"}
           changePage={changePage}
-          handleOpenModal={handleOpenModal}
+          headData={tableHead}
         />
       </>
     );
