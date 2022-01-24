@@ -26,7 +26,8 @@ export interface SellingPointState {
 
 export interface SellingPointData {
     location: Location,
-    title: string
+    title: string,
+    is_disabled?: boolean
 }
 
 interface ProductToSending {

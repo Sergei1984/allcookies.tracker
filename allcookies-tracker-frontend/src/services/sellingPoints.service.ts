@@ -9,6 +9,7 @@ export class SellingPoints {
     }
 
     public createSellingPoint = async (data: SellingPointData) => {
+        console.log('data', data)
         let response = await axiosInstance.post('client/selling-point', data);
         return response.data;
     }

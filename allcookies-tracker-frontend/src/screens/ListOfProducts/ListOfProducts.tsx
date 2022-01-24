@@ -72,7 +72,10 @@ const ListOfProducts: React.FC<Props> = ({ route, navigation }) => {
 
   const searchProduct = (value: string) => {
     const data = products.map((item) =>
-      item.title.includes(value)
+      item.title
+        .replace(/[^A-Za-zА-Яа-я0-9]/g, "")
+        .toLowerCase()
+        .includes(value.replace(/[^A-Za-zА-Яа-я0-9]/g, "").toLowerCase())
         ? { ...item, isShow: true }
         : { ...item, isShow: false }
     );

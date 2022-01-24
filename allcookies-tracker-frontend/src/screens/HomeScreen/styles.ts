@@ -145,7 +145,19 @@ const createStyles = () => StyleSheet.create({
         textAlign: "center",
         paddingHorizontal: SIZES.paddingHorizontal
       },
-
+      addShopInput: {
+        borderColor: Colors.BLACK,
+        marginLeft: 20,
+        marginRight: 20,
+        marginBottom: 16,
+        width: '88%'
+      },
+      removeButton: {
+        color: '#F04E47'
+      },
+      addButton: {
+        color: Colors.PRIMARY
+      }
 })
 
 export default createStyles;

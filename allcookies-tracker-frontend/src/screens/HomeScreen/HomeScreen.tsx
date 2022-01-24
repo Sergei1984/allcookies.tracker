@@ -15,6 +15,7 @@ import {
 import { AppText } from "../../components/AppText";
 import createStyles from "./styles";
 import {
+  createSellingPointThunk,
   getNewSellingPointsThunk,
   getSellingPointsThunk,
 } from "../../store/sellingPoint/thunk";
@@ -38,7 +39,9 @@ const HomeScreen: React.FC<IProps> = ({ navigation }) => {
 
   const [shops, setShops] = React.useState<SellingPoint[]>([]);
   const [modalVisible, setModalVisible] = React.useState(false);
+  const [modalVisibleShop, setModalVisibleShop] = React.useState(false);
   const [refreshing, setRefreshing] = React.useState(false);
+  const [newShopTitle, setNewShopTitle] = React.useState("");
 
   React.useEffect(() => {
     (async () => {
@@ -56,10 +59,28 @@ const HomeScreen: React.FC<IProps> = ({ navigation }) => {
     setShops(sellingPointData);
   }, [sellingPointData]);
 
+  const handleChangeNewShop = React.useCallback((value: string) => {
+    setNewShopTitle(value);
+  }, []);
+
+  const handleAddNewShop = React.useCallback(async () => {
+    await dispatch(
+      createSellingPointThunk({
+        title: newShopTitle,
+        location: location,
+        is_disabled: false,
+      })
+    );
+    setModalVisibleShop(!modalVisibleShop);
+  }, [newShopTitle]);
+
   const searchShop = React.useCallback(
     (value: string) => {
       const data = sellingPointData.filter((item) =>
-        item.title.toLowerCase().includes(value.toLowerCase())
+        item.title
+          .replace(/[^A-Za-zА-Яа-я0-9]/g, "")
+          .toLowerCase()
+          .includes(value.replace(/[^A-Za-zА-Яа-я0-9]/g, "").toLowerCase())
       );
       setShops(data);
     },
@@ -108,7 +129,7 @@ const HomeScreen: React.FC<IProps> = ({ navigation }) => {
       <View style={styles.pointsWrapper}>
         <FlatList
           data={shops}
-          style={{ height: "60%" }}
+          style={{ height: "60%", marginTop: 16 }}
           numColumns={2}
           renderItem={renderItem}
           keyExtractor={(item) => item.id.toString()}
@@ -198,6 +219,11 @@ const HomeScreen: React.FC<IProps> = ({ navigation }) => {
           placeholder="Поиск"
           onChangeText={(value) => searchShop(value)}
         />
+
+        <AppButton
+          name="Добавить магазин"
+          onPress={() => setModalVisibleShop(true)}
+        />
       </View>
       {renderShopPoints()}
 
@@ -232,6 +258,59 @@ const HomeScreen: React.FC<IProps> = ({ navigation }) => {
             >
               <AppText style={styles.textStyle}>OK</AppText>
             </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={modalVisibleShop}
+        onRequestClose={() => {
+          setModalVisibleShop(!modalVisibleShop);
+        }}
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <View
+              style={{
+                borderBottomColor: "rgba(60, 60, 67, 0.29)",
+                borderBottomWidth: 1,
+                marginHorizontal: -35,
+                marginBottom: 16,
+              }}
+            >
+              <AppText style={[styles.modalText, { fontWeight: "600" }]}>
+                Добавить магазин
+              </AppText>
+              <AppText style={styles.modalText}>
+                Введите название магазина который хотите добавить
+              </AppText>
+              <AppTextInput
+                style={styles.addShopInput}
+                onChangeText={(value) => handleChangeNewShop(value)}
+              />
+            </View>
+            <View
+              style={{ flexDirection: "row", justifyContent: "space-evenly" }}
+            >
+              <TouchableOpacity
+                style={[styles.button, styles.buttonClose]}
+                onPress={() => setModalVisibleShop(!modalVisibleShop)}
+              >
+                <AppText style={styles.textStyle} color="#F04E47">
+                  Отмена
+                </AppText>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.button, styles.buttonClose]}
+                onPress={handleAddNewShop}
+              >
+                <AppText style={styles.textStyle} color="#42A6A6">
+                  Добавить
+                </AppText>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
       </Modal>

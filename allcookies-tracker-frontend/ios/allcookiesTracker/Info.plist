@@ -41,10 +41,10 @@
 	<string>$(PRODUCT_NAME) requires to access camera for uploading photos to your profile or posts</string>
 	<key>NSFaceIDUsageDescription</key>
 	<string>Enabling Face ID allows you quick and secure access to your account.</string>
-	<key>NSLocationAlwaysUsageDescription</key>
-	<string>Some message to appease Apple.</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>use location for get current country</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Some message to appease Apple.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>$(PRODUCT_NAME) requires to access Audio recording to record and uplod videos</string>
 	<key>NSPhotoLibraryUsageDescription</key>

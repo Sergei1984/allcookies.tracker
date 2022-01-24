@@ -1,5 +1,6 @@
 import Geolocation from '@react-native-community/geolocation';
 import React from 'react';
+import { Platform } from 'react-native';
 
 const useLocation = () => {
   const [location, setLocation] = React.useState({
@@ -7,18 +8,26 @@ const useLocation = () => {
     lon: 0,
   });
 
-  const getLocation = () => {
-    Geolocation.getCurrentPosition(
-      async (position) => {
-        setLocation({
-          lat: position.coords.latitude,
-          lon: position.coords.longitude,
-        });
-      },
-      (_error) => {
-        console.log(_error);
-      }
-    );
+  React.useEffect(() => {
+    (async () => {
+      await Geolocation.requestAuthorization();
+    })()
+  }, [])
+
+  const getLocation = async () => {
+  
+      await Geolocation.getCurrentPosition(
+        async (position) => {
+          setLocation({
+            lat: position.coords.latitude,
+            lon: position.coords.longitude,
+          });
+        },
+        (_error) => {
+          console.log(_error);
+        }
+      );
+    
   };
 
   React.useEffect(() => {
