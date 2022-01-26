@@ -15,7 +15,6 @@ import {
 import { AppText } from "../../components/AppText";
 import createStyles from "./styles";
 import {
-  createSellingPointThunk,
   getNewSellingPointsThunk,
   getSellingPointsThunk,
 } from "../../store/sellingPoint/thunk";
@@ -27,10 +26,10 @@ import { AppTextInput } from "../../components/AppTextInput/AppTextInput";
 import { SellingPoint } from "../../store/sellingPoint/types";
 import useLocation from "../../hooks/useLocation";
 import { AppButton } from "../../components/AppButton/AppButton";
-import { UserAPI } from "../../services/user.service";
 interface IProps {
   navigation: NavigationProp<ParamListBase>;
 }
+
 const HomeScreen: React.FC<IProps> = ({ navigation }) => {
   const { timerData, handlers } = useTimer();
   const styles = React.useMemo(() => createStyles(), []);
@@ -38,10 +37,9 @@ const HomeScreen: React.FC<IProps> = ({ navigation }) => {
   const dispatch = useAppDispatch();
 
   const [shops, setShops] = React.useState<SellingPoint[]>([]);
+  const [findShop, setFindShop] = React.useState("");
   const [modalVisible, setModalVisible] = React.useState(false);
-  const [modalVisibleShop, setModalVisibleShop] = React.useState(false);
   const [refreshing, setRefreshing] = React.useState(false);
-  const [newShopTitle, setNewShopTitle] = React.useState("");
 
   React.useEffect(() => {
     (async () => {
@@ -59,28 +57,11 @@ const HomeScreen: React.FC<IProps> = ({ navigation }) => {
     setShops(sellingPointData);
   }, [sellingPointData]);
 
-  const handleChangeNewShop = React.useCallback((value: string) => {
-    setNewShopTitle(value);
-  }, []);
-
-  const handleAddNewShop = React.useCallback(async () => {
-    await dispatch(
-      createSellingPointThunk({
-        title: newShopTitle,
-        location: location,
-        is_disabled: false,
-      })
-    );
-    setModalVisibleShop(!modalVisibleShop);
-  }, [newShopTitle]);
-
   const searchShop = React.useCallback(
     (value: string) => {
+      setFindShop(value);
       const data = sellingPointData.filter((item) =>
-        item.title
-          .replace(/[^A-Za-zА-Яа-я0-9]/g, "")
-          .toLowerCase()
-          .includes(value.replace(/[^A-Za-zА-Яа-я0-9]/g, "").toLowerCase())
+        item.title.toLowerCase().includes(value.toLowerCase())
       );
       setShops(data);
     },
@@ -104,11 +85,12 @@ const HomeScreen: React.FC<IProps> = ({ navigation }) => {
   const onRefresh = React.useCallback(async () => {
     setRefreshing(true);
     await dispatch(getNewSellingPointsThunk(location));
+    setFindShop("");
     setRefreshing(false);
   }, []);
 
   React.useEffect(() => {
-    setShops(newSellingPoints);
+    setShops([...shops, ...newSellingPoints]);
   }, [newSellingPoints]);
 
   const renderShopPoints = () => {
@@ -129,7 +111,7 @@ const HomeScreen: React.FC<IProps> = ({ navigation }) => {
       <View style={styles.pointsWrapper}>
         <FlatList
           data={shops}
-          style={{ height: "60%", marginTop: 16 }}
+          style={{ height: "60%" }}
           numColumns={2}
           renderItem={renderItem}
           keyExtractor={(item) => item.id.toString()}
@@ -140,28 +122,6 @@ const HomeScreen: React.FC<IProps> = ({ navigation }) => {
       </View>
     );
   };
-
-  // React.useEffect(() => {
-  //   (async () => {
-  //     await UserAPI.getActivity();
-  //   })();
-  // }, []);
-
-  const activity = useAppSelector((state) => state.userReducer.activity);
-
-  React.useEffect(() => {
-    (async () => {
-      if (timerData.toggle) {
-        console.log("activtiys", activity && activity);
-        await AsyncStorageLib.setItem(
-          "currentActivity",
-          JSON.stringify(activity && activity)
-        );
-        return;
-      }
-      // await AsyncStorageLib.setItem("currentActivity", JSON.stringify(null));
-    })();
-  }, [timerData.toggle, activity]);
 
   return (
     <View style={styles.body}>
@@ -217,12 +177,8 @@ const HomeScreen: React.FC<IProps> = ({ navigation }) => {
         <AppTextInput
           style={styles.searchInput}
           placeholder="Поиск"
+          value={findShop}
           onChangeText={(value) => searchShop(value)}
-        />
-
-        <AppButton
-          name="Добавить магазин"
-          onPress={() => setModalVisibleShop(true)}
         />
       </View>
       {renderShopPoints()}
@@ -258,59 +214,6 @@ const HomeScreen: React.FC<IProps> = ({ navigation }) => {
             >
               <AppText style={styles.textStyle}>OK</AppText>
             </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
-
-      <Modal
-        animationType="fade"
-        transparent={true}
-        visible={modalVisibleShop}
-        onRequestClose={() => {
-          setModalVisibleShop(!modalVisibleShop);
-        }}
-      >
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <View
-              style={{
-                borderBottomColor: "rgba(60, 60, 67, 0.29)",
-                borderBottomWidth: 1,
-                marginHorizontal: -35,
-                marginBottom: 16,
-              }}
-            >
-              <AppText style={[styles.modalText, { fontWeight: "600" }]}>
-                Добавить магазин
-              </AppText>
-              <AppText style={styles.modalText}>
-                Введите название магазина который хотите добавить
-              </AppText>
-              <AppTextInput
-                style={styles.addShopInput}
-                onChangeText={(value) => handleChangeNewShop(value)}
-              />
-            </View>
-            <View
-              style={{ flexDirection: "row", justifyContent: "space-evenly" }}
-            >
-              <TouchableOpacity
-                style={[styles.button, styles.buttonClose]}
-                onPress={() => setModalVisibleShop(!modalVisibleShop)}
-              >
-                <AppText style={styles.textStyle} color="#F04E47">
-                  Отмена
-                </AppText>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.button, styles.buttonClose]}
-                onPress={handleAddNewShop}
-              >
-                <AppText style={styles.textStyle} color="#42A6A6">
-                  Добавить
-                </AppText>
-              </TouchableOpacity>
-            </View>
           </View>
         </View>
       </Modal>
