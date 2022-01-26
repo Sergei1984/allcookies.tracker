@@ -99,23 +99,28 @@ export default function UserPageTable() {
 		{ field: 'id', headerName: 'ID', width: 90 },
 		{
 			field: 'name',
-			headerName: 'Vitaly',
-			width: 150,
+			headerName: 'Пользователи',
+			width: 250,
+			editable: false,
+		},
+		{
+			field: 'workTime',
+			headerName: 'Рабочие время',
+			width: 250,
+			editable: false,
+		},
+		{
+			field: 'market',
+			headerName: 'Магазины',
+			width: 250,
 			editable: false,
 		},
 		{
 			field: 'login',
-			headerName: 'Login',
-			width: 150,
+			headerName: 'email',
+			width: 250,
 			editable: false,
 		},
-		{
-			field: 'is_blocked',
-			headerName: 'Blocked',
-			type: 'number',
-			width: 110,
-			editable: false,
-		}
 	];
 
 	console.log(users)

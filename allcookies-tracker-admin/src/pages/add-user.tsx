@@ -1,5 +1,5 @@
 import {Field, Form, Formik} from "formik";
-import React from "react";
+import React, {ChangeEvent} from "react";
 import {useDispatch} from "react-redux";
 import {NavLink} from "react-router-dom";
 import * as yup from "yup";
@@ -26,8 +26,6 @@ const loginSchema = yup.object().shape({
 
 const AddUser = () => {
 	const dispatch = useDispatch();
-	// const [alert, setAlert] = useState(false);
-	// const [alertContent, setAlertContent] = useState('')
 
 	const handleUser = React.useCallback(async (values: IUser) => {
 		const data = {
