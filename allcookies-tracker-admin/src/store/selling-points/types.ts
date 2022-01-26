@@ -9,8 +9,6 @@ export interface SellingPointsState {
   status: StatusEnum;
   data: SellingPointModel[];
   total: number;
-  page: number;
-  limit: number;
   error?: any;
 }
 
