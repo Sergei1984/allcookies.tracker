@@ -28,10 +28,8 @@ export const SettingsRoute: string = "/settings";
 
 export const ProfileRoute: string = "/profile";
 export const UsersRoute: string = "/users";
-<<<<<<< HEAD
-export const AddUserRoute: string = "/users/users"
-=======
-export const AddUserRoute: string = "/users/addUsers";
->>>>>>> origin/web-admin-outlets
+
+export const AddUserRoute: string = "/users/user-accounts"
+
 export const SellingPointsRoute: string = "/selling-points";
 export const AddSellingPointRoute: string = "/selling-points/add-selling-point";

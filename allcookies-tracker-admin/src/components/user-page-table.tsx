@@ -123,8 +123,6 @@ export default function UserPageTable() {
 		},
 	];
 
-	console.log(users)
-
 	return (
 			<div style={{height: '80%', width: '100%'}}>
 				<NavLink to={AddUserRoute}>Добавление пользователя</NavLink>

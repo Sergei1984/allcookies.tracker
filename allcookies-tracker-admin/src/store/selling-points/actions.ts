@@ -3,6 +3,8 @@ import {
   GET_SELLING_POINTS,
   GetSellingPointsAction,
   ChangeSellingPageAction,
+  ADD_SELLING_POINT,
+  AddSellingPointPayload,
 } from "./types";
 
 export const getSellingPointsAction = (data: any): GetSellingPointsAction => ({
@@ -15,4 +17,9 @@ export const changePagePointsAction = (
 ): ChangeSellingPageAction => ({
   type: CHANGE_SELLING_PAGE,
   payload: page,
+});
+
+export const addSellingPointAction = (payload: any): any => ({
+  type: ADD_SELLING_POINT,
+  payload: payload,
 });

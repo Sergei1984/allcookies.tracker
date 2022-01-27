@@ -17,18 +17,17 @@ interface EnhancedTableProps {
   onSelectAllClick: (event: React.ChangeEvent<HTMLInputElement>) => void;
   order: Order;
   rowCount: number;
-  handleOpenModal: () => void;
+  headData: Array<string>;
 }
 
-const EnhancedTableHead = (props: EnhancedTableProps): JSX.Element => {
+const CustomTableHead = (props: EnhancedTableProps): JSX.Element => {
   const navigate = useNavigate();
 
   const handleBackClick = () => {
     navigate(AddSellingPointRoute);
   };
 
-  const { onSelectAllClick, order, numSelected, rowCount, handleOpenModal } =
-    props;
+  const { onSelectAllClick, order, numSelected, rowCount, headData } = props;
 
   return (
     <TableHead>
@@ -55,12 +54,19 @@ const EnhancedTableHead = (props: EnhancedTableProps): JSX.Element => {
             }}
           />
         </TableCell>
-        <TableCell align="left">Магазин</TableCell>
+        {headData?.map((item, index) => {
+          return (
+            <TableCell key={index} align="center">
+              {item}
+            </TableCell>
+          );
+        })}
+        {/* <TableCell align="left">Магазин</TableCell>
         <TableCell align="left">Описание</TableCell>
         <TableCell align="center">Адрес</TableCell>
         <TableCell align="center">Добавлен</TableCell>
         <TableCell align="center">Изменен</TableCell>
-        <TableCell align="right">Доп.</TableCell>
+        <TableCell align="right">Доп.</TableCell> */}
       </TableRow>
       <TableRow>
         <TableCell colSpan={7}>
@@ -84,4 +90,4 @@ const EnhancedTableHead = (props: EnhancedTableProps): JSX.Element => {
   );
 };
 
-export default EnhancedTableHead;
+export default CustomTableHead;

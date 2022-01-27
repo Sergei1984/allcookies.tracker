@@ -27,7 +27,7 @@ interface EnhancedTableToolbarProps {
   numSelected: number;
 }
 
-const EnhancedTableToolbar = (
+const CustomTableToolbar = (
   props: EnhancedTableToolbarProps
 ): JSX.Element => {
   const { numSelected } = props;
@@ -76,4 +76,4 @@ const EnhancedTableToolbar = (
   );
 };
 
-export default EnhancedTableToolbar;
+export default CustomTableToolbar;

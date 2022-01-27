@@ -9,7 +9,8 @@ class UserService {
 	};
 
  	public createUser = async (body: IUser) => {
- 		return await axiosInstance.post('/admin/user-accounts', body)
+ 		const response = await axiosInstance.post('/admin/user-accounts', body);
+		 return response.data
  	};
  }
 

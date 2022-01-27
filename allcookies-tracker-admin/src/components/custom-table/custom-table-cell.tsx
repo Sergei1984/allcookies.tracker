@@ -3,7 +3,7 @@ import React from "react";
 import { styled } from "@mui/material/styles";
 import TableCell, { tableCellClasses } from "@mui/material/TableCell";
 
-const StyledTableCell = styled(TableCell)(({ theme }) => ({
+const CustomTableCell = styled(TableCell)(({ theme }) => ({
   padding: "5px 0px",
   [`&.${tableCellClasses.head}`]: {
     backgroundColor: theme.palette.common.white,
@@ -15,4 +15,4 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
   },
 }));
 
-export default StyledTableCell;
+export default CustomTableCell;

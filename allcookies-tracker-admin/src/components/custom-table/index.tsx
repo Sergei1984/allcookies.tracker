@@ -11,37 +11,38 @@ import CustomPagination from "../pagination/pagination";
 import TableDotsPopover from "../popover";
 import CustomCheckbox from "../custom-checkbox";
 
-import StyledTableCell from "../styled-table-cell";
-import StyledTableRow from "../styled-table-row";
 import PaginationBox from "../pagination/pagination-box";
 import { TablePointsSkeleton } from "../skeletons";
-import EnhancedTableHead from "./enhanced-table-head";
-import EnhancedTableToolbar from "./enhanced-table-toolbar";
+import CustomTableHead from "./custom-table-head";
+import CustomTableToolbar from "./custom-table-toolbar";
 import NestedTableOptionsList from "../more-options";
+import CustomTableCell from "./custom-table-cell";
+import CustomTableRow from "./custom-table-row";
 
 type Order = "asc" | "desc";
 
-interface SellingPointsTableProps {
+interface CustomTableProps {
   loading: boolean;
-  data: Array<any>;
   page: number;
-  limit: number;
   total: number;
-  getPoints: (skip: number, take: number) => void;
-  handleOpenModal: () => void;
+  limit: number;
+  data: Array<any>;
+  headData: Array<string>;
+
+  getPageData: (skip: number, take: number) => void;
   changePage: (page: number) => void;
 }
 
-const SellingPointsTable = ({
+const CustomTable = ({
   loading,
   data,
   total,
   page,
   limit,
-  handleOpenModal,
   changePage,
-  getPoints,
-}: SellingPointsTableProps): JSX.Element => {
+  getPageData,
+  headData,
+}: CustomTableProps): JSX.Element => {
   const [order, setOrder] = React.useState<Order>("asc");
   const [selected, setSelected] = React.useState<readonly string[]>([]);
 
@@ -102,22 +103,22 @@ const SellingPointsTable = ({
     page > 0 ? Math.max(0, (1 + page) * limit - data.length) : 0;
 
   React.useEffect(() => {
-    getPoints((page - 1) * limit, limit);
+    getPageData((page - 1) * limit, limit);
     return () => {};
   }, [page]);
 
   return (
     <Box sx={{ width: "100%" }}>
       <Paper sx={{ width: "100%", mb: 2 }}>
-        <EnhancedTableToolbar numSelected={selected.length} />
-        <TableContainer>
+        <CustomTableToolbar numSelected={selected.length} />
+        <TableContainer sx={{ overflowX: "auto" }}>
           <Table sx={{ minWidth: 320 }} aria-labelledby="tableTitle">
-            <EnhancedTableHead
+            <CustomTableHead
               numSelected={selected.length}
               order={order}
               onSelectAllClick={handleSelectAllClick}
               rowCount={data.length}
-              handleOpenModal={handleOpenModal}
+              headData={headData}
             />
             <TableBody>
               {!hasData ? (
@@ -128,7 +129,7 @@ const SellingPointsTable = ({
                   const labelId = `enhanced-table-checkbox-${index}`;
 
                   return (
-                    <StyledTableRow
+                    <CustomTableRow
                       hover
                       role="checkbox"
                       aria-checked={isItemSelected}
@@ -136,7 +137,7 @@ const SellingPointsTable = ({
                       key={row.id}
                       selected={isItemSelected}
                     >
-                      <StyledTableCell padding="checkbox">
+                      <CustomTableCell padding="checkbox">
                         <CustomCheckbox
                           color="primary"
                           onClick={(event) => handleClick(event, row.title)}
@@ -145,39 +146,34 @@ const SellingPointsTable = ({
                             "aria-labelledby": labelId,
                           }}
                         />
-                      </StyledTableCell>
-                      <StyledTableCell component="th" align="left" scope="row">
+                      </CustomTableCell>
+                      <CustomTableCell component="th" align="left" scope="row">
                         {formatToTableValue(row.title)}
-                      </StyledTableCell>
-                      <StyledTableCell align="left">
+                      </CustomTableCell>
+                      <CustomTableCell align="left">
                         {formatToTableValue(row.description)}
-                      </StyledTableCell>
-                      <StyledTableCell align="center">
+                      </CustomTableCell>
+                      <CustomTableCell align="center">
                         {formatToTableValue(row.address)}
-                      </StyledTableCell>
-                      <StyledTableCell align="center">
+                      </CustomTableCell>
+                      <CustomTableCell align="center">
                         {formatValueToDate(row.created_at)}
-                      </StyledTableCell>
-                      <StyledTableCell align="center">
+                      </CustomTableCell>
+                      <CustomTableCell align="center">
                         {formatValueToDate(row.modified_at)}
-                      </StyledTableCell>
-                      <StyledTableCell align="right">
+                      </CustomTableCell>
+                      <CustomTableCell align="right">
                         <TableDotsPopover>
                           <NestedTableOptionsList
                             title={"Доп операции: " + row.id}
                             item={row}
                           />
                         </TableDotsPopover>
-                      </StyledTableCell>
-                    </StyledTableRow>
+                      </CustomTableCell>
+                    </CustomTableRow>
                   );
                 })
               )}
-              {/* {emptyRows > 0 && (
-                <StyledTableRow>
-                  <StyledTableCell colSpan={6} />
-                </StyledTableRow>
-              )} */}
             </TableBody>
           </Table>
         </TableContainer>
@@ -194,4 +190,4 @@ const SellingPointsTable = ({
   );
 };
 
-export default SellingPointsTable;
+export default CustomTable;

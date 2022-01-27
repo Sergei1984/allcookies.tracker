@@ -14,8 +14,7 @@ export default function CustomizedInput() {
         alignItems: "center",
         background: "#EFF0F6",
         borderRadius: "8px",
-        width: "100%",
-        maxWidth: "338px",
+        width: "338px",
         boxShadow: 0,
       }}
     >

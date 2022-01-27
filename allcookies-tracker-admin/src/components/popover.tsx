@@ -4,9 +4,11 @@ import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 
-interface BasicPopoverProps {}
+interface BasicPopoverProps {
+  children: React.ReactNode;
+}
 
-function TableDotsPopover({}: BasicPopoverProps) {
+function TableDotsPopover({ children }: BasicPopoverProps) {
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null
   );
@@ -42,7 +44,7 @@ function TableDotsPopover({}: BasicPopoverProps) {
           horizontal: "center",
         }}
       >
-        <Typography sx={{ p: 2 }}>The content of the Popover.</Typography>
+        {children}
       </Popover>
     </div>
   );

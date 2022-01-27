@@ -1,11 +1,16 @@
+import CloseIcon from '@mui/icons-material/Close';
+import IconButton from '@mui/material/IconButton';
+import Snackbar from '@mui/material/Snackbar';
 import {Field, Form, Formik} from "formik";
-import React, {ChangeEvent} from "react";
-import {useDispatch} from "react-redux";
+import React from "react";
+import {useDispatch, useSelector} from "react-redux";
 import {NavLink} from "react-router-dom";
 import * as yup from "yup";
 import classes from "../assets/styles/scss/addUser.module.scss";
 import DashboardLayout from "../layouts/dashboard";
 import {UsersRoute} from "../routes/urls";
+import {RootStore} from "../store/rootStore";
+import {errorUserAction} from "../store/users/actions";
 import {createUserThunk} from "../store/users/thunk/createUserThunk";
 import {IUser} from "../store/users/types";
 
@@ -25,8 +30,38 @@ const loginSchema = yup.object().shape({
 });
 
 const AddUser = () => {
-	const dispatch = useDispatch();
+	const [open, setOpen] = React.useState(false);
 
+	const handleClick = () => {
+		setOpen(true);
+	};
+
+	const handleClose = async (event: React.SyntheticEvent | Event, reason?: string) => {
+		if (reason === 'clickaway') {
+			return;
+		}
+
+		await dispatch(errorUserAction({error: false, message: ''}))
+		setOpen(false);
+
+	};
+
+	const action = (
+		<React.Fragment>
+			<IconButton
+				size="small"
+				aria-label="close"
+				color="inherit"
+				onClick={handleClose}
+			>
+				<CloseIcon fontSize="small" />
+			</IconButton>
+		</React.Fragment>
+	);
+
+
+	const dispatch = useDispatch();
+	const userError = useSelector((state: RootStore) => state.userStore.errorData);
 	const handleUser = React.useCallback(async (values: IUser) => {
 		const data = {
 			name: values.firstName + ' ' + values.lastName,
@@ -98,9 +133,16 @@ const AddUser = () => {
 									) : null}
 								</div>
 							</div>
-							<button className={classes.button} type="submit">
+							<button onClick={handleClick}className={classes.button} type="submit">
 								Зарегистрировать
 							</button>
+							<Snackbar
+								open={open}
+								autoHideDuration={3000}
+								onClose={handleClose}
+								message={userError.message}
+								action={action}
+							/>
 						</Form>
 					)}
 				</Formik>

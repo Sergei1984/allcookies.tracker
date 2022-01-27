@@ -8,8 +8,8 @@ class SellingPointsService {
       {}
     );
   };
-  public addNewSellingPoints = async () => {
-    return await axiosInstance.post("/admin/selling-point/create", {}, {});
+  public addNewSellingPoint = async (payload: any) => {
+    return await axiosInstance.post("/admin/selling-point/", payload, {});
   };
 }
 
