@@ -5,9 +5,9 @@ import {RootStore} from "../../rootStore";
 import {getAllUserAction} from "../actions";
 import {UsersResponse, UserType} from "../types";
 
-export const getAllUserThunk = ():  ThunkAction<void, RootStore, unknown, Action<UserType>> =>
+export const getAllUserThunk = (skip:number, take: number):  ThunkAction<void, RootStore, unknown, Action<UserType>> =>
 	async (dispatch: ThunkDispatch<{}, {}, UserType>) => {
-		const response: UsersResponse = await UserAPI.getAllUsers();
+		const response: UsersResponse = await UserAPI.getAllUsers(skip, take);
 
 		if (response) {
 			await dispatch(getAllUserAction(response.data))

@@ -3,8 +3,8 @@ import {IUser} from "../../store/users/types";
 
 
 class UserService {
-	public getAllUsers = async () => {
-		const response = await axiosInstance.get('/admin/user-accounts');
+	public getAllUsers = async (skip: number, take: number) => {
+		const response = await axiosInstance.get(`/admin/user-accounts/?skip=${skip}&take=${take}`);
 		return response.data;
 	};
 
