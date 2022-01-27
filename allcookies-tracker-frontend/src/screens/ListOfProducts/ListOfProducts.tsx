@@ -32,7 +32,7 @@ const ListOfProducts: React.FC<Props> = ({ route, navigation }) => {
 
   React.useEffect(() => {
     (async () => {
-      await dispatch(getProductsThunk());
+      await dispatch(getProductsThunk({ skip: 0, take: 20 }));
     })();
   }, []);
 
@@ -102,6 +102,11 @@ const ListOfProducts: React.FC<Props> = ({ route, navigation }) => {
     navigation.navigate("Главная");
   }, [products, activity, data.images]);
 
+  const handleLoadMore = async () => {
+    await dispatch(getProductsThunk({ skip: products.length, take: 20 }));
+  };
+
+  console.log("products", dataOfProducts.length);
   const renderProducts = () => {
     const renderItem = ({ item }: any) => {
       return (
@@ -171,6 +176,8 @@ const ListOfProducts: React.FC<Props> = ({ route, navigation }) => {
           }}
           renderItem={renderItem}
           keyExtractor={(_, index) => "products" + index}
+          onEndReached={handleLoadMore}
+          onEndReachedThreshold={1}
         />
         <AppButton
           name="Отправить отчет"
