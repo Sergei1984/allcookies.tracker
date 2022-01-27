@@ -25,9 +25,10 @@ interface CustomTableProps {
   total: number;
   data: Array<any>;
   headData: Array<string>;
-  getPageData: (skip: number, take: number) => void;
+  getPageData: (skip: number, take: number, search: string) => void;
   renderRow: (row: any) => React.ReactNode;
-  renderHead: (row: any) => React.ReactNode;
+  IconClickPath: string;
+  Icon: any;
 }
 
 const CustomTable = ({
@@ -37,12 +38,19 @@ const CustomTable = ({
   getPageData,
   headData,
   renderRow,
-  renderHead
+  IconClickPath,
+  Icon,
 }: CustomTableProps): JSX.Element => {
   const [page, setPage] = React.useState(1);
   const [limit, setLimit] = React.useState(10);
   const [order, setOrder] = React.useState<Order>("asc");
   const [selected, setSelected] = React.useState<readonly string[]>([]);
+
+  const [searchString, setSearch] = React.useState("");
+
+  const handleSearchClick = (value: string) => {
+    setSearch(value);
+  };
 
   const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
@@ -122,7 +130,7 @@ const CustomTable = ({
             />
           </CustomTableCell>
           {renderRow(row)}
-          <CustomTableCell align="right">
+          <CustomTableCell align="center">
             <TableDotsPopover>
               <NestedTableOptionsList
                 title={"Доп операции: " + row.id}
@@ -136,14 +144,17 @@ const CustomTable = ({
   }
 
   React.useEffect(() => {
-    getPageData((page - 1) * limit, limit);
+    getPageData((page - 1) * limit, limit, searchString);
     return () => {};
-  }, [page]);
+  }, [page, searchString]);
 
   return (
     <Box>
       <Paper sx={{ width: "100%", mb: 2 }}>
-        <CustomTableToolbar numSelected={selected.length} />
+        <CustomTableToolbar
+          numSelected={selected.length}
+          handleSearchClick={handleSearchClick}
+        />
         <TableContainer sx={{ overflowX: "auto" }}>
           <Table sx={{ minWidth: 320 }} aria-labelledby="tableTitle">
             <CustomTableHead
@@ -152,6 +163,8 @@ const CustomTable = ({
               onSelectAllClick={handleSelectAllClick}
               rowCount={data.length}
               headData={headData}
+              IconClickPath={IconClickPath}
+              Icon={Icon}
             />
             <TableBody>
               {!hasData ? (

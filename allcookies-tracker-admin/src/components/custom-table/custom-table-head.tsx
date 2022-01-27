@@ -6,9 +6,7 @@ import Button from "@mui/material/Button";
 
 import { useNavigate } from "react-router-dom";
 // ICONS
-import AddBusinessIcon from "@mui/icons-material/AddBusiness";
 import CustomCheckbox from "../custom-checkbox";
-import { AddSellingPointRoute } from "../../routes/urls";
 
 type Order = "asc" | "desc";
 
@@ -18,16 +16,26 @@ interface EnhancedTableProps {
   order: Order;
   rowCount: number;
   headData: Array<string>;
+  IconClickPath: string;
+  Icon: any;
 }
 
 const CustomTableHead = (props: EnhancedTableProps): JSX.Element => {
+  const {
+    onSelectAllClick,
+    order,
+    numSelected,
+    rowCount,
+    headData,
+    Icon,
+    IconClickPath,
+  } = props;
+
   const navigate = useNavigate();
 
   const handleBackClick = () => {
-    navigate(AddSellingPointRoute);
+    navigate(IconClickPath);
   };
-
-  const { onSelectAllClick, order, numSelected, rowCount, headData } = props;
 
   return (
     <TableHead>
@@ -61,12 +69,6 @@ const CustomTableHead = (props: EnhancedTableProps): JSX.Element => {
             </TableCell>
           );
         })}
-        {/* <TableCell align="left">Магазин</TableCell>
-        <TableCell align="left">Описание</TableCell>
-        <TableCell align="center">Адрес</TableCell>
-        <TableCell align="center">Добавлен</TableCell>
-        <TableCell align="center">Изменен</TableCell>
-        <TableCell align="right">Доп.</TableCell> */}
       </TableRow>
       <TableRow>
         <TableCell colSpan={7}>
@@ -81,7 +83,7 @@ const CustomTableHead = (props: EnhancedTableProps): JSX.Element => {
             }}
             onClick={handleBackClick}
           >
-            <AddBusinessIcon sx={{ color: "#42A6A6", ml: 2, mr: 1 }} />
+            <Icon sx={{ color: "#42A6A6", ml: 2, mr: 1 }} />
             Добавить магазин
           </Button>
         </TableCell>

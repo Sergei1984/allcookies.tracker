@@ -9,12 +9,13 @@ import { GetSellingPointsPayload } from "../types";
 export const getSellingPointsThunk = ({
   skip,
   take,
+  search,
 }: GetSellingPointsPayload) => {
   return async (dispatch: Dispatch, getState: () => RootStore) => {
     try {
       dispatch(getSellingPointsAction({ status: StatusEnum.running }));
       const response: AxiosResponse =
-        await SellingPointsService.getSellingPoints(skip, take);
+        await SellingPointsService.getSellingPoints(skip, take, search);
       if (response.status === 200 || response.status === 201) {
         dispatch(
           getSellingPointsAction({

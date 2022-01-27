@@ -9,6 +9,8 @@ import { SellingPointsState } from "../store/selling-points/types";
 import CustomTable from "../components/custom-table";
 import CustomTableCell from "../components/custom-table/custom-table-cell";
 import { formatToTableValue, formatValueToDate } from "../utils";
+import AddBusinessIcon from "@mui/icons-material/AddBusiness";
+import { AddSellingPointRoute } from "../routes/urls";
 
 interface SellingPointsContainerProps {}
 
@@ -18,8 +20,10 @@ const SellingPointsContainer =
 
     const data: SellingPointsState = useSelector(selectSellingPointsStore);
 
-    const getPoints = (skip: number, take: number) => {
-      dispatch(getSellingPointsThunk({ skip: skip, take: take }));
+    const getPoints = (skip: number, take: number, search: string) => {
+      dispatch(
+        getSellingPointsThunk({ skip: skip, take: take, search: search })
+      );
     };
 
     return (
@@ -38,9 +42,6 @@ const SellingPointsContainer =
             "Изменен",
             "Доп.",
           ]}
-          renderHead={() => {
-            return <></>;
-          }}
           renderRow={(row: any) => {
             return (
               <>
@@ -62,6 +63,8 @@ const SellingPointsContainer =
               </>
             );
           }}
+          IconClickPath={AddSellingPointRoute}
+          Icon={AddBusinessIcon}
         />
       </>
     );

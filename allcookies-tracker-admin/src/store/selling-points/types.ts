@@ -20,6 +20,7 @@ export interface AddSellingPointPayload {
 export interface GetSellingPointsPayload {
   skip: number;
   take: number;
+  search: string;
 }
 
 export interface GetSellingPoints {
