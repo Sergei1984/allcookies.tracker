@@ -5,6 +5,7 @@ import NestedTableOptionsList from "../more-options";
 import CustomizedInput from "../custom-input";
 import { CustomizedTableSelect } from "../table-select";
 import TableDotsPopover from "../popover";
+import Dropdown from "../dropdown";
 
 type Order = "asc" | "desc";
 
@@ -84,10 +85,12 @@ const CustomTableToolbar = (props: EnhancedTableToolbarProps): JSX.Element => {
         }}
       >
         <Box>
-          <CustomizedTableSelect />
+          {/* <CustomizedTableSelect /> */}
+          <Dropdown />
         </Box>
         <Box>
-          <CustomizedTableSelect />
+          <Dropdown />
+          {/* <CustomizedTableSelect /> */}
         </Box>
         <Box>
           <TableDotsPopover>
