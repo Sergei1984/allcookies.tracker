@@ -1,3 +1,3 @@
-import TablePointsSkeleton from "./table-poitns-skeleton";
+import TableSkeleton from "./table-skeleton";
 
-export { TablePointsSkeleton };
+export { TableSkeleton };
