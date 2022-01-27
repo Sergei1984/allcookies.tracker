@@ -34,8 +34,13 @@ impl<TSellingPointRepo> SellingPointAdminService for SellingPointAdminServiceImp
 where
     TSellingPointRepo: SellingPointRepository + Send + Sync,
 {
-    async fn get_all(&self, skip: i64, take: i64) -> Result<PagedResult<SellingPoint>, AnError> {
-        self.selling_point_repo.get_all(skip, take).await
+    async fn get_all(
+        &self,
+        title: Option<String>,
+        skip: i64,
+        take: i64,
+    ) -> Result<PagedResult<SellingPoint>, AnError> {
+        self.selling_point_repo.get_all(title, skip, take).await
     }
 
     async fn create(&self, item: NewSellingPoint) -> Result<SellingPoint, AnError> {
