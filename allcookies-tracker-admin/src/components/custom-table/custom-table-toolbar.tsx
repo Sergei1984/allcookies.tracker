@@ -3,7 +3,6 @@ import Box from "@mui/material/Box";
 import NestedTableOptionsList from "../more-options";
 // ICONS
 import CustomizedInput from "../custom-input";
-import { CustomizedTableSelect } from "../table-select";
 import TableDotsPopover from "../popover";
 import Dropdown from "../dropdown";
 
@@ -61,7 +60,19 @@ const CustomTableToolbar = (props: EnhancedTableToolbarProps): JSX.Element => {
           <Dropdown title="Адрес" />
         </Box>
         <Box>
-          <Dropdown title="Кол-во" />
+          <Dropdown
+            title="Кол-во"
+            list={[
+              { id: "1", value: 5, label: "5" },
+              { id: "2", value: 10, label: "10" },
+              { id: "3", value: 25, label: "25" },
+              { id: "4", value: 50, label: "50" },
+            ]}
+            defaultValue={25}
+            onChange={(value: any) => {
+              console.log("on change value: ", value);
+            }}
+          />
         </Box>
         <Box>
           <TableDotsPopover>

@@ -47,7 +47,6 @@ const CustomTable = ({
   const [limit, setLimit] = React.useState(10);
   const [order, setOrder] = React.useState<Order>("asc");
   const [selected, setSelected] = React.useState<readonly string[]>([]);
-
   const [searchString, setSearch] = React.useState("");
 
   const handleSearchClick = (value: string) => {
@@ -88,10 +87,8 @@ const CustomTable = ({
     setPage(newPage);
   };
 
-  const handleChangeRowsPerPage = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    // setRowsPerPage(parseInt(event.target.value, 10));
+  const handleChangeRowsPerPage = (values: any) => {
+    setLimit(Number(values.value));
     setPage(1);
   };
 

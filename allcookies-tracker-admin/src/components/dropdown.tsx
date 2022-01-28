@@ -3,31 +3,63 @@ import "../assets/styles/scss/dropdown.scss";
 
 import CheckIcon from "@mui/icons-material/Check";
 
-import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 
-const data = [
-  { id: "asdasdasd", label: "Пушкинская asdasdasda" },
-  { id: "asd3424324", label: "Районная" },
-  { id: "a3sd3424324", label: "Петровасильевка" },
-  { id: "asd34424324", label: "Тактильная" },
-  { id: "asd34s24324", label: "Парижская 44" },
-];
+type ListType = {
+  id: string | number;
+  value: string | number;
+  label: string;
+};
 
 interface DropdownProps {
   title?: string;
+  list?: ListType[];
+  defaultValue?: string | number;
+  onChange?: (value: ListType | null) => void;
 }
 
-const Dropdown = ({ title }: DropdownProps): JSX.Element => {
+const Dropdown = ({
+  title,
+  list = [] as ListType[],
+  defaultValue,
+  onChange,
+}: DropdownProps): JSX.Element => {
   const [isOpen, setOpen] = useState(false);
-  const [items, setItem] = useState(data);
-  const [selectedItem, setSelectedItem] = useState(null);
+  const [selectedItem, setSelectedItem] = useState<string | number | null>(
+    null
+  );
+  const [selectedIndex, setSelectedIndex] = useState<number>(0);
 
   const toggleDropdown = () => setOpen(!isOpen);
 
-  const handleItemClick = (id: any) => {
+  const handleItemClick = (idx: number, id: string) => {
+    setSelectedIndex(idx);
     selectedItem == id ? setSelectedItem(null) : setSelectedItem(id);
   };
+
+  useEffect(() => {
+    if (defaultValue && list.length > 0) {
+      const defValue: ListType | any = list?.find(
+        (item: ListType, idx: number) => {
+          if (String(item.value) === String(defaultValue)) {
+            return { index: idx, ...item };
+          }
+        }
+      );
+      if (defValue) {
+        console.log(defValue);
+        setSelectedItem(defValue.id);
+        setSelectedIndex(defValue.index);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    if (onChange) {
+      onChange(list[selectedIndex]);
+      setSelectedItem(list[selectedIndex]?.id);
+    }
+  }, [selectedIndex, selectedItem, onChange]);
 
   return (
     <div className="dropdown">
@@ -38,7 +70,7 @@ const Dropdown = ({ title }: DropdownProps): JSX.Element => {
       >
         <span className="header-text">
           {selectedItem
-            ? items.find((item: any) => item.id === selectedItem)?.label
+            ? list[selectedIndex]?.label
             : title
             ? title
             : "Выбрать"}
@@ -48,11 +80,11 @@ const Dropdown = ({ title }: DropdownProps): JSX.Element => {
         </span>
       </div>
       <div className={`dropdown-body ${isOpen && "open"}`}>
-        {items.map((item: any) => (
+        {list?.map((item: any, idx: number) => (
           <div
             key={item.id}
             className="dropdown-item"
-            onClick={(e: any) => handleItemClick(e.target.id)}
+            onClick={(e: any) => handleItemClick(idx, e.target.id)}
             id={item.id}
           >
             <span
@@ -62,7 +94,7 @@ const Dropdown = ({ title }: DropdownProps): JSX.Element => {
             >
               <CheckIcon />
             </span>
-            {item.label}
+            {String(item.label)}
           </div>
         ))}
       </div>
