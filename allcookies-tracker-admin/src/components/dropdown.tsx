@@ -34,6 +34,7 @@ const Dropdown = () => {
       <div className={`dropdown-body ${isOpen && "open"}`}>
         {items.map((item: any) => (
           <div
+          key={item.id}
             className="dropdown-item"
             onClick={(e: any) => handleItemClick(e.target.id)}
             id={item.id}

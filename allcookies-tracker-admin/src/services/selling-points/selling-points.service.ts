@@ -5,10 +5,12 @@ class SellingPointsService {
   public getSellingPoints = async (
     skip: number,
     take: number,
-    search: string
+    search?: string
   ) => {
     return await axiosInstance.get(
-      `/admin/selling-point/?skip=${skip}&take=${take}&title=${search}`,
+      `/admin/selling-point/?skip=${skip}&take=${take}&title=${
+        search ? search : ""
+      }`,
       {}
     );
   };

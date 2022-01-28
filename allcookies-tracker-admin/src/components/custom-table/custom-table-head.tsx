@@ -18,6 +18,7 @@ interface EnhancedTableProps {
   headData: Array<string>;
   IconClickPath: string;
   Icon: any;
+  IconText: string;
 }
 
 const CustomTableHead = (props: EnhancedTableProps): JSX.Element => {
@@ -29,6 +30,7 @@ const CustomTableHead = (props: EnhancedTableProps): JSX.Element => {
     headData,
     Icon,
     IconClickPath,
+    IconText,
   } = props;
 
   const navigate = useNavigate();
@@ -84,7 +86,7 @@ const CustomTableHead = (props: EnhancedTableProps): JSX.Element => {
             onClick={handleBackClick}
           >
             <Icon sx={{ color: "#42A6A6", ml: 2, mr: 1 }} />
-            Добавить магазин
+            {IconText}
           </Button>
         </TableCell>
       </TableRow>

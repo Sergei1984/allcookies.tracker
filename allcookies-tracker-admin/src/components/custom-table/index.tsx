@@ -25,10 +25,11 @@ interface CustomTableProps {
   total: number;
   data: Array<any>;
   headData: Array<string>;
-  getPageData: (skip: number, take: number, search: string) => void;
+  getPageData: (skip: number, take: number, search?: string) => void;
   renderRow: (row: any) => React.ReactNode;
   IconClickPath: string;
   Icon: any;
+  IconText: string;
 }
 
 const CustomTable = ({
@@ -40,6 +41,7 @@ const CustomTable = ({
   renderRow,
   IconClickPath,
   Icon,
+  IconText,
 }: CustomTableProps): JSX.Element => {
   const [page, setPage] = React.useState(1);
   const [limit, setLimit] = React.useState(10);
@@ -165,6 +167,7 @@ const CustomTable = ({
               headData={headData}
               IconClickPath={IconClickPath}
               Icon={Icon}
+              IconText={IconText}
             />
             <TableBody>
               {!hasData ? (

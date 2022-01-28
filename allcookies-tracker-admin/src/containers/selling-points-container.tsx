@@ -20,7 +20,7 @@ const SellingPointsContainer =
 
     const data: SellingPointsState = useSelector(selectSellingPointsStore);
 
-    const getPoints = (skip: number, take: number, search: string) => {
+    const getPoints = (skip: number, take: number, search?: string) => {
       dispatch(
         getSellingPointsThunk({ skip: skip, take: take, search: search })
       );
@@ -65,6 +65,7 @@ const SellingPointsContainer =
           }}
           IconClickPath={AddSellingPointRoute}
           Icon={AddBusinessIcon}
+          IconText={"Добавить магазин"}
         />
       </>
     );
