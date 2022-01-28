@@ -71,6 +71,7 @@ const CustomTableHead = (props: EnhancedTableProps): JSX.Element => {
             </TableCell>
           );
         })}
+        <TableCell align="center">Доп.</TableCell>
       </TableRow>
       <TableRow>
         <TableCell colSpan={7}>

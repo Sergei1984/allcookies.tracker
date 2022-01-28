@@ -40,7 +40,6 @@ const SellingPointsContainer =
             "Адрес",
             "Добавлен",
             "Изменен",
-            "Доп.",
           ]}
           renderRow={(row: any) => {
             return (

@@ -56,7 +56,8 @@ const CustomTable = ({
 
   const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
-      const newSelecteds = data.map((n) => n.title);
+      const newSelecteds = data.map((n) => String(n.id));
+      console.log(newSelecteds);
       setSelected(newSelecteds);
       return;
     }
@@ -110,7 +111,7 @@ const CustomTable = ({
 
   function renderItems(rows: any) {
     return rows?.map((row: any, index: number) => {
-      const isItemSelected = isSelected(row.title);
+      const isItemSelected = isSelected(String(row.id));
       const labelId = `enhanced-table-checkbox-${index}`;
       return (
         <CustomTableRow
@@ -124,7 +125,7 @@ const CustomTable = ({
           <CustomTableCell padding="checkbox">
             <CustomCheckbox
               color="primary"
-              onClick={(event) => handleClick(event, row.title)}
+              onClick={(event) => handleClick(event, String(row.id))}
               checked={isItemSelected}
               inputProps={{
                 "aria-labelledby": labelId,
