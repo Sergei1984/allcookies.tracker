@@ -1,6 +1,6 @@
 import { applyMiddleware, combineReducers, compose, createStore } from "redux";
 import thunk from "redux-thunk";
-import {alertReducer} from "./alert/reducer";
+import {alertReducer} from "./app/reducer";
 import { authReducer } from "./auth/reducer";
 import sellingPointsReducer from "./selling-points/reducer";
 import {userReducer} from "./users/reducer";

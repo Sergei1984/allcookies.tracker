@@ -1,5 +1,3 @@
-
-
 export const ALERT_TYPE = 'ALERT_TYPE'
 
 export interface AlertAction {
@@ -7,7 +5,9 @@ export interface AlertAction {
 	payload: string;
 }
 
+
 export interface ErrorData {
+	success: boolean;
 	error: boolean;
 	message: string;
 }
