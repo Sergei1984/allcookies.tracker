@@ -16,7 +16,7 @@ export default function UserPageTable() {
 
 	React.useEffect(() => {
 		(async () => {
-			await dispatch(getAllUserThunk(1,10))
+			await dispatch(getAllUserThunk(0,10))
 		})()
 	}, [])
 	const data: SellingPointsState = useSelector(selectSellingPointsStore);
