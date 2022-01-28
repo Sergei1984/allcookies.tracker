@@ -33,7 +33,6 @@ const AddSellingPointContainer =
     const data: SellingPointsState = useSelector(selectSellingPointsStore);
 
     const handleAddPoint = (values: any) => {
-      console.log(values);
       dispatch(addSellingPointThunk(values));
     };
 

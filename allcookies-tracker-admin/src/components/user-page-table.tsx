@@ -1,95 +1,66 @@
-import {DataGrid, GridColDef} from '@mui/x-data-grid';
 import * as React from 'react';
+import {useDispatch, useSelector} from "react-redux";
 import {NavLink} from "react-router-dom";
 import {AddUserRoute} from "../routes/urls";
-
-
-const columns: GridColDef[] = [
-	{field: "user", headerName: "Пользователи", width: 400},
-	{field: "worked", headerName: "Рабочее время", width: 400},
-	{field: "market", headerName: "Магазины", width: 400},
-	{field: "email", headerName: "email", width: 400},
-]
-
-const rows = [
-	{
-		id: 1,
-		user: "Андрей Переулов",
-		worked: "Работал: Вс 12:01 - 18:43",
-		market: "Рост",
-		email: "afgjnarfgij@gmail.com",
-	},
-	{
-		id: 2,
-		user: "Не Андрей Переулов",
-		worked: "Работал: Вс 12:01 - 18:43",
-		market: "Рост",
-		email: "afgjnarfgij@gmail.com",
-	},
-	{
-		id: 3,
-		user: "точно не Андрей Переулов",
-		worked: "Работал: Вс 12:01 - 18:43",
-		market: "Рост",
-		email: "afgjnarfgij@gmail.com",
-	},
-	{
-		id: 4,
-		user: "может быть Андрей Переулов",
-		worked: "Работал: Вс 12:01 - 18:43",
-		market: "Рост",
-		email: "afgjnarfgij@gmail.com",
-	},
-	{
-		id: 5,
-		user: "или не Андрей Переулов",
-		worked: "Работал: Вс 12:01 - 18:43",
-		market: "Рост",
-		email: "afgjnarfgij@gmail.com",
-	},
-	{
-		id: 5,
-		user: "или не Андрей Переулов",
-		worked: "Работал: Вс 12:01 - 18:43",
-		market: "Рост",
-		email: "afgjnarfgij@gmail.com",
-	},
-	{
-		id: 5,
-		user: "или не Андрей Переулов",
-		worked: "Работал: Вс 12:01 - 18:43",
-		market: "Рост",
-		email: "afgjnarfgij@gmail.com",
-	},
-	{
-		id: 5,
-		user: "или не Андрей Переулов",
-		worked: "Работал: Вс 12:01 - 18:43",
-		market: "Рост",
-		email: "afgjnarfgij@gmail.com",
-	},
-	{
-		id: 5,
-		user: "или не Андрей Переулов",
-		worked: "Работал: Вс 12:01 - 18:43",
-		market: "Рост",
-		email: "afgjnarfgij@gmail.com",
-	},
-];
+import {RootStore} from "../store/rootStore";
+import {getAllUserThunk} from "../store/users/thunk/getAllUserThunk";
+import {formatToTableValue} from "../utils";
+import CustomTable from "./custom-table";
+import CustomTableCell from "./custom-table/custom-table-cell";
+import {SellingPointsState} from "../store/selling-points/types";
+import {selectSellingPointsStore} from "../store/selling-points/selectors";
 
 export default function UserPageTable() {
+	const dispatch = useDispatch();
+	const users = useSelector((state: RootStore) => state.userStore.users)
+
+	React.useEffect(() => {
+		(async () => {
+			await dispatch(getAllUserThunk(0,10))
+		})()
+	}, [])
+	const data: SellingPointsState = useSelector(selectSellingPointsStore);
+
+	const getPoints = (skip: number, take: number) => {
+		dispatch(getAllUserThunk(skip, take ));
+	};
 
 	return (
-			<div style={{height: '80%', width: '100%'}}>
-				<NavLink to={AddUserRoute}>Добавление пользователя</NavLink>
-				<DataGrid
-					rows={rows}
-					columns={columns}
-					pageSize={5}
-					rowsPerPageOptions={[5]}
-					checkboxSelection
-				/>
-		</div>
+		<>
+			<NavLink to={AddUserRoute}>Добавление пользователя</NavLink>
+			<CustomTable
+				getPageData={getPoints}
+				total={data.total || 0}
+				data={users}
+				loading={data.status === "running"}
+				headData={[
+					"Пользователь",
+					"Рабочее время",
+					"Магазины",
+					"Email",
+				]}
+				renderHead={() => {
+					return <></>;
+				}}
+				renderRow={(row: any) => {
+					return (
+						<>
+							<CustomTableCell component="th" align="left" scope="row">
+								{formatToTableValue(row.name)}
+							</CustomTableCell>
+							<CustomTableCell align="center">
+								{formatToTableValue(row.skip)}
+							</CustomTableCell>
+							<CustomTableCell align="center">
+								{formatToTableValue(row.skip)}
+							</CustomTableCell>
+							<CustomTableCell align="center">
+								{formatToTableValue(row.login)}
+							</CustomTableCell>
+						</>
+					);
+				}}
+			/>
+			</>
 	);
 }
-
