@@ -2,13 +2,12 @@
     margin-right: 20px;
     width: 185px;
     border-radius: 10px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
     background-color: white;
     position: relative;
 }
 
 .dropdown-header {
-    padding: 15px;
+    padding: 5px 10px;
     cursor: pointer;
     display: flex;
     justify-content: space-between;
@@ -21,37 +20,65 @@
     border: 2px solid #eeeeee;
     box-sizing: border-box;
     border-radius: 4px;
+    & > .header-text {
+        word-wrap: break-word;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        font-size: 16px;
+        line-height: 24px;
+
+        color: #b9b9b9;
+    }
 }
 
 .dropdown-body {
     width: 100%;
     padding: 5px;
     border-top: 1px solid #e5e8ec;
-    height: 100px;
-    display: none;
-    background-color: white;
-}
-
-.dropdown-body.open {
-    transition: all 300ms ease-out;
-    position: absolute;
     display: block;
-    bottom: -100px;
+    background-color: white;
+    visibility: hidden;
+    position: absolute;
+    border: 1px solid #ccc;
+    // height: 100px;
+    height: 200px;
+    bottom: -200px;
+    overflow-y: auto;
     left: 0;
 }
 
-.dropdown-item {
-    padding: 10px;
+.dropdown-body.open {
+    animation: fade 200ms ease-in-out;
+    visibility: visible;
 }
 
-.dropdown-item:hover {
-    cursor: pointer;
+.dropdown-item {
+    padding-left: 20px;
+    margin-bottom: 10px;
+    position: relative;
+    min-height: 30px;
+
+    &:last-child {
+        margin-bottom: 0;
+    }
+    &:hover {
+        cursor: pointer;
+        background-color: #ccc;
+    }
 }
 
 .dropdown-item-dot {
+    margin-right: 5px;
     opacity: 0;
-    color: #91a5be;
     transition: all 0.2s ease-in-out;
+    & > svg {
+        color: red;
+        font-size: 14px;
+    }
+    position: absolute;
+    left: 0px;
+    top: 1px;
 }
 
 .dropdown-item-dot.selected {
@@ -59,12 +86,48 @@
 }
 
 .icon {
-    font-size: 14px;
+    font-size: 18px;
     color: #91a5be;
-    transform: rotate(90deg);
+    transform: translateY(0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg);
     transition: all 0.2s ease-in-out;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    & > svg {
+        font-size: 21px;
+        color: #b9b9b9;
+    }
 }
 
 .icon.open {
-    transform: rotate(270deg);
+    transform: translateY(0px) rotateX(180deg) rotateY(0deg) rotateZ(0deg);
+}
+
+@keyframes fade {
+    from {
+        opacity: 0;
+        visibility: hidden;
+        // transform: translateY(-100px);
+    }
+    to {
+        opacity: 1;
+        visibility: visible;
+        // transform: translateY(0);
+    }
+}
+
+@keyframes fade-out {
+    from {
+        opacity: 1;
+        visibility: visible;
+        // transform: translateY(0);
+        opacity: 1;
+        visibility: hidden;
+        // transform: translateY(-100px);
+    }
+    to {
+        opacity: 0;
+        visibility: hidden;
+        // transform: translateY(-100px);
+    }
 }

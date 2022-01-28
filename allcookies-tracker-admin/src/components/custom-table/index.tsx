@@ -174,7 +174,7 @@ const CustomTable = ({
               {!hasData ? (
                 <TableSkeleton
                   rowCount={limit}
-                  colCount={headData.length + 1}
+                  colCount={headData.length + 2}
                 />
               ) : (
                 renderItems(data)

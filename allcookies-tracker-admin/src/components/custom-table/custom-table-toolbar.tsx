@@ -46,36 +46,6 @@ const CustomTableToolbar = (props: EnhancedTableToolbarProps): JSX.Element => {
           onChange={handleChangeSearch}
           onClick={onClick}
         />
-        {/* <Paper
-          component="form"
-          sx={{
-            p: "2px 15px 2px 16px",
-            display: "flex",
-            alignItems: "center",
-            background: "#EFF0F6",
-            borderRadius: "8px",
-            width: "338px",
-            boxShadow: 0,
-          }}
-        >
-          <InputBase
-            sx={{ ml: 1, flex: 1 }}
-            placeholder="Поиск"
-            inputProps={{ "aria-label": "Поиск" }}
-            value={searchString}
-            onChange={handleChangeSearch}
-          />
-          <IconButton
-            type="button"
-            sx={{ p: "10px" }}
-            aria-label="search"
-            onClick={() => {
-              handleSearch(searchString);
-            }}
-          >
-            <SearchIcon style={{ color: "#42A6A6" }} />
-          </IconButton>
-        </Paper> */}
       </Box>
       <Box
         display="flex"
@@ -85,12 +55,13 @@ const CustomTableToolbar = (props: EnhancedTableToolbarProps): JSX.Element => {
         }}
       >
         <Box>
-          {/* <CustomizedTableSelect /> */}
-          <Dropdown />
+          <Dropdown title="Все магазины" />
         </Box>
         <Box>
-          <Dropdown />
-          {/* <CustomizedTableSelect /> */}
+          <Dropdown title="Адрес" />
+        </Box>
+        <Box>
+          <Dropdown title="Кол-во" />
         </Box>
         <Box>
           <TableDotsPopover>
