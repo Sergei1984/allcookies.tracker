@@ -7,6 +7,7 @@ use crate::features::NewSellingPoint;
 use crate::features::PagedResult;
 use crate::features::SellingPoint;
 use crate::features::SkipTake;
+use crate::features::TitleSearch;
 use actix_web::HttpResponse;
 use actix_web::{delete, error, get, patch, post, web, Scope};
 
@@ -21,6 +22,7 @@ pub fn selling_point_admin_route() -> Scope {
 #[get("")]
 pub async fn get_selling_point(
     skip_take: web::Query<SkipTake>,
+    title: web::Query<TitleSearch>,
     current_user: AdminUserInfo,
     pool: web::Data<sqlx::Pool<sqlx::Postgres>>,
 ) -> Result<web::Json<PagedResult<SellingPoint>>, actix_web::Error> {
@@ -30,7 +32,11 @@ pub async fn get_selling_point(
     );
 
     let result = svc
-        .get_all(skip_take.skip.unwrap_or(0), skip_take.take.unwrap_or(20))
+        .get_all(
+            title.title.clone(),
+            skip_take.skip.unwrap_or(0),
+            skip_take.take.unwrap_or(20),
+        )
         .await
         .map_err(|e| error::ErrorBadRequest(e))?;
 

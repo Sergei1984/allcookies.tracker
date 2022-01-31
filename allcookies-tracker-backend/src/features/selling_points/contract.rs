@@ -73,7 +73,7 @@ pub trait SellingPointClientService {
 
 #[async_trait]
 pub trait SellingPointAdminService {
-    async fn get_all(&self, skip: i64, take: i64) -> Result<PagedResult<SellingPoint>, AnError>;
+    async fn get_all(&self, filter: Option<String>, skip: i64, take: i64) -> Result<PagedResult<SellingPoint>, AnError>;
 
     async fn get_one(&self, id: i64) -> Result<Option<SellingPoint>, AppError>;
 

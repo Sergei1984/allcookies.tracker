@@ -6,7 +6,12 @@ use sqlx::PgPool;
 
 #[async_trait]
 pub trait SellingPointRepository {
-    async fn get_all(&self, skip: i64, take: i64) -> Result<PagedResult<SellingPoint>, AnError>;
+    async fn get_all(
+        &self,
+        title: Option<String>,
+        skip: i64,
+        take: i64,
+    ) -> Result<PagedResult<SellingPoint>, AnError>;
 
     async fn get_one(&self, id: i64) -> Result<Option<SellingPoint>, AnError>;
 
@@ -55,24 +60,24 @@ impl<'a> SellingPointRepository for PersistentSellingPointRepository<'a> {
 
         let points = sqlx::query_as!(
             SellingPoint,
-            r#"select 
-                    id, 
-                    title, 
-                    description, 
-                    address, 
-                    location as "location!: _", 
-                    is_disabled, 
-                    created_by, 
-                    created_at, 
-                    modified_by, 
-                    modified_at, 
-                    deleted_by, 
-                    deleted_at 
-               from selling_point 
-               where 
-                    title ilike $1::text 
-                and is_disabled = false 
-                and deleted_at is null 
+            r#"select
+                    id,
+                    title,
+                    description,
+                    address,
+                    location as "location!: _",
+                    is_disabled,
+                    created_by,
+                    created_at,
+                    modified_by,
+                    modified_at,
+                    deleted_by,
+                    deleted_at
+               from selling_point
+               where
+                    title ilike $1::text
+                and is_disabled = false
+                and deleted_at is null
                order by st_distancesphere(location::geometry, $2), title
 
                offset $3::bigint limit $4::bigint"#,
@@ -87,11 +92,11 @@ impl<'a> SellingPointRepository for PersistentSellingPointRepository<'a> {
         let count = sqlx::query_as!(
             Count,
             r#"select count(1) as "count!"
-            from 
-                selling_point 
-            where 
-                    title ilike $1 
-                and is_disabled = false 
+            from
+                selling_point
+            where
+                    title ilike $1
+                and is_disabled = false
                 and deleted_at is null
             "#,
             title,
@@ -105,28 +110,46 @@ impl<'a> SellingPointRepository for PersistentSellingPointRepository<'a> {
         })
     }
 
-    async fn get_all(&self, skip: i64, take: i64) -> Result<PagedResult<SellingPoint>, AnError> {
+    async fn get_all(
+        &self,
+        title: Option<String>,
+        skip: i64,
+        take: i64,
+    ) -> Result<PagedResult<SellingPoint>, AnError> {
+        let title_filter = title.map(|v| {
+            let tmp = v.replace("%", "").clone();
+            let f = tmp.trim();
+            if f.is_empty() {
+                "%".to_owned()
+            } else {
+                format!("%{}%", f)
+            }
+        });
+
         let (points, count) = select_with_count!(
             SellingPoint,
             self.db,
-            r#"select 
-                    id, 
-                    title, 
-                    description, 
-                    address, 
-                    location as "location!: _", 
-                    is_disabled, 
-                    created_by, 
-                    created_at, 
-                    modified_by, 
-                    modified_at, 
-                    deleted_by, 
-                    deleted_at 
-                from 
-                    selling_point 
+            r#"select
+                    id,
+                    title,
+                    description,
+                    address,
+                    location as "location!: _",
+                    is_disabled,
+                    created_by,
+                    created_at,
+                    modified_by,
+                    modified_at,
+                    deleted_by,
+                    deleted_at
+                from
+                    selling_point
+                where
+                    title ilike $3 or $3 is null
                 offset $1 limit $2"#,
             skip,
-            take
+            take,
+            title_filter
         )?;
 
         Ok(PagedResult {
@@ -138,19 +161,19 @@ impl<'a> SellingPointRepository for PersistentSellingPointRepository<'a> {
     async fn get_one(&self, id: i64) -> Result<Option<SellingPoint>, AnError> {
         let point = sqlx::query_as!(
             SellingPoint,
-            r#"select 
-                    id, 
-                    title, 
-                    description, 
-                    address, 
-                    location as "location!: _", 
-                    is_disabled, 
-                    created_by, 
-                    created_at, 
-                    modified_by, 
-                    modified_at, 
-                    deleted_by, 
-                    deleted_at 
+            r#"select
+                    id,
+                    title,
+                    description,
+                    address,
+                    location as "location!: _",
+                    is_disabled,
+                    created_by,
+                    created_at,
+                    modified_by,
+                    modified_at,
+                    deleted_by,
+                    deleted_at
                from selling_point where id = $1"#,
             id
         )
@@ -172,12 +195,12 @@ impl<'a> SellingPointRepository for PersistentSellingPointRepository<'a> {
         let rec = sqlx::query!(
             r#"
             insert into selling_point(
-                title, 
-                description, 
-                address, 
-                location, 
-                is_disabled, 
-                created_by, 
+                title,
+                description,
+                address,
+                location,
+                is_disabled,
+                created_by,
                 modified_by
             )
             values ($1, $2, $3, $4, $5, $6, $7)
@@ -209,7 +232,7 @@ impl<'a> SellingPointRepository for PersistentSellingPointRepository<'a> {
         let rec = sqlx::query!(
             r#"
             update selling_point
-            set 
+            set
                 title = $1,
                 description = $2,
                 address = $3,
@@ -245,7 +268,7 @@ impl<'a> SellingPointRepository for PersistentSellingPointRepository<'a> {
         let res = sqlx::query!(
             r#"
             update selling_point
-            set 
+            set
                 deleted_by = $2,
                 deleted_at = current_timestamp
             where

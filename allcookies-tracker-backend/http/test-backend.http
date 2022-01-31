@@ -19,7 +19,7 @@ GET {{server}}/profile/me
 Authorization: {{auth.response.body.jwt}}
 
 ###
-GET {{server}}/admin/selling-point/
+GET {{server}}/admin/selling-point/?title=i
 Authorization: {{auth.response.body.jwt}}
 
 ###
