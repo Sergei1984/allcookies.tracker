@@ -32,15 +32,10 @@ const SellingPointsContainer =
         <CustomTable
           getPageData={getPoints}
           total={data.total || 0}
+          isAdditions={true}
           data={data.data}
           loading={data.status === "running"}
-          headData={[
-            "Магазин",
-            "Описание",
-            "Адрес",
-            "Добавлен",
-            "Изменен",
-          ]}
+          headData={["Магазин", "Описание", "Адрес", "Добавлен", "Изменен"]}
           renderRow={(row: any) => {
             return (
               <>

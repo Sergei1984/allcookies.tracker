@@ -10,6 +10,9 @@ import CustomTableCell from "./custom-table/custom-table-cell";
 import { SellingPointsState } from "../store/selling-points/types";
 import { selectSellingPointsStore } from "../store/selling-points/selectors";
 import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
+import { IconButton } from "@mui/material";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 
 export default function UserPageTable() {
   const dispatch = useDispatch();
@@ -26,13 +29,16 @@ export default function UserPageTable() {
     dispatch(getAllUserThunk(skip, take));
   };
 
+  const [open, setOpen] = React.useState(false);
+
   return (
     <CustomTable
       getPageData={getPoints}
       total={data.total || 0}
       data={users}
+      isAdditions={false}
       loading={data.status === "running"}
-      headData={["Пользователь", "Рабочее время", "Магазины", "Email"]}
+      headData={["Пользователь", "Рабочее время", "Магазины", "Email", ""]}
       renderRow={(row: any) => {
         return (
           <>
@@ -47,6 +53,15 @@ export default function UserPageTable() {
             </CustomTableCell>
             <CustomTableCell align="center">
               {formatToTableValue(row.login)}
+            </CustomTableCell>
+            <CustomTableCell>
+              <IconButton
+                aria-label="expand row"
+                size="small"
+                onClick={() => setOpen(!open)}
+              >
+                {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+              </IconButton>
             </CustomTableCell>
           </>
         );

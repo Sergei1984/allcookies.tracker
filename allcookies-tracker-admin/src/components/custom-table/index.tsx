@@ -17,6 +17,7 @@ import CustomTableToolbar from "./custom-table-toolbar";
 import NestedTableOptionsList from "../more-options";
 import CustomTableCell from "./custom-table-cell";
 import CustomTableRow from "./custom-table-row";
+import { Collapse } from "@mui/material";
 
 type Order = "asc" | "desc";
 
@@ -30,6 +31,7 @@ interface CustomTableProps {
   IconClickPath: string;
   Icon: any;
   IconText: string;
+  isAdditions?: boolean;
 }
 
 const CustomTable = ({
@@ -42,6 +44,7 @@ const CustomTable = ({
   IconClickPath,
   Icon,
   IconText,
+  isAdditions,
 }: CustomTableProps): JSX.Element => {
   const [page, setPage] = React.useState(1);
   const [limit, setLimit] = React.useState(10);
@@ -49,6 +52,7 @@ const CustomTable = ({
   const [selected, setSelected] = React.useState<readonly string[]>([]);
   const [searchString, setSearch] = React.useState("");
 
+  console.log(isAdditions);
   const handleSearchClick = (value: string) => {
     setSearch(value);
   };
@@ -130,14 +134,16 @@ const CustomTable = ({
             />
           </CustomTableCell>
           {renderRow(row)}
-          <CustomTableCell align="center">
-            <TableDotsPopover>
-              <NestedTableOptionsList
-                title={"Доп операции: " + row.id}
-                item={row}
-              />
-            </TableDotsPopover>
-          </CustomTableCell>
+          {isAdditions ? (
+            <CustomTableCell align="center">
+              <TableDotsPopover>
+                <NestedTableOptionsList
+                  title={"Доп операции: " + row.id}
+                  item={row}
+                />
+              </TableDotsPopover>
+            </CustomTableCell>
+          ) : null}
         </CustomTableRow>
       );
     });
@@ -166,6 +172,7 @@ const CustomTable = ({
               IconClickPath={IconClickPath}
               Icon={Icon}
               IconText={IconText}
+              isAdditions={isAdditions}
             />
             <TableBody>
               {!hasData ? (

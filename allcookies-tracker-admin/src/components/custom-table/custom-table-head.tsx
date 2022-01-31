@@ -19,6 +19,7 @@ interface EnhancedTableProps {
   IconClickPath: string;
   Icon: any;
   IconText: string;
+  isAdditions?: boolean;
 }
 
 const CustomTableHead = (props: EnhancedTableProps): JSX.Element => {
@@ -31,6 +32,7 @@ const CustomTableHead = (props: EnhancedTableProps): JSX.Element => {
     Icon,
     IconClickPath,
     IconText,
+    isAdditions,
   } = props;
 
   const navigate = useNavigate();
@@ -38,6 +40,8 @@ const CustomTableHead = (props: EnhancedTableProps): JSX.Element => {
   const handleBackClick = () => {
     navigate(IconClickPath);
   };
+
+  console.log("asdasd", isAdditions);
 
   return (
     <TableHead>
@@ -71,7 +75,7 @@ const CustomTableHead = (props: EnhancedTableProps): JSX.Element => {
             </TableCell>
           );
         })}
-        <TableCell align="center">Доп.</TableCell>
+        {isAdditions ? <TableCell align="center">Доп.</TableCell> : null}
       </TableRow>
       <TableRow>
         <TableCell colSpan={7}>
