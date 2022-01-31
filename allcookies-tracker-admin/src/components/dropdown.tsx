@@ -14,52 +14,63 @@ type ListType = {
 interface DropdownProps {
   title?: string;
   list?: ListType[];
-  defaultValue?: string | number;
-  onChange?: (value: ListType | null) => void;
+  selected?: string | number;
+  onChange?: (value: any) => void;
 }
 
 const Dropdown = ({
   title,
   list = [] as ListType[],
-  defaultValue,
+  selected,
   onChange,
 }: DropdownProps): JSX.Element => {
   const [isOpen, setOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<string | number | null>(
     null
   );
-  const [selectedIndex, setSelectedIndex] = useState<number>(0);
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
 
   const toggleDropdown = () => setOpen(!isOpen);
 
   const handleItemClick = (idx: number, id: string) => {
-    setSelectedIndex(idx);
-    selectedItem == id ? setSelectedItem(null) : setSelectedItem(id);
+    selectedItem === id
+      ? selectItemAndIndex(idx, id, false)
+      : selectItemAndIndex(idx, id, true);
+
+    toggleDropdown();
+    if (onChange) {
+      onChange(list[idx].value);
+    }
+  };
+
+  const isSelected =
+    !!selectedItem &&
+    ((selectedIndex !== null && selectedIndex === 0) || selectedIndex !== null);
+  const isSelectedText = isSelected
+    ? list[selectedIndex]?.label
+    : title
+    ? title
+    : "Выбрать";
+  const selectItemAndIndex = (idx: number, id: string, flag: boolean) => {
+    if (flag) {
+      setSelectedItem(id);
+      setSelectedIndex(idx);
+    } else {
+      setSelectedItem(null);
+      setSelectedIndex(null);
+    }
   };
 
   useEffect(() => {
-    if (defaultValue && list.length > 0) {
-      const defValue: ListType | any = list?.find(
-        (item: ListType, idx: number) => {
-          if (String(item.value) === String(defaultValue)) {
-            return { index: idx, ...item };
-          }
+    if (selected) {
+      list?.forEach((item, index) => {
+        if (selected === item.value) {
+          setSelectedIndex(index);
+          setSelectedItem(item.id);
         }
-      );
-      if (defValue) {
-        console.log(defValue);
-        setSelectedItem(defValue.id);
-        setSelectedIndex(defValue.index);
-      }
+      });
     }
   }, []);
-
-  useEffect(() => {
-    if (onChange) {
-      onChange(list[selectedIndex]);
-      setSelectedItem(list[selectedIndex]?.id);
-    }
-  }, [selectedIndex, selectedItem, onChange]);
 
   return (
     <div className="dropdown">
@@ -68,13 +79,7 @@ const Dropdown = ({
         onClick={toggleDropdown}
         style={{ wordWrap: "break-word" }}
       >
-        <span className="header-text">
-          {selectedItem
-            ? list[selectedIndex]?.label
-            : title
-            ? title
-            : "Выбрать"}
-        </span>
+        <span className="header-text">{isSelectedText}</span>
         <span className={`icon ${isOpen && "open"}`}>
           <KeyboardArrowUpIcon />
         </span>
@@ -84,8 +89,7 @@ const Dropdown = ({
           <div
             key={item.id}
             className="dropdown-item"
-            onClick={(e: any) => handleItemClick(idx, e.target.id)}
-            id={item.id}
+            onClick={(e: any) => handleItemClick(idx, item.id)}
           >
             <span
               className={`dropdown-item-dot ${

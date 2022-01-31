@@ -11,10 +11,18 @@ type Order = "asc" | "desc";
 interface EnhancedTableToolbarProps {
   numSelected: number;
   handleSearchClick: (value: string) => void;
+  handleChangeLimit: (values: ListType) => void;
+  limit: number;
 }
 
+type ListType = {
+  id: string | number;
+  value: string | number;
+  label: string;
+};
+
 const CustomTableToolbar = (props: EnhancedTableToolbarProps): JSX.Element => {
-  const { numSelected, handleSearchClick } = props;
+  const { numSelected, handleSearchClick, handleChangeLimit, limit } = props;
   const [searchString, setSearch] = React.useState("");
 
   const handleChangeSearch = (event: any) => {
@@ -54,10 +62,29 @@ const CustomTableToolbar = (props: EnhancedTableToolbarProps): JSX.Element => {
         }}
       >
         <Box>
-          <Dropdown title="Все магазины" />
+          <Dropdown
+            title="Все магазины"
+            list={[
+              { id: "1", value: "АТБ", label: "АТБ" },
+              { id: "2", value: "СИЛЬПО", label: "СИЛЬПО" },
+              { id: "3", value: "РОСТ", label: "РОСТ" },
+            ]}
+            onChange={(value: any) => {
+              console.log("on change value: ", value);
+            }}
+          />
         </Box>
         <Box>
-          <Dropdown title="Адрес" />
+          <Dropdown
+            title="Адрес"
+            list={[
+              { id: "1", value: "selling-points", label: "Магазин" },
+              { id: "2", value: "address", label: "Адрес" },
+            ]}
+            onChange={(value: any) => {
+              console.log("on change value: ", value);
+            }}
+          />
         </Box>
         <Box>
           <Dropdown
@@ -65,12 +92,13 @@ const CustomTableToolbar = (props: EnhancedTableToolbarProps): JSX.Element => {
             list={[
               { id: "1", value: 5, label: "5" },
               { id: "2", value: 10, label: "10" },
-              { id: "3", value: 25, label: "25" },
-              { id: "4", value: 50, label: "50" },
+              { id: "3", value: 15, label: "15" },
+              { id: "4", value: 25, label: "25" },
+              { id: "5", value: 50, label: "50" },
             ]}
-            defaultValue={25}
+            selected={limit}
             onChange={(value: any) => {
-              console.log("on change value: ", value);
+              handleChangeLimit(value);
             }}
           />
         </Box>

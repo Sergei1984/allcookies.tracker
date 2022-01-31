@@ -11,6 +11,7 @@ import CustomTableCell from "../components/custom-table/custom-table-cell";
 import { formatToTableValue, formatValueToDate } from "../utils";
 import AddBusinessIcon from "@mui/icons-material/AddBusiness";
 import { AddSellingPointRoute } from "../routes/urls";
+import { RootStore } from "../store/rootStore";
 
 interface SellingPointsContainerProps {}
 
@@ -19,6 +20,7 @@ const SellingPointsContainer =
     const dispatch = useDispatch();
 
     const data: SellingPointsState = useSelector(selectSellingPointsStore);
+    const appStore = useSelector((state: RootStore) => state.appStore);
 
     const getPoints = (skip: number, take: number, search?: string) => {
       dispatch(
@@ -34,7 +36,7 @@ const SellingPointsContainer =
           total={data.total || 0}
           isAdditions={true}
           data={data.data}
-          loading={data.status === "running"}
+          loading={appStore.status === "running"}
           headData={["Магазин", "Описание", "Адрес", "Добавлен", "Изменен"]}
           renderRow={(row: any) => {
             return (

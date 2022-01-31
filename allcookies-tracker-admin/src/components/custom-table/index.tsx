@@ -47,7 +47,7 @@ const CustomTable = ({
   isAdditions,
 }: CustomTableProps): JSX.Element => {
   const [page, setPage] = React.useState(1);
-  const [limit, setLimit] = React.useState(10);
+  const [limit, setLimit] = React.useState(5);
   const [order, setOrder] = React.useState<Order>("asc");
   const [selected, setSelected] = React.useState<readonly string[]>([]);
   const [searchString, setSearch] = React.useState("");
@@ -91,8 +91,8 @@ const CustomTable = ({
     setPage(newPage);
   };
 
-  const handleChangeRowsPerPage = (values: any) => {
-    setLimit(Number(values.value));
+  const handleChangeLimit = (value: any) => {
+    setLimit(Number(value));
     setPage(1);
   };
 
@@ -152,7 +152,7 @@ const CustomTable = ({
   React.useEffect(() => {
     getPageData((page - 1) * limit, limit, searchString);
     return () => {};
-  }, [page, searchString]);
+  }, [page, searchString, limit]);
 
   return (
     <Box>
@@ -160,6 +160,8 @@ const CustomTable = ({
         <CustomTableToolbar
           numSelected={selected.length}
           handleSearchClick={handleSearchClick}
+          handleChangeLimit={handleChangeLimit}
+          limit={limit}
         />
         <TableContainer sx={{ overflowX: "auto" }}>
           <Table sx={{ minWidth: 320 }} aria-labelledby="tableTitle">

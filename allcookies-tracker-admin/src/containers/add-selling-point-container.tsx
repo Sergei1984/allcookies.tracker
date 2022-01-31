@@ -4,6 +4,7 @@ import "../assets/styles/scss/add-selling-point-form.scss";
 import { addSellingPointThunk } from "../store/selling-points/thunk";
 import { useDispatch, useSelector } from "react-redux";
 import { selectSellingPointsStore } from "../store/selling-points/selectors";
+import { getAppStoreSelector } from "../store/app/selectors";
 import { SellingPointsState } from "../store/selling-points/types";
 
 import { Field, Form, Formik } from "formik";
@@ -31,6 +32,8 @@ const AddSellingPointContainer =
     const dispatch = useDispatch();
 
     const data: SellingPointsState = useSelector(selectSellingPointsStore);
+
+    const appStore = useSelector(getAppStoreSelector);
 
     const handleAddPoint = (values: any) => {
       dispatch(addSellingPointThunk(values));
@@ -86,7 +89,7 @@ const AddSellingPointContainer =
 
                 <button
                   type="submit"
-                  disabled={data.status === "running"}
+                  disabled={appStore.status === "running"}
                   className="input-button"
                 >
                   Добавить

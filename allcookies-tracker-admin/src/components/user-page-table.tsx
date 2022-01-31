@@ -14,6 +14,8 @@ import { IconButton } from "@mui/material";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 
+import { getAppStoreSelector } from "../store/app/selectors";
+
 export default function UserPageTable() {
   const dispatch = useDispatch();
   const users = useSelector((state: RootStore) => state.userStore.users);
@@ -24,6 +26,8 @@ export default function UserPageTable() {
     })();
   }, []);
   const data: SellingPointsState = useSelector(selectSellingPointsStore);
+
+  const appStore = useSelector(getAppStoreSelector);
 
   const getPoints = (skip: number, take: number) => {
     dispatch(getAllUserThunk(skip, take));
@@ -37,7 +41,7 @@ export default function UserPageTable() {
       total={data.total || 0}
       data={users}
       isAdditions={false}
-      loading={data.status === "running"}
+      loading={appStore.status === "running"}
       headData={["Пользователь", "Рабочее время", "Магазины", "Email", ""]}
       renderRow={(row: any) => {
         return (
