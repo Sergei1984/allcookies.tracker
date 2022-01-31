@@ -10,7 +10,17 @@ import CustomTableCell from "./custom-table/custom-table-cell";
 import { SellingPointsState } from "../store/selling-points/types";
 import { selectSellingPointsStore } from "../store/selling-points/selectors";
 import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
-import { IconButton } from "@mui/material";
+import {
+  Box,
+  Collapse,
+  IconButton,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  Typography,
+} from "@mui/material";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 
@@ -57,15 +67,6 @@ export default function UserPageTable() {
             </CustomTableCell>
             <CustomTableCell align="center">
               {formatToTableValue(row.login)}
-            </CustomTableCell>
-            <CustomTableCell>
-              <IconButton
-                aria-label="expand row"
-                size="small"
-                onClick={() => setOpen(!open)}
-              >
-                {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-              </IconButton>
             </CustomTableCell>
           </>
         );

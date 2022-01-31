@@ -17,7 +17,16 @@ import CustomTableToolbar from "./custom-table-toolbar";
 import NestedTableOptionsList from "../more-options";
 import CustomTableCell from "./custom-table-cell";
 import CustomTableRow from "./custom-table-row";
-import { Collapse } from "@mui/material";
+import {
+  Collapse,
+  IconButton,
+  TableCell,
+  TableHead,
+  TableRow,
+  Typography,
+} from "@mui/material";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 
 type Order = "asc" | "desc";
 
@@ -110,41 +119,80 @@ const CustomTable = ({
     }
   }, [loading, data]);
 
+  const [open, setOpen] = React.useState<any>({});
+
   function renderItems(rows: any) {
     return rows?.map((row: any, index: number) => {
       const isItemSelected = isSelected(String(row.id));
       const labelId = `enhanced-table-checkbox-${index}`;
       return (
-        <CustomTableRow
-          hover
-          role="checkbox"
-          aria-checked={isItemSelected}
-          tabIndex={-1}
-          key={row.id}
-          selected={isItemSelected}
-        >
-          <CustomTableCell padding="checkbox">
-            <CustomCheckbox
-              color="primary"
-              onClick={(event) => handleClick(event, String(row.id))}
-              checked={isItemSelected}
-              inputProps={{
-                "aria-labelledby": labelId,
-              }}
-            />
-          </CustomTableCell>
-          {renderRow(row)}
-          {isAdditions ? (
-            <CustomTableCell align="center">
-              <TableDotsPopover>
-                <NestedTableOptionsList
-                  title={"Доп операции: " + row.id}
-                  item={row}
-                />
-              </TableDotsPopover>
+        <>
+          <CustomTableRow
+            hover
+            role="checkbox"
+            aria-checked={isItemSelected}
+            tabIndex={-1}
+            key={row.id}
+            selected={isItemSelected}
+          >
+            <CustomTableCell padding="checkbox">
+              <CustomCheckbox
+                color="primary"
+                onClick={(event) => handleClick(event, String(row.id))}
+                checked={isItemSelected}
+                inputProps={{
+                  "aria-labelledby": labelId,
+                }}
+              />
             </CustomTableCell>
-          ) : null}
-        </CustomTableRow>
+            {renderRow(row)}
+
+            {!isAdditions ? (
+              <CustomTableCell>
+                <IconButton
+                  aria-label="expand row"
+                  size="small"
+                  onClick={() =>
+                    setOpen((prev: any) => ({
+                      ...prev,
+                      [row.id]: !prev[row.id],
+                    }))
+                  }
+                >
+                  {open[row.id] ? (
+                    <KeyboardArrowUpIcon />
+                  ) : (
+                    <KeyboardArrowDownIcon />
+                  )}
+                </IconButton>
+              </CustomTableCell>
+            ) : null}
+            {isAdditions ? (
+              <CustomTableCell align="center">
+                <TableDotsPopover>
+                  <NestedTableOptionsList
+                    title={"Доп операции: " + row.id}
+                    item={row}
+                  />
+                </TableDotsPopover>
+              </CustomTableCell>
+            ) : null}
+          </CustomTableRow>
+          <CustomTableRow>
+            <CustomTableCell
+              style={{ paddingBottom: 0, paddingTop: 0, background: "#EFFAFA" }}
+              colSpan={12}
+            >
+              <Collapse in={open[row.id]} timeout="auto" unmountOnExit>
+                {open[row.id] && (
+                  <div>
+                    <p>Hello</p>
+                  </div>
+                )}
+              </Collapse>
+            </CustomTableCell>
+          </CustomTableRow>
+        </>
       );
     });
   }
