@@ -12,7 +12,7 @@ export const productSlice = createSlice({
     extraReducers: {
         [getProductsThunk.fulfilled.type]: (state, action: PayloadAction<ProductState>) => {
             state.total = action.payload.total,
-            console.log('asdsa', state.data)
+            console.log('asdsa', state.data.length, action.payload.data.length)
             state.data = [...state.data, ...action.payload.data]
         }
     }

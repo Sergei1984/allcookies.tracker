@@ -60,8 +60,17 @@ const HomeScreen: React.FC<IProps> = ({ navigation }) => {
   const searchShop = React.useCallback(
     (value: string) => {
       setFindShop(value);
+      console.log(value);
       const data = sellingPointData.filter((item) =>
-        item.title.toLowerCase().includes(value.toLowerCase())
+        item.title
+          .replace(/[^A-Za-zА-Яа-я0-9]/g, "")
+          .toLowerCase()
+          .includes(
+            value
+              .replace(/[^A-Za-zА-Яа-я0-9]/g, " ")
+              .trim()
+              .toLowerCase()
+          )
       );
       setShops(data);
     },

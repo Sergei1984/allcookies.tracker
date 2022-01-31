@@ -102,11 +102,14 @@ const ListOfProducts: React.FC<Props> = ({ route, navigation }) => {
     navigation.navigate("Главная");
   }, [products, activity, data.images]);
 
-  const handleLoadMore = async () => {
-    await dispatch(getProductsThunk({ skip: products.length, take: 20 }));
-  };
+  const handleLoadMore = React.useCallback(async () => {
+    if (dataOfProducts.length < total) {
+      await dispatch(
+        getProductsThunk({ skip: dataOfProducts.length, take: 20 })
+      );
+    }
+  }, [dataOfProducts]);
 
-  console.log("products", dataOfProducts.length);
   const renderProducts = () => {
     const renderItem = ({ item }: any) => {
       return (
@@ -173,11 +176,12 @@ const ListOfProducts: React.FC<Props> = ({ route, navigation }) => {
           style={{
             marginBottom: 20,
             height: data.images.length ? "47%" : "60%",
+            minHeight: "47%",
           }}
           renderItem={renderItem}
           keyExtractor={(_, index) => "products" + index}
           onEndReached={handleLoadMore}
-          onEndReachedThreshold={1}
+          onEndReachedThreshold={0.5}
         />
         <AppButton
           name="Отправить отчет"
