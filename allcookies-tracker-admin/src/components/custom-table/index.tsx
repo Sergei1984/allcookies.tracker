@@ -41,6 +41,7 @@ interface CustomTableProps {
   Icon: any;
   IconText: string;
   isAdditions?: boolean;
+  hasCollapseRow?: boolean;
 }
 
 const CustomTable = ({
@@ -54,6 +55,7 @@ const CustomTable = ({
   Icon,
   IconText,
   isAdditions,
+  hasCollapseRow,
 }: CustomTableProps): JSX.Element => {
   const [page, setPage] = React.useState(1);
   const [limit, setLimit] = React.useState(5);
@@ -126,7 +128,7 @@ const CustomTable = ({
       const isItemSelected = isSelected(String(row.id));
       const labelId = `enhanced-table-checkbox-${index}`;
       return (
-        <Fragment key={row.id}>
+        <React.Fragment key={row.id}>
           <CustomTableRow
             hover
             role="checkbox"
@@ -177,21 +179,27 @@ const CustomTable = ({
               </CustomTableCell>
             ) : null}
           </CustomTableRow>
-          <CustomTableRow>
-            <CustomTableCell
-              style={{ paddingBottom: 0, paddingTop: 0, background: "#EFFAFA" }}
-              colSpan={12}
-            >
-              <Collapse in={open[row.id]} timeout="auto" unmountOnExit>
-                {open[row.id] && (
-                  <div>
-                    <p>Hello</p>
-                  </div>
-                )}
-              </Collapse>
-            </CustomTableCell>
-          </CustomTableRow>
-        </Fragment>
+          {hasCollapseRow && (
+            <CustomTableRow>
+              <CustomTableCell
+                style={{
+                  paddingBottom: 0,
+                  paddingTop: 0,
+                  background: "#EFFAFA",
+                }}
+                colSpan={12}
+              >
+                <Collapse in={open[row.id]} timeout="auto" unmountOnExit>
+                  {open[row.id] && (
+                    <div>
+                      <p>Hello</p>
+                    </div>
+                  )}
+                </Collapse>
+              </CustomTableCell>
+            </CustomTableRow>
+          )}
+        </React.Fragment>
       );
     });
   }

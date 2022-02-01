@@ -1,9 +1,10 @@
-import {UserState} from "./types";
+import { UserState } from "./types";
 
 export const userState: UserState = {
-	users: [],
-	errorData: {
-		error: false,
-		message: ''
-	}
-}
+  users: [],
+  total: 0,
+  errorData: {
+    error: false,
+    message: "",
+  },
+};

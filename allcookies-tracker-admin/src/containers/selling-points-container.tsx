@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import PageTitle from "../components/page-title";
 
@@ -12,6 +12,8 @@ import { formatToTableValue, formatValueToDate } from "../utils";
 import AddBusinessIcon from "@mui/icons-material/AddBusiness";
 import { AddSellingPointRoute } from "../routes/urls";
 import { RootStore } from "../store/rootStore";
+
+import useFilters from "../hooks/useFilters";
 
 interface SellingPointsContainerProps {}
 
@@ -27,6 +29,16 @@ const SellingPointsContainer =
         getSellingPointsThunk({ skip: skip, take: take, search: search })
       );
     };
+
+    const { filters, addOrRemoveFilter } = useFilters();
+
+
+    useEffect(()=> {
+      addOrRemoveFilter("shop");
+      addOrRemoveFilter("shop1");
+      addOrRemoveFilter("shop2");
+    }, [])
+
 
     return (
       <>
