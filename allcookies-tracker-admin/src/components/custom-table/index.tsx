@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 import Box from "@mui/material/Box";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -141,7 +141,6 @@ const CustomTable = ({
             role="checkbox"
             aria-checked={isItemSelected}
             tabIndex={-1}
-            key={row.id}
             selected={isItemSelected}
           >
             <CustomTableCell padding="checkbox">
