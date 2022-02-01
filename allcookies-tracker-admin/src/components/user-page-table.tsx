@@ -17,8 +17,8 @@ export default function UserPageTable() {
 
   const appStore = useSelector(getAppStoreSelector);
 
-  const getPoints = (skip: number, take: number) => {
-    dispatch(getAllUserThunk(skip, take));
+  const getPoints = (skip: number, take: number, search?: string) => {
+    dispatch(getAllUserThunk(skip, take, search));
   };
 
   const [open, setOpen] = React.useState(false);

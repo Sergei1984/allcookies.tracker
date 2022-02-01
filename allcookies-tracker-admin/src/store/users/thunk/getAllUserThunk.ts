@@ -10,11 +10,16 @@ import { UsersResponse, UserType } from "../types";
 export const getAllUserThunk =
   (
     skip: number,
-    take: number
+    take: number,
+    search?: string
   ): ThunkAction<void, RootStore, unknown, Action<UserType>> =>
   async (dispatch: Dispatch) => {
     dispatch(setAppStatusAction({ status: StatusEnum.running }));
-    const response: UsersResponse = await UserAPI.getAllUsers(skip, take);
+    const response: UsersResponse = await UserAPI.getAllUsers(
+      skip,
+      take,
+      search
+    );
 
     if (response) {
       dispatch(setAppStatusAction({ status: StatusEnum.success }));

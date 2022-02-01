@@ -2,9 +2,11 @@ import axiosInstance from "../../api";
 import { IUser } from "../../store/users/types";
 
 class UserService {
-  public getAllUsers = async (skip: number, take: number) => {
+  public getAllUsers = async (skip: number, take: number, search?: string) => {
     const response = await axiosInstance.get(
-      `/admin/user-accounts/?skip=${skip}&take=${take}`
+      `/admin/user-accounts/?skip=${skip}&take=${take}&name=${
+        search ? search : ""
+      }`
     );
     return response.data;
   };
