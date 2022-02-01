@@ -12,6 +12,7 @@ import {
   SettingsPage,
   UsersPage,
   AddSellingPointPage,
+  AddProductPage,
 } from "../pages";
 import Login from "../pages/login";
 
@@ -35,6 +36,7 @@ const AppRoutes = () => {
           <Route path={urls.UsersRoute} element={<UsersPage />} />
           <Route path={urls.SettingsRoute} element={<SettingsPage />} />
           <Route path={urls.AddUserRoute} element={<AddUser />} />
+          <Route path={urls.AddProductRoute} element={<AddProductPage />} />
         </Route>
         <Route path="*" element={<Navigate to={urls.ProductsRoute} />} />
       </Routes>

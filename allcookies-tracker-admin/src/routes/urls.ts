@@ -21,6 +21,7 @@ export const ProductRoute = {
   format: ({ id }: ProductRouteParams): string => `${ProductsRoute}/${id}`,
 };
 
+export const AddProductRoute: string = '/products/add-product'
 // DASHBOARD
 export const DashboardRoute: string = "/dashboard";
 

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 import Box from "@mui/material/Box";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -126,13 +126,12 @@ const CustomTable = ({
       const isItemSelected = isSelected(String(row.id));
       const labelId = `enhanced-table-checkbox-${index}`;
       return (
-        <>
+        <Fragment key={row.id}>
           <CustomTableRow
             hover
             role="checkbox"
             aria-checked={isItemSelected}
             tabIndex={-1}
-            key={row.id}
             selected={isItemSelected}
           >
             <CustomTableCell padding="checkbox">
@@ -192,7 +191,7 @@ const CustomTable = ({
               </Collapse>
             </CustomTableCell>
           </CustomTableRow>
-        </>
+        </Fragment>
       );
     });
   }
