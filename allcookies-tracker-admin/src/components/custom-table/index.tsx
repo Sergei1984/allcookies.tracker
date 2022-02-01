@@ -41,6 +41,7 @@ interface CustomTableProps {
   Icon: any;
   IconText: string;
   isAdditions?: boolean;
+  hasCollapseRow?: boolean;
 }
 
 const CustomTable = ({
@@ -54,6 +55,7 @@ const CustomTable = ({
   Icon,
   IconText,
   isAdditions,
+  hasCollapseRow,
 }: CustomTableProps): JSX.Element => {
   const [page, setPage] = React.useState(1);
   const [limit, setLimit] = React.useState(5);
@@ -178,24 +180,26 @@ const CustomTable = ({
               </CustomTableCell>
             ) : null}
           </CustomTableRow>
-          <CustomTableRow>
-            <CustomTableCell
-              style={{
-                paddingBottom: 0,
-                paddingTop: 0,
-                background: "#EFFAFA",
-              }}
-              colSpan={12}
-            >
-              <Collapse in={open[row.id]} timeout="auto" unmountOnExit>
-                {open[row.id] && (
-                  <div>
-                    <p>Hello</p>
-                  </div>
-                )}
-              </Collapse>
-            </CustomTableCell>
-          </CustomTableRow>
+          {hasCollapseRow && (
+            <CustomTableRow>
+              <CustomTableCell
+                style={{
+                  paddingBottom: 0,
+                  paddingTop: 0,
+                  background: "#EFFAFA",
+                }}
+                colSpan={12}
+              >
+                <Collapse in={open[row.id]} timeout="auto" unmountOnExit>
+                  {open[row.id] && (
+                    <div>
+                      <p>Hello</p>
+                    </div>
+                  )}
+                </Collapse>
+              </CustomTableCell>
+            </CustomTableRow>
+          )}
         </React.Fragment>
       );
     });

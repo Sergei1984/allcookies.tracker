@@ -1,28 +1,12 @@
 import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { NavLink } from "react-router-dom";
 import { AddUserRoute } from "../routes/urls";
 import { RootStore } from "../store/rootStore";
 import { getAllUserThunk } from "../store/users/thunk/getAllUserThunk";
 import { formatToTableValue } from "../utils";
 import CustomTable from "./custom-table";
 import CustomTableCell from "./custom-table/custom-table-cell";
-import { SellingPointsState } from "../store/selling-points/types";
-import { selectSellingPointsStore } from "../store/selling-points/selectors";
 import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
-import {
-  Box,
-  Collapse,
-  IconButton,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  Typography,
-} from "@mui/material";
-import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 
 import { getAppStoreSelector } from "../store/app/selectors";
 
@@ -45,6 +29,7 @@ export default function UserPageTable() {
       total={total || 0}
       data={users}
       isAdditions={false}
+      hasCollapseRow
       loading={appStore.status === "running"}
       headData={["Пользователь", "Рабочее время", "Магазины", "Email", ""]}
       renderRow={(row: any) => {
