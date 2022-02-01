@@ -1,7 +1,7 @@
 import { UserState } from "./types";
 
 export const userState: UserState = {
-  users: [],
+  data: [],
   total: 0,
   errorData: {
     error: false,

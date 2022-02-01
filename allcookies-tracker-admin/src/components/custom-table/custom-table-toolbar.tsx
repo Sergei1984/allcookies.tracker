@@ -12,7 +12,10 @@ interface EnhancedTableToolbarProps {
   numSelected: number;
   handleSearchClick: (value: string) => void;
   handleChangeLimit: (values: ListType) => void;
+  onChangeSort: (sortValue: string) => void;
   limit: number;
+  sortBy?: string;
+  sortByList?: Array<any>;
 }
 
 type ListType = {
@@ -22,7 +25,15 @@ type ListType = {
 };
 
 const CustomTableToolbar = (props: EnhancedTableToolbarProps): JSX.Element => {
-  const { numSelected, handleSearchClick, handleChangeLimit, limit } = props;
+  const {
+    numSelected,
+    handleSearchClick,
+    handleChangeLimit,
+    limit,
+    sortBy,
+    sortByList,
+    onChangeSort,
+  } = props;
   const [searchString, setSearch] = React.useState("");
 
   const handleChangeSearch = (event: any) => {
@@ -76,13 +87,11 @@ const CustomTableToolbar = (props: EnhancedTableToolbarProps): JSX.Element => {
         </Box>
         <Box>
           <Dropdown
-            title="Адрес"
-            list={[
-              { id: "1", value: "selling-points", label: "Магазин" },
-              { id: "2", value: "address", label: "Адрес" },
-            ]}
+            title={"Сортировать по"}
+            list={sortByList}
+            selected={sortBy}
             onChange={(value: any) => {
-              console.log("on change value: ", value);
+              onChangeSort(String(value));
             }}
           />
         </Box>

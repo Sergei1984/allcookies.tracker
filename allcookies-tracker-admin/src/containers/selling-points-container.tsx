@@ -32,14 +32,6 @@ const SellingPointsContainer =
 
     const { filters, addOrRemoveFilter } = useFilters();
 
-
-    useEffect(()=> {
-      addOrRemoveFilter("shop");
-      addOrRemoveFilter("shop1");
-      addOrRemoveFilter("shop2");
-    }, [])
-
-
     return (
       <>
         <PageTitle title="Магазины" />
@@ -74,6 +66,10 @@ const SellingPointsContainer =
           IconClickPath={AddSellingPointRoute}
           Icon={AddBusinessIcon}
           IconText={"Добавить магазин"}
+          sortByList={[
+            { id: "1", value: "title", label: "Магазин" },
+            { id: "2", value: "address", label: "Адрес" },
+          ]}
         />
       </>
     );

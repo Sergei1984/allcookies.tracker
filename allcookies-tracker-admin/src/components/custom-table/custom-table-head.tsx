@@ -41,8 +41,6 @@ const CustomTableHead = (props: EnhancedTableProps): JSX.Element => {
     navigate(IconClickPath);
   };
 
-  console.log("asdasd", isAdditions);
-
   return (
     <TableHead>
       <TableRow

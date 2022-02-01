@@ -18,6 +18,11 @@ export interface UserError {
   payload: ErrorData;
 }
 
+export interface GetAllUserActionPayload {
+  data: INewUser[];
+  total: number;
+}
+
 export interface INewUser {
   login: string;
   password: string;
@@ -32,11 +37,11 @@ export interface UsersResponse {
 
 export interface UserAction {
   type: typeof GET_ALL_USER_TYPE;
-  payload: INewUser[];
+  payload: GetAllUserActionPayload;
 }
 
 export interface UserState {
-  users: INewUser[];
+  data: INewUser[];
   total: number;
   errorData: ErrorData;
 }

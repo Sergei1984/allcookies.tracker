@@ -13,7 +13,7 @@ import { getAppStoreSelector } from "../store/app/selectors";
 export default function UserPageTable() {
   const dispatch = useDispatch();
 
-  const { users, total } = useSelector((state: RootStore) => state.userStore);
+  const { data, total } = useSelector((state: RootStore) => state.userStore);
 
   const appStore = useSelector(getAppStoreSelector);
 
@@ -27,7 +27,7 @@ export default function UserPageTable() {
     <CustomTable
       getPageData={getPoints}
       total={total || 0}
-      data={users}
+      data={data}
       isAdditions={false}
       hasCollapseRow
       loading={appStore.status === "running"}

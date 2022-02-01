@@ -18,8 +18,9 @@ export const getAllUserThunk =
 
     if (response) {
       dispatch(setAppStatusAction({ status: StatusEnum.success }));
-      console.log(response.data);
-      dispatch(getAllUserAction(response.data));
+      dispatch(
+        getAllUserAction({ data: response.data, total: response.total })
+      );
     } else {
       dispatch(setAppStatusAction({ status: StatusEnum.error }));
       dispatch(setAppErrorAction({ error: {} }));
