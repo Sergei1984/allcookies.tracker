@@ -126,7 +126,7 @@ const CustomTable = ({
       const isItemSelected = isSelected(String(row.id));
       const labelId = `enhanced-table-checkbox-${index}`;
       return (
-        <>
+        <React.Fragment key={row.id}>
           <CustomTableRow
             hover
             role="checkbox"
@@ -180,7 +180,11 @@ const CustomTable = ({
           </CustomTableRow>
           <CustomTableRow>
             <CustomTableCell
-              style={{ paddingBottom: 0, paddingTop: 0, background: "#EFFAFA" }}
+              style={{
+                paddingBottom: 0,
+                paddingTop: 0,
+                background: "#EFFAFA",
+              }}
               colSpan={12}
             >
               <Collapse in={open[row.id]} timeout="auto" unmountOnExit>
@@ -192,7 +196,7 @@ const CustomTable = ({
               </Collapse>
             </CustomTableCell>
           </CustomTableRow>
-        </>
+        </React.Fragment>
       );
     });
   }

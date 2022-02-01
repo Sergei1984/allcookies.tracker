@@ -28,14 +28,8 @@ import { getAppStoreSelector } from "../store/app/selectors";
 
 export default function UserPageTable() {
   const dispatch = useDispatch();
-  const users = useSelector((state: RootStore) => state.userStore.users);
 
-  React.useEffect(() => {
-    (async () => {
-      await dispatch(getAllUserThunk(0, 10));
-    })();
-  }, []);
-  const data: SellingPointsState = useSelector(selectSellingPointsStore);
+  const { users, total } = useSelector((state: RootStore) => state.userStore);
 
   const appStore = useSelector(getAppStoreSelector);
 
@@ -48,7 +42,7 @@ export default function UserPageTable() {
   return (
     <CustomTable
       getPageData={getPoints}
-      total={data.total || 0}
+      total={total || 0}
       data={users}
       isAdditions={false}
       loading={appStore.status === "running"}
