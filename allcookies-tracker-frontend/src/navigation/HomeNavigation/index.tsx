@@ -20,6 +20,7 @@ const HomeNavigation = () => {
       <HomeStack.Screen name="Главная" component={HomeScreen} />
       <HomeStack.Screen
         options={({ route }: any) => ({
+          headerBackTitleVisible: false,
           title: `Список товаров в ${route.params?.title as string}`,
         })}
         name="Список товаров"
