@@ -5,9 +5,25 @@ import {
   ChangeSellingPageAction,
   ADD_SELLING_POINT,
   AddSellingPointPayload,
+  DeleteSellingPointPayload,
+  DeleteSellingPointAction,
 } from "./types";
 
 export const getSellingPointsAction = (data: any): GetSellingPointsAction => ({
+  type: GET_SELLING_POINTS,
+  payload: data,
+});
+
+export const deleteSellingPointAction = (
+  data: any
+): DeleteSellingPointAction => ({
+  type: GET_SELLING_POINTS,
+  payload: data,
+});
+
+export const editSellingPointAction = (
+  data: any
+): DeleteSellingPointAction => ({
   type: GET_SELLING_POINTS,
   payload: data,
 });

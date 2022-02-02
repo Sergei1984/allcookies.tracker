@@ -11,6 +11,7 @@ export const editProductThunk = (id: number, title: string) => {
     try {
       dispatch(setAppStatusAction({ status: StatusEnum.running }));
       await ProductsAPI.editProduct(id, title);
+      dispatch(setAppStatusAction({ status: StatusEnum.success }));
     } catch (error: any) {
       dispatch(setAppStatusAction({ status: StatusEnum.error }));
       dispatch(setAppErrorAction({ error: error }));

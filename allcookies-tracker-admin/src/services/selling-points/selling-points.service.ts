@@ -1,5 +1,6 @@
 import axiosInstance from "../../api";
-import { ILogin } from "../../store/auth/types";
+
+import { EditSellingPointParams } from "../../store/selling-points/types";
 
 class SellingPointsService {
   public getSellingPoints = async (
@@ -14,8 +15,22 @@ class SellingPointsService {
       {}
     );
   };
+  public deleteSellingPoint = async (id: number) => {
+    return await axiosInstance.delete(`/admin/selling-point/${id}`);
+  };
+
   public addNewSellingPoint = async (payload: any) => {
     return await axiosInstance.post("/admin/selling-point/", payload, {});
+  };
+
+  public editSellingPoint = async (
+    id: number,
+    values: EditSellingPointParams
+  ) => {
+    return await axiosInstance.patch(`/admin/selling-point/${id}`, {
+      ...values,
+      is_disabled: false,
+    });
   };
 }
 

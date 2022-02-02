@@ -76,7 +76,7 @@ const CustomTableHead = (props: EnhancedTableProps): JSX.Element => {
         {isAdditions ? <TableCell align="center">Доп.</TableCell> : null}
       </TableRow>
       <TableRow>
-        <TableCell colSpan={7}>
+        <TableCell colSpan={headData?.length + 2}>
           <Button
             sx={{
               color: "#767676",

@@ -8,6 +8,9 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 
+import { deleteSellingPointThunk } from "../store/selling-points/thunk";
+import { useDispatch } from "react-redux";
+
 interface NestedTableOptionsListProps {
   title: string;
   multiple?: boolean;
@@ -19,6 +22,7 @@ const NestedTableOptionsList = ({
   item,
   multiple,
 }: NestedTableOptionsListProps) => {
+  const dispatch = useDispatch();
   // single
   const visible_single_text = item.is_disabled ? `Показать` : `Скрыть`;
   const remove_single_text = "Удалить";
@@ -27,6 +31,10 @@ const NestedTableOptionsList = ({
   const hidden = "Скрыть все";
   const visibility = "Показать все";
   const multiple_delete_text = "Удалить все";
+
+  const deletePoint = (id: number) => {
+    dispatch(deleteSellingPointThunk({ id: id }));
+  };
 
   return (
     <List
@@ -68,7 +76,7 @@ const NestedTableOptionsList = ({
             </ListItemIcon>
             <ListItemText primary={visible_single_text} />
           </ListItemButton>
-          <ListItemButton>
+          <ListItemButton onClick={() => deletePoint(Number(item.id))}>
             <ListItemIcon>
               <DeleteIcon />
             </ListItemIcon>

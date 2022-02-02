@@ -12,7 +12,7 @@ export const deleteProductThunk = (id: number) => {
       dispatch(setAppStatusAction({ status: StatusEnum.running }));
       await ProductsAPI.deleteProduct(id);
       await dispatch(removeProductAction(id));
-      
+      dispatch(setAppStatusAction({ status: StatusEnum.success }));
     } catch (error: any) {
       dispatch(setAppStatusAction({ status: StatusEnum.error }));
       dispatch(setAppErrorAction({ error: error }));
