@@ -1,3 +1,4 @@
+import { title } from "process";
 import axiosInstance from "../../api";
 import { CreateProduct } from "../../store/products/types";
 
@@ -20,6 +21,14 @@ class ProductsService {
       is_disabled: data.is_disabled,
     });
   };
+
+  public deleteProduct = async (id: number) => {
+    return await axiosInstance.delete(`/admin/product/${id}`)
+  }
+
+  public editProduct = async (id: number, title: string) => {
+    return await axiosInstance.patch(`/admin/product/${id}`, {title: title, is_disabled: false})
+  }
 }
 
 export const ProductsAPI = new ProductsService();

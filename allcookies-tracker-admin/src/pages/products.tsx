@@ -10,6 +10,8 @@ import { ProductState } from "../store/products/types";
 import { RootStore } from "../store/rootStore";
 import AddBusinessIcon from "@mui/icons-material/AddBusiness";
 import { formatToTableValue } from "../utils";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { deleteProductThunk } from "../store/products/thunk/deleteProductThunk";
 
 interface ProductsPageProps {}
 
@@ -28,6 +30,11 @@ const ProductsPage = ({}: ProductsPageProps): JSX.Element => {
     await dispatch(getAllProductsThunk({ skip, take, search }));
   };
 
+  const handleDeleteProduct = async (id: number) => {
+    await dispatch(deleteProductThunk(id));
+  };
+
+  console.log("asdasddsa", products);
   return (
     <DashboardLayout>
       <PageTitle title="Продукты" />
@@ -35,7 +42,7 @@ const ProductsPage = ({}: ProductsPageProps): JSX.Element => {
         getPageData={getAllProducts}
         total={products.total || 0}
         isAdditions={true}
-        data={products.data}
+        data={products.data.filter((item) => !item.deleted_by)}
         loading={appStore.status === "running"}
         headData={["Продукт"]}
         renderRow={(row: any) => {
@@ -55,6 +62,9 @@ const ProductsPage = ({}: ProductsPageProps): JSX.Element => {
                   />
                   {formatToTableValue(row.title)}
                 </div>
+              </CustomTableCell>
+              <CustomTableCell onClick={() => handleDeleteProduct(row.id)}>
+                <DeleteIcon />
               </CustomTableCell>
             </>
           );
