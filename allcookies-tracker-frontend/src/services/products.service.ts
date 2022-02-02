@@ -12,6 +12,15 @@ export class Products {
         });
         return response.data;
     }
+
+    public searchProducts = async (title: string) => {
+        let response = await axiosInstance.get(`client/product`, {
+            params: {
+                title
+            }
+        });
+        return response.data;
+    }
 };
 
 export const ProductsAPI = new Products();

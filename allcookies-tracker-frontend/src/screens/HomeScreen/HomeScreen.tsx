@@ -17,6 +17,7 @@ import createStyles from "./styles";
 import {
   getNewSellingPointsThunk,
   getSellingPointsThunk,
+  searchSellingPointThunk,
 } from "../../store/sellingPoint/thunk";
 import { useAppDispatch } from "../../hooks/useAppDispatch";
 import { useAppSelector } from "../../hooks/useAppSelector";
@@ -26,6 +27,7 @@ import { AppTextInput } from "../../components/AppTextInput/AppTextInput";
 import { SellingPoint } from "../../store/sellingPoint/types";
 import useLocation from "../../hooks/useLocation";
 import { AppButton } from "../../components/AppButton/AppButton";
+import { useDebounce } from "../../hooks/useDebounce";
 interface IProps {
   navigation: NavigationProp<ParamListBase>;
 }
@@ -43,7 +45,7 @@ const HomeScreen: React.FC<IProps> = ({ navigation }) => {
 
   React.useEffect(() => {
     (async () => {
-      await dispatch(getSellingPointsThunk());
+      await dispatch(getSellingPointsThunk({ skip: 0, take: 20 }));
     })();
   }, []);
 
@@ -53,29 +55,44 @@ const HomeScreen: React.FC<IProps> = ({ navigation }) => {
     newSellingPoints,
   } = useAppSelector((state) => state.sellingPointReducer);
 
+  const handleLoadMore = React.useCallback(async () => {
+    if (sellingPointData.length < total) {
+      await dispatch(
+        getSellingPointsThunk({ skip: sellingPointData.length, take: 20 })
+      );
+    }
+  }, [sellingPointData]);
+
   React.useEffect(() => {
     setShops(sellingPointData);
   }, [sellingPointData]);
 
-  const searchShop = React.useCallback(
-    (value: string) => {
-      setFindShop(value);
-      console.log(value);
-      const data = sellingPointData.filter((item) =>
-        item.title
-          .replace(/[^A-Za-zА-Яа-я0-9]/g, "")
-          .toLowerCase()
-          .includes(
-            value
-              .replace(/[^A-Za-zА-Яа-я0-9]/g, " ")
-              .trim()
-              .toLowerCase()
-          )
-      );
-      setShops(data);
-    },
-    [sellingPointData]
-  );
+  // const searchShop = React.useCallback(
+  //   (value: string) => {
+  //     setFindShop(value);
+  //     console.log(value);
+  //     const data = sellingPointData.filter((item) =>
+  //       item.title
+  //         .replace(/[^A-Za-zА-Яа-я0-9]/g, "")
+  //         .toLowerCase()
+  //         .includes(
+  //           value
+  //             .replace(/[^A-Za-zА-Яа-я0-9]/g, " ")
+  //             .trim()
+  //             .toLowerCase()
+  //         )
+  //     );
+  //     setShops(data);
+  //   },
+  //   [sellingPointData]
+  // );
+
+  const [searchTerm, setSearchTerm] = React.useState("");
+  const debouncedSearchTerm = useDebounce(searchTerm, 500);
+
+  React.useEffect(() => {
+    dispatch(searchSellingPointThunk(debouncedSearchTerm));
+  }, [debouncedSearchTerm]);
 
   const navigateToDetails = React.useCallback(
     (title: string, id: number) => {
@@ -94,12 +111,12 @@ const HomeScreen: React.FC<IProps> = ({ navigation }) => {
   const onRefresh = React.useCallback(async () => {
     setRefreshing(true);
     await dispatch(getNewSellingPointsThunk(location));
-    setFindShop("");
     setRefreshing(false);
   }, []);
 
   React.useEffect(() => {
-    setShops([...shops, ...newSellingPoints]);
+    // setShops([...shops, ...newSellingPoints]);
+    setShops(newSellingPoints);
   }, [newSellingPoints]);
 
   const renderShopPoints = () => {
@@ -124,6 +141,8 @@ const HomeScreen: React.FC<IProps> = ({ navigation }) => {
           numColumns={2}
           renderItem={renderItem}
           keyExtractor={(item) => item.id.toString()}
+          onEndReached={handleLoadMore}
+          onEndReachedThreshold={0.5}
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
@@ -186,8 +205,8 @@ const HomeScreen: React.FC<IProps> = ({ navigation }) => {
         <AppTextInput
           style={styles.searchInput}
           placeholder="Поиск"
-          value={findShop}
-          onChangeText={(value) => searchShop(value)}
+          // value={findShop}
+          onChangeText={(value) => setSearchTerm(value)}
         />
       </View>
       {renderShopPoints()}

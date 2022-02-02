@@ -11,7 +11,10 @@ import { useAppDispatch } from "../../hooks/useAppDispatch";
 import { useAppSelector } from "../../hooks/useAppSelector";
 import { useGetImage } from "../../hooks/useGetImage";
 import { HomeStackParamList } from "../../navigation/HomeNavigation";
-import { getProductsThunk } from "../../store/product/thunk";
+import {
+  getProductsThunk,
+  searchProductThunk,
+} from "../../store/product/thunk";
 import { Product } from "../../store/product/types";
 import ImagePicker from "react-native-image-crop-picker";
 import createStyles from "./styles";
@@ -20,6 +23,7 @@ import useLocation from "../../hooks/useLocation";
 import { RFValue } from "react-native-responsive-fontsize";
 import { btoa, atob, toByteArray } from "react-native-quick-base64";
 import { uploadPhotoThunk } from "../../store/user/thunk";
+import { useDebounce } from "../../hooks/useDebounce";
 
 type Props = NativeStackScreenProps<HomeStackParamList, "ListOfProducts">;
 
@@ -29,6 +33,7 @@ const ListOfProducts: React.FC<Props> = ({ route, navigation }) => {
   const location = useLocation();
   const navigate = useNavigation();
   const { data, handle } = useGetImage();
+  const [searchTerm, setSearchTerm] = React.useState("");
 
   React.useEffect(() => {
     (async () => {
@@ -70,18 +75,23 @@ const ListOfProducts: React.FC<Props> = ({ route, navigation }) => {
     [products]
   );
 
-  const searchProduct = (value: string) => {
-    const data = products.map((item) =>
-      item.title
-        .replace(/[^A-Za-zА-Яа-я0-9]/g, "")
-        .toLowerCase()
-        .includes(value.replace(/[^A-Za-zА-Яа-я0-9]/g, "").toLowerCase())
-        ? { ...item, isShow: true }
-        : { ...item, isShow: false }
-    );
-    setProducts(data);
-  };
+  const debouncedSearchTerm = useDebounce(searchTerm, 500);
 
+  React.useEffect(() => {
+    dispatch(searchProductThunk(debouncedSearchTerm));
+  }, [debouncedSearchTerm]);
+
+  // const searchProduct = (value: string) => {
+  //   const data = products.map((item) =>
+  //     item.title
+  //       .replace(/[^A-Za-zА-Яа-я0-9]/g, "")
+  //       .toLowerCase()
+  //       .includes(value.replace(/[^A-Za-zА-Яа-я0-9]/g, "").toLowerCase())
+  //       ? { ...item, isShow: true }
+  //       : { ...item, isShow: false }
+  //   );
+  //   setProducts(data);
+  // };
   const activity = useAppSelector(
     (state) => state.sellingPointReducer.activityId
   );
@@ -172,7 +182,9 @@ const ListOfProducts: React.FC<Props> = ({ route, navigation }) => {
     return (
       <View>
         <FlatList
-          data={products.flatMap((item) => (item.isShow ? item : []))}
+          data={products
+            .filter((product) => !product.deleted_by)
+            .flatMap((item) => (item.isShow ? item : []))}
           style={{
             marginBottom: 20,
             height: data.images.length ? "47%" : "60%",
@@ -263,7 +275,7 @@ const ListOfProducts: React.FC<Props> = ({ route, navigation }) => {
         <AppTextInput
           style={styles.searchInput}
           placeholder="Поиск"
-          onChangeText={(value) => searchProduct(value)}
+          onChangeText={(value) => setSearchTerm(value)}
         />
       </View>
       {renderProducts()}

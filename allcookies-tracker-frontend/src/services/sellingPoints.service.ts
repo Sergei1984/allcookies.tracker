@@ -3,8 +3,13 @@ import { CheckSellingPointData, Location, SellingPointData } from "../store/sell
 
 export class SellingPoints {
 
-    public getSellingPoints = async () => {
-        let response = await axiosInstance.get(`client/selling-point`)
+    public getSellingPoints = async (skip: number, take: number) => {
+        let response = await axiosInstance.get(`client/selling-point`, {
+            params: {
+                take: take,
+                skip: skip
+            }
+        })
         return response.data;
     }
 
@@ -21,12 +26,21 @@ export class SellingPoints {
     }
 
     public getNewSellingPoints = async (data: Location) => {
-        let response = await axiosInstance.get(`/client/selling-point`, {
+        let response = await axiosInstance.get(`client/selling-point`, {
             params: {
               lat: data.lat,
               lon: data.lon
             }
         })
+        return response.data;
+    }
+
+    public searchSellingPoint = async (title: string) => {
+        let response = await axiosInstance.get(`client/selling-point`, {
+            params: {
+                title
+            }
+        });
         return response.data;
     }
 

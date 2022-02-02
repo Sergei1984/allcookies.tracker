@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { initialState } from "./store";
-import { getProductsThunk } from "./thunk";
+import { getProductsThunk, searchProductThunk } from "./thunk";
 import { ProductState } from "./types";
 
 export const productSlice = createSlice({
@@ -12,8 +12,11 @@ export const productSlice = createSlice({
     extraReducers: {
         [getProductsThunk.fulfilled.type]: (state, action: PayloadAction<ProductState>) => {
             state.total = action.payload.total,
-            console.log('asdsa', state.data.length, action.payload.data.length)
             state.data = [...state.data, ...action.payload.data]
+        },
+        [searchProductThunk.fulfilled.type]: (state, action: PayloadAction<ProductState>) => {
+            state.total = action.payload.total
+            state.data = action.payload.data
         }
     }
 })

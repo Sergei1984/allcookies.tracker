@@ -3,9 +3,9 @@ import { SellingPointsAPI } from "../../services/sellingPoints.service";
 import { UserAPI } from "../../services/user.service";
 import { CheckSellingPointData, Location, SellingPointData } from "./types";
 
-export const getSellingPointsThunk = createAsyncThunk('sellingPoints/getSellingPoints', async (_, thunkAPI) => {
+export const getSellingPointsThunk = createAsyncThunk('sellingPoints/getSellingPoints', async (data: {skip: number, take: number}, thunkAPI) => {
     try {
-        const response = await SellingPointsAPI.getSellingPoints();
+        const response = await SellingPointsAPI.getSellingPoints(data.skip, data.take);
         return response
     } catch (e) {
         console.log(e);
@@ -51,4 +51,13 @@ export const getNewSellingPointsThunk = createAsyncThunk('sellingPoints/getNewSe
     }
 })
 
+
+export const searchSellingPointThunk = createAsyncThunk('sellingPoints/searchSellingPoint', async (data: string, thunkAPI) => {
+    try {
+        const response = await SellingPointsAPI.searchSellingPoint(data);
+        return response;
+    } catch (e) {
+        return thunkAPI.rejectWithValue(e.message)
+    }
+})
 
