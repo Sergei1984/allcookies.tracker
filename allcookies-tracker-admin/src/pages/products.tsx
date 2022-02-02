@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import CustomTable from "../components/custom-table";
 import CustomTableCell from "../components/custom-table/custom-table-cell";
@@ -11,7 +11,11 @@ import { RootStore } from "../store/rootStore";
 import AddBusinessIcon from "@mui/icons-material/AddBusiness";
 import { formatToTableValue } from "../utils";
 import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
+import DoneIcon from "@mui/icons-material/Done";
 import { deleteProductThunk } from "../store/products/thunk/deleteProductThunk";
+import { editProductThunk } from "../store/products/thunk/editProductThunk";
+import { TextField } from "@mui/material";
 
 interface ProductsPageProps {}
 
@@ -31,7 +35,21 @@ const ProductsPage = ({}: ProductsPageProps): JSX.Element => {
   };
 
   const handleDeleteProduct = async (id: number) => {
-    await dispatch(deleteProductThunk(id));
+    dispatch(deleteProductThunk(id));
+  };
+
+  const [editableRowId, setEditableRowId] = useState<number | null>(null);
+  const [editableRowTitle, setEditableRowTitle] = useState<string>("");
+
+  const handleEditProduct = (data: number | null) => {
+    setEditableRowId(data);
+    if (editableRowId !== null && editableRowTitle !== "") {
+      dispatch(editProductThunk(editableRowId, editableRowTitle));
+    }
+  };
+
+  const handleChangeProductName = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEditableRowTitle(e.target.value);
   };
 
   console.log("asdasddsa", products);
@@ -44,7 +62,7 @@ const ProductsPage = ({}: ProductsPageProps): JSX.Element => {
         isAdditions={true}
         data={products.data.filter((item) => !item.deleted_by)}
         loading={appStore.status === "running"}
-        headData={["Продукт"]}
+        headData={["Продукт", "", ""]}
         renderRow={(row: any) => {
           return (
             <>
@@ -60,12 +78,30 @@ const ProductsPage = ({}: ProductsPageProps): JSX.Element => {
                       marginRight: "10px",
                     }}
                   />
-                  {formatToTableValue(row.title)}
+                  {editableRowId && editableRowId === row.id ? (
+                    <TextField
+                      id="standard-basic"
+                      variant="standard"
+                      defaultValue={row.title}
+                      onChange={handleChangeProductName}
+                    />
+                  ) : (
+                    formatToTableValue(row.title)
+                  )}
                 </div>
               </CustomTableCell>
               <CustomTableCell onClick={() => handleDeleteProduct(row.id)}>
                 <DeleteIcon />
               </CustomTableCell>
+              {editableRowId && editableRowId === row.id ? (
+                <CustomTableCell onClick={() => handleEditProduct(null)}>
+                  <DoneIcon />
+                </CustomTableCell>
+              ) : (
+                <CustomTableCell onClick={() => handleEditProduct(row.id)}>
+                  <EditIcon />
+                </CustomTableCell>
+              )}
             </>
           );
         }}
