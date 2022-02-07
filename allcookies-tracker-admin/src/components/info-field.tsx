@@ -11,12 +11,16 @@ interface InfoFieldProps {
   value?: string | number;
   defaultValue: string | number;
   onUpdate?: (value: any) => void;
+  label?: string;
+  id?: string;
 }
 
 const InfoField = ({
   value,
   defaultValue,
   onUpdate,
+  label,
+  id,
 }: InfoFieldProps): JSX.Element => {
   const [editMode, setEditMode] = useState(false);
   const [editValue, setEditValue] = useState(defaultValue || "");
@@ -42,10 +46,18 @@ const InfoField = ({
     }
   };
 
+  React.useEffect(() => {
+    if (defaultValue) {
+      setEditValue(defaultValue);
+    }
+  }, [defaultValue]);
+
   return (
     <Box sx={{ margin: "20px", padding: "10px" }}>
+      <label htmlFor="name">{label}</label>
+      <br />
       <TextField
-        id="standard-basic"
+        id={id ? id : `standart-${defaultValue}`}
         variant="standard"
         value={editValue}
         onChange={handleChange}
@@ -53,17 +65,17 @@ const InfoField = ({
       />
 
       {editMode && (
-        <IconButton aria-label="done icon" onClick={handleCancel}>
-          <DoDisturbIcon />
+        <IconButton aria-label="delete" onClick={handleCancel}>
+          <DoDisturbIcon sx={{ color: "red" }} />
         </IconButton>
       )}
       {editMode && (
-        <IconButton aria-label="delete" onClick={handleSubmit}>
-          <DoneIcon />
+        <IconButton aria-label="done" onClick={handleSubmit}>
+          <DoneIcon sx={{ color: "green" }} />
         </IconButton>
       )}
       {!editMode && (
-        <IconButton aria-label="d" onClick={handleEdit}>
+        <IconButton aria-label="edit" onClick={handleEdit}>
           <EditIcon />
         </IconButton>
       )}

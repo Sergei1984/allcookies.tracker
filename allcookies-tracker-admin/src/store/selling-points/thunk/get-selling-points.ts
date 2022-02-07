@@ -7,7 +7,11 @@ import { getSellingPointsAction } from "../actions";
 import { GetSellingPointsPayload } from "../types";
 
 //
-import { setAppStatusAction, setAppErrorAction } from "../../app/actions";
+import {
+  setAppStatusAction,
+  setAppErrorAction,
+  showNotificationAction,
+} from "../../app/actions";
 
 export const getSellingPointsThunk = ({
   skip,
@@ -20,6 +24,15 @@ export const getSellingPointsThunk = ({
       const response: AxiosResponse =
         await SellingPointsService.getSellingPoints(skip, take, search);
       if (response.status === 200 || response.status === 201) {
+        // dispatch(
+        //   showNotificationAction({
+        //     message: "Success get selling points",
+        //     options: {
+        //       key: new Date().getTime() + Math.random(),
+        //       variant: "success",
+        //     },
+        //   })
+        // );
         dispatch(setAppStatusAction({ status: StatusEnum.success }));
         dispatch(
           getSellingPointsAction({

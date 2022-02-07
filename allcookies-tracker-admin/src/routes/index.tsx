@@ -15,8 +15,10 @@ import {
   AddProductPage,
 } from "../pages";
 import Login from "../pages/login";
+import useNotifier from "../hooks/useNotifier";
 
 const AppRoutes = () => {
+  useNotifier();
   return (
     <BrowserRouter>
       <Routes>

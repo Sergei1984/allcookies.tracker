@@ -19,7 +19,6 @@ interface ProfileProps {
 
 const Profile = ({ data, loading }: ProfileProps): JSX.Element => {
   const [name, setName] = React.useState("");
-  const [surname, setSurname] = React.useState("");
   const [email, setEmail] = React.useState("");
 
   useEffect(() => {
@@ -33,6 +32,7 @@ const Profile = ({ data, loading }: ProfileProps): JSX.Element => {
     <Box display={"flex"} flexWrap={"wrap"}>
       <Box
         sx={{
+          width: "100%",
           backgroundColor: "white",
           padding: "20px",
           borderRadius: "4px",
@@ -40,9 +40,9 @@ const Profile = ({ data, loading }: ProfileProps): JSX.Element => {
         }}
       >
         <Box sx={{ width: "100%", height: "auto" }}>
-          <InfoField defaultValue={name} onUpdate={setName} />
-          <InfoField defaultValue={surname} onUpdate={setSurname} />
-          <InfoField defaultValue={email} onUpdate={setEmail} />
+          
+          <InfoField id="name" label="Имя" defaultValue={name} onUpdate={setName} />
+          <InfoField id="email" label="Email" defaultValue={email} onUpdate={setEmail} />
         </Box>
       </Box>
     </Box>

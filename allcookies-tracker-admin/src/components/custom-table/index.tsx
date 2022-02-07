@@ -116,18 +116,6 @@ const CustomTable = ({
 
   const isSelected = (name: string) => selected.indexOf(name) !== -1;
 
-  const hasData = React.useMemo(() => {
-    if (loading) {
-      return false;
-    }
-    if (!loading) {
-      if (data?.length > 0) {
-        return true;
-      }
-      return false;
-    }
-  }, [loading, data]);
-
   const [open, setOpen] = React.useState<any>({});
 
   function renderItems(rows: any) {
@@ -212,9 +200,14 @@ const CustomTable = ({
   }
 
   React.useEffect(() => {
+    setPage(1);
+    getPageData(0, limit, searchString);
+  }, [searchString, limit]);
+
+  React.useEffect(() => {
     getPageData((page - 1) * limit, limit, searchString);
     return () => {};
-  }, [page, searchString, limit]);
+  }, [page]);
 
   return (
     <Box>
@@ -242,13 +235,19 @@ const CustomTable = ({
               isAdditions={isAdditions}
             />
             <TableBody>
-              {!hasData ? (
+              {loading ? (
                 <TableSkeleton
                   rowCount={limit}
                   colCount={headData.length + 2}
                 />
-              ) : (
+              ) : data && data?.length > 0 ? (
                 renderItems(data)
+              ) : (
+                <CustomTableRow>
+                  <CustomTableCell colSpan={headData.length + 2} align="center">
+                    Не найдено
+                  </CustomTableCell>
+                </CustomTableRow>
               )}
             </TableBody>
           </Table>
