@@ -43,7 +43,6 @@ export interface UserAction {
 export interface UserState {
   data: INewUser[];
   total: number;
-  errorData: ErrorData;
 }
 
 export type UserType = UserAction | UserError;

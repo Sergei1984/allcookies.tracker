@@ -2,12 +2,15 @@ import { AxiosResponse } from "axios";
 import { Dispatch } from "redux";
 import { RootStore } from "../../rootStore";
 import SellingPointsService from "../../../services/selling-points/selling-points.service";
-import { StatusEnum } from "../../../core/enums";
+import { StatusEnum, VariantEnums } from "../../../core/enums";
 import { deleteSellingPointAction, getSellingPointsAction } from "../actions";
 import { DeleteSellingPointPayload } from "../types";
 
-//
-import { setAppStatusAction, setAppErrorAction } from "../../app/actions";
+import {
+  setAppStatusAction,
+  setAppErrorAction,
+  showNotificationAction,
+} from "../../app/actions";
 import { SellingPointModel } from "../../../models/selling-point.model";
 
 export const deleteSellingPointThunk = ({ id }: DeleteSellingPointPayload) => {
@@ -32,6 +35,20 @@ export const deleteSellingPointThunk = ({ id }: DeleteSellingPointPayload) => {
           })
         );
         dispatch(
+          showNotificationAction({
+            key: new Date().getTime() + Math.random(),
+            message: {
+              type: VariantEnums.success,
+              title: "Удаление",
+              message: "Магазин успешно удален",
+            },
+            options: {
+              key: new Date().getTime() + Math.random(),
+              variant: "success",
+            },
+          })
+        );
+        dispatch(
           getSellingPointsAction({
             data: [
               ...getState().sellingPointsStore.data?.filter(
@@ -42,7 +59,21 @@ export const deleteSellingPointThunk = ({ id }: DeleteSellingPointPayload) => {
           })
         );
       }
-    } catch (error: any) {
+    } catch (error) {
+      dispatch(
+        showNotificationAction({
+          key: new Date().getTime() + Math.random(),
+          message: {
+            type: VariantEnums.error,
+            title: "Ошибка",
+            message: "Магазин не был удален." + JSON.stringify(error),
+          },
+          options: {
+            key: new Date().getTime() + Math.random(),
+            variant: "success",
+          },
+        })
+      );
       dispatch(setAppStatusAction({ status: StatusEnum.error }));
       dispatch(setAppErrorAction({ error: error }));
     }

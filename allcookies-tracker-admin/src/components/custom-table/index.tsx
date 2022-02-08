@@ -67,6 +67,7 @@ const CustomTable = ({
   const [searchString, setSearch] = React.useState("");
 
   const handleSearchClick = (value: string) => {
+    setPage(1);
     setSearch(value);
   };
 
@@ -200,14 +201,9 @@ const CustomTable = ({
   }
 
   React.useEffect(() => {
-    setPage(1);
-    getPageData(0, limit, searchString);
-  }, [searchString, limit]);
-
-  React.useEffect(() => {
     getPageData((page - 1) * limit, limit, searchString);
     return () => {};
-  }, [page]);
+  }, [page, searchString, limit]);
 
   return (
     <Box>

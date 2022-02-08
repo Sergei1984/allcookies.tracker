@@ -52,7 +52,6 @@ const ProductsPage = ({}: ProductsPageProps): JSX.Element => {
     setEditableRowTitle(e.target.value);
   };
 
-  console.log("asdasddsa", products);
   return (
     <DashboardLayout>
       <PageTitle title="Продукты" />
