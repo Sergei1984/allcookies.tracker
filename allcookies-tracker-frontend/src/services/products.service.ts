@@ -1,4 +1,5 @@
 import axiosInstance from "../shared/utils/axiosInstanceHelper";
+import { Product } from "../store/product/types";
 
 export class Products {
  
@@ -10,7 +11,7 @@ export class Products {
                 skip: skip
             }
         });
-        return response.data;
+        return response.data
     }
 
     public searchProducts = async (title: string) => {

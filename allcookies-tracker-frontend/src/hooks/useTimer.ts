@@ -19,11 +19,14 @@ export const useTimer = () => {
         (async () => {
             let isActiveTimer = await AsyncStorageLib.getItem("isActiveTimer");
             let currentActivity = await AsyncStorageLib.getItem('currentActivity');
-            if (isActiveTimer && JSON.parse(isActiveTimer) === true) {
+            let date = await AsyncStorageLib.getItem('date');
+            let getActualDate = date && new Date(JSON.parse(date)).getDate() === new Date().getDate();
+            if (isActiveTimer && JSON.parse(isActiveTimer) === true && getActualDate) {
                 setToggle(true);
-                console.log('qweqweqew', currentActivity && JSON.parse(currentActivity))
                 await dispatch(setCurrentActivity(currentActivity && JSON.parse(currentActivity)))
+                return;
             }
+            setToggle(false);
         })();
     }, []);
 
@@ -93,6 +96,7 @@ export const useTimer = () => {
         // );
         // await AsyncStorageLib.setItem('currentDate', JSON.stringify(new Date()));
         await AsyncStorageLib.setItem("isActiveTimer", JSON.stringify(true));
+        await AsyncStorageLib.setItem('date', JSON.stringify(new Date('Feb 7, 2022')))
         await dispatch(openDayThunk({location: location, time: new Date()}))
         // console.log('lol', activity && activity)
         // await AsyncStorageLib.setItem("currentActivity", JSON.stringify(activity && activity))

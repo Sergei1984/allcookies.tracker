@@ -1,7 +1,7 @@
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import React from "react";
-import { View, Text, FlatList, TouchableOpacity, Image } from "react-native";
+import { View, FlatList, TouchableOpacity, Image } from "react-native";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { AppButton } from "../../components/AppButton";
@@ -15,15 +15,12 @@ import {
   getProductsThunk,
   searchProductThunk,
 } from "../../store/product/thunk";
-import { Product } from "../../store/product/types";
-import ImagePicker from "react-native-image-crop-picker";
 import createStyles from "./styles";
 import { checkSellingPointThunk } from "../../store/sellingPoint/thunk";
 import useLocation from "../../hooks/useLocation";
 import { RFValue } from "react-native-responsive-fontsize";
-import { btoa, atob, toByteArray } from "react-native-quick-base64";
-import { uploadPhotoThunk } from "../../store/user/thunk";
 import { useDebounce } from "../../hooks/useDebounce";
+import { productSlice } from "../../store/product/slice";
 
 type Props = NativeStackScreenProps<HomeStackParamList, "ListOfProducts">;
 
@@ -35,45 +32,34 @@ const ListOfProducts: React.FC<Props> = ({ route, navigation }) => {
   const { data, handle } = useGetImage();
   const [searchTerm, setSearchTerm] = React.useState("");
 
+  const {
+    data: dataOfProducts,
+    filteredData,
+    total,
+  } = useAppSelector((state) => state.productReducer);
+
   React.useEffect(() => {
     (async () => {
       await dispatch(getProductsThunk({ skip: 0, take: 20 }));
     })();
   }, []);
 
-  const { data: dataOfProducts, total } = useAppSelector(
-    (state) => state.productReducer
-  );
-
-  const [products, setProducts] = React.useState<Product[]>([]);
+  const { handleIncrementCount, handleDecrementCount, clearDefaultData } =
+    productSlice.actions;
 
   React.useEffect(() => {
-    setProducts(
-      dataOfProducts.map((item) => ({ ...item, count: 0, isShow: true }))
-    );
-  }, [dataOfProducts]);
+    return () => {
+      dispatch(clearDefaultData());
+    };
+  }, []);
 
-  const handleIncrement = React.useCallback(
-    (name) => {
-      let newProduct = products.map((el) =>
-        el.title === name ? { ...el, count: el.count + 1 } : el
-      );
-      setProducts(newProduct);
-    },
-    [products]
-  );
+  const handleIncrement = React.useCallback((name) => {
+    dispatch(handleIncrementCount(name));
+  }, []);
 
-  const handleDecrement = React.useCallback(
-    (name) => {
-      let newProduct = products.map((el) =>
-        el.title === name
-          ? { ...el, count: el.count !== 0 ? el.count - 1 : 0 }
-          : el
-      );
-      setProducts(newProduct);
-    },
-    [products]
-  );
+  const handleDecrement = React.useCallback((name) => {
+    dispatch(handleDecrementCount(name));
+  }, []);
 
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
 
@@ -92,12 +78,13 @@ const ListOfProducts: React.FC<Props> = ({ route, navigation }) => {
   //   );
   //   setProducts(data);
   // };
+
   const activity = useAppSelector(
     (state) => state.sellingPointReducer.activityId
   );
 
   const sendReport = React.useCallback(async () => {
-    const dataProducts = products.flatMap((item) =>
+    const dataProducts = dataOfProducts.flatMap((item) =>
       item.count !== 0 ? { product_id: item.id, quantity: item.count } : []
     );
     await dispatch(
@@ -110,7 +97,7 @@ const ListOfProducts: React.FC<Props> = ({ route, navigation }) => {
       })
     );
     navigation.navigate("Главная");
-  }, [products, activity, data.images]);
+  }, [dataOfProducts, activity, data.images]);
 
   const handleLoadMore = React.useCallback(async () => {
     if (dataOfProducts.length < total) {
@@ -182,9 +169,13 @@ const ListOfProducts: React.FC<Props> = ({ route, navigation }) => {
     return (
       <View>
         <FlatList
-          data={products
-            .filter((product) => !product.deleted_by)
-            .flatMap((item) => (item.isShow ? item : []))}
+          data={
+            debouncedSearchTerm
+              ? dataOfProducts.filter((item1) =>
+                  filteredData.some((item2) => item2.id === item1.id)
+                )
+              : dataOfProducts
+          }
           style={{
             marginBottom: 20,
             height: data.images.length ? "47%" : "60%",
@@ -198,7 +189,7 @@ const ListOfProducts: React.FC<Props> = ({ route, navigation }) => {
         <AppButton
           name="Отправить отчет"
           onPress={sendReport}
-          disabled={!products.find((item) => item.count !== 0)}
+          disabled={!dataOfProducts.find((item) => item.count !== 0)}
         />
       </View>
     );
