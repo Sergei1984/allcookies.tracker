@@ -41,7 +41,6 @@ const AppRoutes = () => {
           <Route path={urls.AddProductRoute} element={<AddProductPage />} />
           <Route path="*" element={<Navigate to={urls.ProductsRoute} />} />
         </Route>
-        <Route path="*" element={<Navigate to={urls.SignInRoute} />} />
       </Routes>
     </BrowserRouter>
   );
