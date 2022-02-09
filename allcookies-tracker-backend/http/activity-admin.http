@@ -14,11 +14,11 @@ Content-Type: application/json
     "password": "123456"
 }
 
-### 
+###
 # @name activity
 GET {{server}}/admin/activity
 Authorization: {{auth.response.body.jwt}}
 
 
-### 
+###
 GET {{server}}{{activity.response.body.$.data[0].photos[0].url}}
