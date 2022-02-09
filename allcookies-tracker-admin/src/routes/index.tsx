@@ -39,8 +39,9 @@ const AppRoutes = () => {
           <Route path={urls.SettingsRoute} element={<SettingsPage />} />
           <Route path={urls.AddUserRoute} element={<AddUser />} />
           <Route path={urls.AddProductRoute} element={<AddProductPage />} />
-          {/* <Route path="*" element={<Navigate to={urls.ProductsRoute} />} /> */}
+          <Route path="*" element={<Navigate to={urls.ProductsRoute} />} />
         </Route>
+        <Route path="*" element={<Navigate to={urls.SignInRoute} />} />
       </Routes>
     </BrowserRouter>
   );
