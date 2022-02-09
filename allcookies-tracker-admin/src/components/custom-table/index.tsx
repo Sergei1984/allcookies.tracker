@@ -37,6 +37,8 @@ interface CustomTableProps {
   headData: Array<string>;
   getPageData: (skip: number, take: number, search?: string) => void;
   renderRow: (row: any) => React.ReactNode;
+  changeVisibilityItem?: (id: number, is_disabled: boolean) => void;
+  deleteItem?: (id: number) => void;
   IconClickPath: string;
   Icon: any;
   IconText: string;
@@ -56,6 +58,8 @@ const CustomTable = ({
   IconText,
   isAdditions,
   hasCollapseRow,
+  changeVisibilityItem,
+  deleteItem,
 }: CustomTableProps): JSX.Element => {
   const [page, setPage] = React.useState(1);
   const [limit, setLimit] = React.useState(15);
@@ -162,6 +166,8 @@ const CustomTable = ({
                   <NestedTableOptionsList
                     title={"Доп операции: " + row.id}
                     item={row}
+                    changeVisibilityItem={changeVisibilityItem}
+                    deleteItem={deleteItem}
                   />
                 </TableDotsPopover>
               </CustomTableCell>

@@ -19,6 +19,10 @@ interface ISellingPointsService {
     id: number,
     values: EditSellingPointParams
   ) => Promise<any>;
+  updateDisplaySellingPoint: (
+    id: number | string,
+    is_disabled: boolean
+  ) => Promise<any>;
 }
 
 class SellingPointsService implements ISellingPointsService {
@@ -42,6 +46,14 @@ class SellingPointsService implements ISellingPointsService {
     return await axiosInstance.patch(SellingPointWithId(id), {
       ...values,
       is_disabled: false,
+    });
+  };
+  public updateDisplaySellingPoint = async (
+    id: number | string,
+    is_disabled: boolean
+  ) => {
+    return await axiosInstance.patch(SellingPointWithId(id), {
+      is_disabled: is_disabled,
     });
   };
 }

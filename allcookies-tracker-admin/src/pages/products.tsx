@@ -15,7 +15,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import DoneIcon from "@mui/icons-material/Done";
 import { deleteProductThunk } from "../store/products/thunk/deleteProductThunk";
 import { editProductThunk } from "../store/products/thunk/editProductThunk";
-import { TextField } from "@mui/material";
+import { TextField, IconButton } from "@mui/material";
 
 interface ProductsPageProps {}
 
@@ -90,15 +90,21 @@ const ProductsPage = ({}: ProductsPageProps): JSX.Element => {
                 </div>
               </CustomTableCell>
               <CustomTableCell onClick={() => handleDeleteProduct(row.id)}>
-                <DeleteIcon />
+                <IconButton aria-label="delete">
+                  <DeleteIcon />
+                </IconButton>
               </CustomTableCell>
               {editableRowId && editableRowId === row.id ? (
                 <CustomTableCell onClick={() => handleEditProduct(null)}>
-                  <DoneIcon />
+                  <IconButton aria-label="done">
+                    <DoneIcon />
+                  </IconButton>
                 </CustomTableCell>
               ) : (
                 <CustomTableCell onClick={() => handleEditProduct(row.id)}>
-                  <EditIcon />
+                  <IconButton aria-label="edit">
+                    <EditIcon />
+                  </IconButton>
                 </CustomTableCell>
               )}
             </>

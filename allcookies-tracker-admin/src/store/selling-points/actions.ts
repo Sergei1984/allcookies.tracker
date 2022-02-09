@@ -7,6 +7,7 @@ import {
   AddSellingPointPayload,
   DeleteSellingPointPayload,
   DeleteSellingPointAction,
+  SHOW_HIDE_SELLING_POINT,
 } from "./types";
 
 export const getSellingPointsAction = (data: any): GetSellingPointsAction => ({
@@ -37,5 +38,10 @@ export const changePagePointsAction = (
 
 export const addSellingPointAction = (payload: any): any => ({
   type: ADD_SELLING_POINT,
+  payload: payload,
+});
+
+export const showHideSellingPointAction = (payload: boolean): any => ({
+  type: SHOW_HIDE_SELLING_POINT,
   payload: payload,
 });

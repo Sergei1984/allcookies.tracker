@@ -5,6 +5,7 @@ export const GET_SELLING_POINTS: string = "GET_SELLING_POINTS";
 export const CHANGE_SELLING_PAGE: string = "CHANGE_SELLING_PAGE";
 export const DELETE_SELLING_POING: string = "DELETE_SELLING_POINT";
 export const ADD_SELLING_POINT: string = "ADD_SELLING_POINT";
+export const SHOW_HIDE_SELLING_POINT: string = "SHOW_HIDE_SELLING_POINT";
 
 export interface SellingPointsState {
   data: SellingPointModel[];
@@ -43,6 +44,10 @@ export interface DeleteSellingPointAction {
 export interface ChangeSellingPageAction {
   type: typeof CHANGE_SELLING_PAGE;
   payload: number;
+}
+export interface ShowHideSellingPointAction {
+  type: typeof SHOW_HIDE_SELLING_POINT;
+  payload: boolean;
 }
 
 export interface EditSellingPointParams {

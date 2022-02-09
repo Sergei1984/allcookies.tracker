@@ -8,21 +8,21 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 
-import { deleteSellingPointThunk } from "../store/selling-points/thunk";
-import { useDispatch } from "react-redux";
-
 interface NestedTableOptionsListProps {
   title: string;
   multiple?: boolean;
   item: any;
+  changeVisibilityItem?: (id: number, is_disabled: boolean) => void;
+  deleteItem?: (id: number) => void;
 }
 
 const NestedTableOptionsList = ({
   title,
   item,
   multiple,
+  changeVisibilityItem,
+  deleteItem,
 }: NestedTableOptionsListProps) => {
-  const dispatch = useDispatch();
   // single
   const visible_single_text = item.is_disabled ? `Показать` : `Скрыть`;
   const remove_single_text = "Удалить";
@@ -32,8 +32,15 @@ const NestedTableOptionsList = ({
   const visibility = "Показать все";
   const multiple_delete_text = "Удалить все";
 
-  const deletePoint = (id: number) => {
-    dispatch(deleteSellingPointThunk({ id: id }));
+  const handleShowHideItem = () => {
+    if (changeVisibilityItem) {
+      changeVisibilityItem(item.id, item.is_disabled);
+    }
+  };
+  const handleRemoveItem = () => {
+    if (deleteItem) {
+      deleteItem(item.id);
+    }
   };
 
   return (
@@ -71,12 +78,12 @@ const NestedTableOptionsList = ({
       ) : (
         <>
           <ListItemButton>
-            <ListItemIcon>
+            <ListItemIcon onClick={handleShowHideItem}>
               {item.is_disabled ? <VisibilityIcon /> : <VisibilityOffIcon />}
             </ListItemIcon>
             <ListItemText primary={visible_single_text} />
           </ListItemButton>
-          <ListItemButton onClick={() => deletePoint(Number(item.id))}>
+          <ListItemButton onClick={handleRemoveItem}>
             <ListItemIcon>
               <DeleteIcon />
             </ListItemIcon>
