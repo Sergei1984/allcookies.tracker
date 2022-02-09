@@ -61,3 +61,39 @@
   display: flex;
   align-items: center;
 }
+
+.activityItem{
+  position: relative;
+}
+.activityItem:nth-child(5n):after{
+  display: none;
+}
+.activityItem:last-child{
+  border-radius: 0 0 3px 0;
+}
+.activityItem + .activityItem:after{
+  position: absolute;
+  content: '';
+  height: 37px;
+  width: 2px;
+  background: #C5C5C5;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%) translateX(-50%);
+}
+.activityItem:before{
+  position: absolute;
+  content: '';
+  height: 2px;
+  width: 100%;
+  background: #C5C5C5;
+  left: 0;
+  top: 0;
+  transform: translateY(-50%);
+}
+.activityItem:nth-child(1):before,
+.activityItem:nth-child(2):before,
+.activityItem:nth-child(3):before,
+.activityItem:nth-child(4):before{
+  display: none;
+}

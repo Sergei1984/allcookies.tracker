@@ -28,3 +28,11 @@ export function formatValueToDate(value: string): string {
     return moment(value).format('DD.MM.YYYY-T:HH:MM');
   }
 }
+export function getDate(value: string, format: string): string {
+  if(!value) {
+    return 'n/a'
+  }
+  else {
+    return moment(value).format(format);
+  }
+}

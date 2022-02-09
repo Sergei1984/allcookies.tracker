@@ -27,6 +27,7 @@ import {
 } from "@mui/material";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import UserActivity from "../user-activity";
 
 type Order = "asc" | "desc";
 
@@ -186,9 +187,7 @@ const CustomTable = ({
               >
                 <Collapse in={open[row.id]} timeout="auto" unmountOnExit>
                   {open[row.id] && (
-                    <div>
-                      <p>Hello</p>
-                    </div>
+                      <UserActivity />
                   )}
                 </Collapse>
               </CustomTableCell>
