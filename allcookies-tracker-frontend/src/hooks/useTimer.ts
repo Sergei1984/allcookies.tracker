@@ -96,7 +96,7 @@ export const useTimer = () => {
         // );
         // await AsyncStorageLib.setItem('currentDate', JSON.stringify(new Date()));
         await AsyncStorageLib.setItem("isActiveTimer", JSON.stringify(true));
-        await AsyncStorageLib.setItem('date', JSON.stringify(new Date('Feb 7, 2022')))
+        await AsyncStorageLib.setItem('date', JSON.stringify(new Date()))
         await dispatch(openDayThunk({location: location, time: new Date()}))
         // console.log('lol', activity && activity)
         // await AsyncStorageLib.setItem("currentActivity", JSON.stringify(activity && activity))
