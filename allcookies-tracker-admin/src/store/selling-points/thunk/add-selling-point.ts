@@ -53,7 +53,7 @@ export const addSellingPointThunk = (payload: AddSellingPointPayload) => {
           },
           options: {
             key: new Date().getTime() + Math.random(),
-            variant: "success",
+            variant: "error",
           },
         })
       );

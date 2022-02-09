@@ -73,7 +73,7 @@ const CustomTableHead = (props: EnhancedTableProps): JSX.Element => {
             </TableCell>
           );
         })}
-        {isAdditions ? <TableCell align="center">Доп.</TableCell> : null}
+        {isAdditions && <TableCell align="center">Доп.</TableCell>}
       </TableRow>
       <TableRow>
         <TableCell colSpan={headData?.length + 2}>

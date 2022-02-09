@@ -20,7 +20,6 @@ import { RootStore } from "../store/rootStore";
 import EditIcon from "@mui/icons-material/Edit";
 import DoneIcon from "@mui/icons-material/Done";
 
-import useFilters from "../hooks/useFilters";
 import { editSellingPointThunk } from "../store/selling-points/thunk";
 import DoDisturbIcon from "@mui/icons-material/DoDisturb";
 
@@ -77,8 +76,6 @@ const SellingPointsContainer =
     ) => {
       setEditableRowDescription(e.target.value);
     };
-
-    const { filters, addOrRemoveFilter } = useFilters();
 
     return (
       <>
@@ -162,10 +159,6 @@ const SellingPointsContainer =
           IconClickPath={AddSellingPointRoute}
           Icon={AddBusinessIcon}
           IconText={"Добавить магазин"}
-          sortByList={[
-            { id: "1", value: "title", label: "Магазин" },
-            { id: "2", value: "address", label: "Адрес" },
-          ]}
         />
       </>
     );

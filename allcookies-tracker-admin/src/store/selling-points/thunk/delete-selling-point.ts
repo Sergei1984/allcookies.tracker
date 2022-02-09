@@ -59,18 +59,18 @@ export const deleteSellingPointThunk = ({ id }: DeleteSellingPointPayload) => {
           })
         );
       }
-    } catch (error) {
+    } catch (error: any) {
       dispatch(
         showNotificationAction({
           key: new Date().getTime() + Math.random(),
           message: {
             type: VariantEnums.error,
             title: "Ошибка",
-            message: "Магазин не был удален." + JSON.stringify(error),
+            message: "Магазин не был удален. " + error?.message,
           },
           options: {
             key: new Date().getTime() + Math.random(),
-            variant: "success",
+            variant: "error",
           },
         })
       );

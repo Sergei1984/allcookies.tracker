@@ -40,7 +40,7 @@ export const getSellingPointsThunk = ({
           message: {
             type: VariantEnums.error,
             title: "Ошибка",
-            message: JSON.stringify(error),
+            message: error?.message,
           },
           options: {
             key: new Date().getTime() + Math.random(),

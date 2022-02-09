@@ -17,7 +17,7 @@ export default function UserPageTable() {
 
   const appStore = useSelector(getAppStoreSelector);
 
-  const getPoints = (skip: number, take: number, search?: string) => {
+  const getUsers = (skip: number, take: number, search?: string) => {
     dispatch(getAllUserThunk(skip, take, search));
   };
 
@@ -25,7 +25,7 @@ export default function UserPageTable() {
 
   return (
     <CustomTable
-      getPageData={getPoints}
+      getPageData={getUsers}
       total={total || 0}
       data={data}
       isAdditions={false}

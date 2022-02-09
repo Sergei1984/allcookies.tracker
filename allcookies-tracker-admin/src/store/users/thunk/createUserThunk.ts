@@ -34,7 +34,7 @@ export const createUserThunk = (payload: any) => async (dispatch: Dispatch) => {
         },
         options: {
           key: new Date().getTime() + Math.random(),
-          variant: "success",
+          variant: "error",
         },
       })
     );
