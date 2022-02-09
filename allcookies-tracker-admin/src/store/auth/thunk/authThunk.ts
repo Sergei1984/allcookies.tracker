@@ -2,7 +2,10 @@ import { Action, Dispatch } from "redux";
 import { ThunkAction, ThunkDispatch } from "redux-thunk";
 import { StatusEnum, VariantEnums } from "../../../core/enums";
 import { AuthAPI } from "../../../services/auth/auth.service";
-import { setToken } from "../../../services/localStorage/localStorage.service";
+import ProfileService from "../../../services/profile/profile.service";
+import LocalStorageService, {
+  setToken,
+} from "../../../services/localStorage/localStorage.service";
 import { setAppStatusAction, showNotificationAction } from "../../app/actions";
 import { RootStore } from "../../rootStore";
 import { setUserAction } from "../actions";
@@ -16,8 +19,10 @@ export const authThunk =
       const response: IResponse = await AuthAPI.signIn(payload);
 
       if (response.status === 200) {
-        dispatch(setAppStatusAction({ status: StatusEnum.success }));
         setToken(response.data.jwt);
+        const resp = await ProfileService.getProfile();
+        LocalStorageService.setUser(resp.data);
+        dispatch(setAppStatusAction({ status: StatusEnum.success }));
         dispatch(
           showNotificationAction({
             key: new Date().getTime() + Math.random(),

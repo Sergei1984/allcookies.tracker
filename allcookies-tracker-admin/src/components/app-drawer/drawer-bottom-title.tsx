@@ -1,4 +1,4 @@
-import React, { CSSProperties } from "react";
+import React, { CSSProperties, useCallback } from "react";
 import "../../assets/styles/scss/drawer_bottom_title.scss";
 
 import LogoutIcon from "@mui/icons-material/Logout";
