@@ -1,33 +1,45 @@
 import axiosInstance from "../../api";
+import {
+  SellingPoints,
+  SellingPointWithId,
+  SellingPoint,
+} from "../../api/endpoints";
 
 import { EditSellingPointParams } from "../../store/selling-points/types";
 
-class SellingPointsService {
+interface ISellingPointsService {
+  getSellingPoints: (
+    skip: number,
+    take: number,
+    search?: string
+  ) => Promise<any>;
+  deleteSellingPoint: (id: number) => Promise<any>;
+  addNewSellingPoint: (payload: any) => Promise<any>;
+  editSellingPoint: (
+    id: number,
+    values: EditSellingPointParams
+  ) => Promise<any>;
+}
+
+class SellingPointsService implements ISellingPointsService {
   public getSellingPoints = async (
     skip: number,
     take: number,
     search?: string
   ) => {
-    return await axiosInstance.get(
-      `/admin/selling-point/?skip=${skip}&take=${take}&title=${
-        search ? search : ""
-      }`,
-      {}
-    );
+    return await axiosInstance.get(SellingPoints(skip, take, search), {});
   };
   public deleteSellingPoint = async (id: number) => {
-    return await axiosInstance.delete(`/admin/selling-point/${id}`);
+    return await axiosInstance.delete(SellingPointWithId(id));
   };
-
   public addNewSellingPoint = async (payload: any) => {
-    return await axiosInstance.post("/admin/selling-point/", payload, {});
+    return await axiosInstance.post(SellingPoint(), payload, {});
   };
-
   public editSellingPoint = async (
     id: number,
     values: EditSellingPointParams
   ) => {
-    return await axiosInstance.patch(`/admin/selling-point/${id}`, {
+    return await axiosInstance.patch(SellingPointWithId(id), {
       ...values,
       is_disabled: false,
     });

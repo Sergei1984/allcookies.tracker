@@ -1,4 +1,4 @@
-import moment from 'moment';
+import moment from "moment";
 
 export function apiUrl(path: string): string {
   if (!path) {
@@ -9,7 +9,7 @@ export function apiUrl(path: string): string {
     path = path.substring(1);
   }
 
-  return `/api/${path}`;
+  return `/${path}`;
 }
 
 export function formatToTableValue(value: any): string {
@@ -21,10 +21,9 @@ export function formatToTableValue(value: any): string {
 }
 
 export function formatValueToDate(value: string): string {
-  if(!value) {
-    return 'n/a'
-  }
-  else {
-    return moment(value).format('DD.MM.YYYY-T:HH:MM');
+  if (!value) {
+    return "n/a";
+  } else {
+    return moment(value).format("DD.MM.YYYY-T:HH:MM");
   }
 }
