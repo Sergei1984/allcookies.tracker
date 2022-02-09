@@ -1,18 +1,11 @@
 import React, { useEffect } from "react";
 
-import PageTitle from "../components/page-title";
-
 import { useDispatch, useSelector } from "react-redux";
-import { selectSellingPointsStore } from "../store/selling-points/selectors";
-import { SellingPointsState } from "../store/selling-points/types";
-import CustomTable from "../components/custom-table";
-import CustomTableCell from "../components/custom-table/custom-table-cell";
-import { formatToTableValue, formatValueToDate } from "../utils";
-import AddBusinessIcon from "@mui/icons-material/AddBusiness";
-import { AddSellingPointRoute } from "../routes/urls";
-import { RootStore } from "../store/rootStore";
+
+import PageTitle from "../components/page-title";
 import Profile from "../components/profile";
-import useFilters from "../hooks/useFilters";
+
+import { RootStore } from "../store/rootStore";
 import { getProfileThunk } from "../store/profile/thunk/get-profile";
 import { getProfileStore } from "../store/profile/selectors";
 import { ProfileState } from "../store/profile/types";
@@ -28,8 +21,6 @@ const ProfileContainer = ({}: ProfileContainerProps): JSX.Element => {
   const getProfileData = () => {
     dispatch(getProfileThunk());
   };
-
-  const { filters, addOrRemoveFilter } = useFilters();
 
   useEffect(() => {
     getProfileData();

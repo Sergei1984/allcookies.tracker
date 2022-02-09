@@ -55,5 +55,5 @@ export const closeNotificationAction = (key: any) => ({
 
 export const removeNotificationAction = (key: any) => ({
   type: REMOVE_NOTIFICATION,
-  payload: key,
+  payload: { key: key },
 });

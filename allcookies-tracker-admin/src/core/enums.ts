@@ -4,3 +4,11 @@ export enum StatusEnum {
   success = "success",
   error = "error",
 }
+
+export enum VariantEnums {
+  info = "info",
+  error = "error",
+  success = "success",
+  warning = "warning",
+  default = "default",
+}

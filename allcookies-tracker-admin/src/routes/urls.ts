@@ -1,12 +1,6 @@
 export interface ProductRouteParams {
   id: string;
 }
-export interface OrderRouteParams {
-  id: string;
-}
-export interface CustomerRouteParams {
-  id: string;
-}
 
 // AUTH
 export const SignInRoute: string = "/signin";
@@ -21,7 +15,7 @@ export const ProductRoute = {
   format: ({ id }: ProductRouteParams): string => `${ProductsRoute}/${id}`,
 };
 
-export const AddProductRoute: string = '/products/add-product'
+export const AddProductRoute: string = "/products/add-product";
 // DASHBOARD
 export const DashboardRoute: string = "/dashboard";
 
@@ -30,7 +24,7 @@ export const SettingsRoute: string = "/settings";
 export const ProfileRoute: string = "/profile";
 export const UsersRoute: string = "/users";
 
-export const AddUserRoute: string = "/user-accounts"
+export const AddUserRoute: string = "/user-accounts";
 
 export const SellingPointsRoute: string = "/selling-points";
 export const AddSellingPointRoute: string = "/selling-points/add-selling-point";

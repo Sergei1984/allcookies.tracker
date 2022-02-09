@@ -3,15 +3,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { useSnackbar } from "notistack";
 import { removeNotificationAction } from "../store/app/actions";
 import { RootStore } from "../store/rootStore";
+import { NotificationModel } from "../models/notification.model";
 
-let displayed: any[] = [];
-
-interface NotificationModel {
-  key: any;
-  message: string;
-  options: any;
-  dismissed: boolean;
-}
+let displayed: Array<string | number> = [];
 
 const useNotifier = () => {
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
@@ -21,11 +15,11 @@ const useNotifier = () => {
       store.appStore.notifications || ([] as NotificationModel[])
   );
 
-  const storeDisplayed = (id: any) => {
+  const storeDisplayed = (id: string | number) => {
     displayed = [...displayed, id];
   };
 
-  const removeDisplayed = (id: any) => {
+  const removeDisplayed = (id: string | number) => {
     displayed = [...displayed.filter((key) => id !== key)];
   };
 

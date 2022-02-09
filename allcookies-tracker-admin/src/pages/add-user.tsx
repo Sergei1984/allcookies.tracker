@@ -1,20 +1,14 @@
 import CloseIcon from "@mui/icons-material/Close";
 import IconButton from "@mui/material/IconButton";
-import Snackbar from "@mui/material/Snackbar";
 import { Field, Form, Formik } from "formik";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
 import * as yup from "yup";
 import classes from "../assets/styles/scss/addUser.module.scss";
-import PageTitle from "../components/page-title";
 import DashboardLayout from "../layouts/dashboard";
 import { UsersRoute } from "../routes/urls";
-import { RootStore } from "../store/rootStore";
-import { errorUserAction } from "../store/users/actions";
 import { createUserThunk } from "../store/users/thunk/createUserThunk";
-import { IUser } from "../store/users/types";
-import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import IconLabelButton from "../components/button-back";
 
 const defaultUser = {
@@ -32,51 +26,16 @@ const loginSchema = yup.object().shape({
 });
 
 const AddUser = () => {
-  const [open, setOpen] = React.useState(false);
-
-  const handleClick = () => {
-    setOpen(true);
-  };
-
-  const handleClose = async (
-    event: React.SyntheticEvent | Event,
-    reason?: string
-  ) => {
-    if (reason === "clickaway") {
-      return;
-    }
-
-    await dispatch(errorUserAction({ error: false, message: "" }));
-    setOpen(false);
-  };
-
-  const action = (
-    <React.Fragment>
-      <IconButton
-        size="small"
-        aria-label="close"
-        color="inherit"
-        onClick={handleClose}
-      >
-        <CloseIcon fontSize="small" />
-      </IconButton>
-    </React.Fragment>
-  );
-
   const dispatch = useDispatch();
-  const userError = useSelector(
-    (state: RootStore) => state.userStore.errorData
-  );
-  const handleUser = React.useCallback(async (values: IUser) => {
+  const handleUser = (values: any) => {
     const data = {
       name: values.firstName + " " + values.lastName,
       login: values.email,
       password: values.password,
       is_blocked: false,
     };
-    // @ts-ignore
-    await dispatch(createUserThunk(data));
-  }, []);
+    dispatch(createUserThunk(data));
+  };
   return (
     <DashboardLayout>
       <div>
@@ -84,16 +43,8 @@ const AddUser = () => {
         <Formik
           initialValues={defaultUser}
           validationSchema={loginSchema}
-          onSubmit={(values, actions) => {
+          onSubmit={(values) => {
             handleUser(values);
-            actions.resetForm({
-              values: {
-                firstName: "",
-                lastName: "",
-                email: "",
-                password: "",
-              },
-            });
           }}
         >
           {({ errors, touched }) => (
@@ -138,20 +89,9 @@ const AddUser = () => {
                   ) : null}
                 </div>
               </div>
-              <button
-                onClick={handleClick}
-                className={classes.button}
-                type="submit"
-              >
+              <button className={classes.button} type="submit">
                 Зарегистрировать
               </button>
-              <Snackbar
-                open={open}
-                autoHideDuration={3000}
-                onClose={handleClose}
-                message={userError.message}
-                action={action}
-              />
             </Form>
           )}
         </Formik>

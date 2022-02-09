@@ -41,7 +41,7 @@ const appReducer = (state: AppState = initialState, action: ActionType) => {
       return {
         ...state,
         notifications: state.notifications.filter(
-          (notification) => notification.key !== action.payload
+          (notification) => notification.key !== action.payload.key
         ),
       };
     default:

@@ -3,11 +3,15 @@ import { Dispatch } from "redux";
 import { RootStore } from "../../rootStore";
 import ProfileService from "../../../services/profile/profile.service";
 import LocalStorageService from "../../../services/localStorage/localStorage.service";
-import { StatusEnum } from "../../../core/enums";
+import { StatusEnum, VariantEnums } from "../../../core/enums";
 import { getProfileAction } from "../actions";
 
 //
-import { setAppStatusAction, setAppErrorAction } from "../../app/actions";
+import {
+  setAppStatusAction,
+  setAppErrorAction,
+  showNotificationAction,
+} from "../../app/actions";
 
 export const getProfileThunk = () => {
   return async (dispatch: Dispatch, getState: () => RootStore) => {
@@ -26,6 +30,20 @@ export const getProfileThunk = () => {
     } catch (error: any) {
       dispatch(setAppStatusAction({ status: StatusEnum.error }));
       dispatch(setAppErrorAction({ error: error }));
+      dispatch(
+        showNotificationAction({
+          key: new Date().getTime() + Math.random(),
+          message: {
+            type: VariantEnums.error,
+            title: "Ошибка",
+            message: error?.message,
+          },
+          options: {
+            key: new Date().getTime() + Math.random(),
+            variant: "error",
+          },
+        })
+      );
     }
   };
 };

@@ -38,7 +38,6 @@ const CustomPagination = (props: CustomPaginationProps): JSX.Element => {
                 color="inherit"
                 aria-label="open drawer"
                 edge="start"
-                {...item}
                 sx={{
                   fontWeight: selected ? "bold" : undefined,
                   background: "transparent",
@@ -47,8 +46,8 @@ const CustomPagination = (props: CustomPaginationProps): JSX.Element => {
                   height: 44,
                   mr: 2,
                   "&:hover": {
-                    borderRadius: "4",
-                    background: "#42A6A6",
+                    background: "transparent",
+                    cursor: "initial",
                   },
                   "&:disabled": {
                     background: "rgba(66, 166, 166, 0.1)",

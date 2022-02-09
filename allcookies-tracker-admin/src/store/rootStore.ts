@@ -1,6 +1,5 @@
 import { applyMiddleware, combineReducers, compose, createStore } from "redux";
 import thunk from "redux-thunk";
-import { alertReducer } from "./alert/reducer";
 import { authReducer } from "./auth/reducer";
 import sellingPointsReducer from "./selling-points/reducer";
 import appReducer from "./app/reducer";
@@ -13,7 +12,6 @@ export const rootReducer = combineReducers({
   sellingPointsStore: sellingPointsReducer,
   userStore: userReducer,
   appStore: appReducer,
-  alertStore: alertReducer,
   productStore: productReducer,
   profileStore: profileReducer,
 });

@@ -43,7 +43,6 @@ interface CustomTableProps {
   IconText: string;
   isAdditions?: boolean;
   hasCollapseRow?: boolean;
-  sortByList?: Array<any>;
 }
 
 const CustomTable = ({
@@ -58,16 +57,15 @@ const CustomTable = ({
   IconText,
   isAdditions,
   hasCollapseRow,
-  sortByList,
 }: CustomTableProps): JSX.Element => {
   const [page, setPage] = React.useState(1);
   const [limit, setLimit] = React.useState(15);
   const [order, setOrder] = React.useState<Order>("asc");
-  const [sortBy, setSortBy] = React.useState<string>("");
   const [selected, setSelected] = React.useState<readonly string[]>([]);
   const [searchString, setSearch] = React.useState("");
 
   const handleSearchClick = (value: string) => {
+    setPage(1);
     setSearch(value);
   };
 
@@ -103,11 +101,6 @@ const CustomTable = ({
 
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
-  };
-
-  const handleChangeSort = (value: string) => {
-    console.log("sort value: ", value);
-    setSortBy(value);
   };
 
   const handleChangeLimit = (value: any) => {
@@ -199,14 +192,9 @@ const CustomTable = ({
   }
 
   React.useEffect(() => {
-    setPage(1);
-    getPageData(0, limit, searchString);
-  }, [searchString, limit]);
-
-  React.useEffect(() => {
     getPageData((page - 1) * limit, limit, searchString);
     return () => {};
-  }, [page]);
+  }, [page, searchString, limit]);
 
   return (
     <Box>
@@ -215,10 +203,7 @@ const CustomTable = ({
           numSelected={selected.length}
           handleSearchClick={handleSearchClick}
           handleChangeLimit={handleChangeLimit}
-          onChangeSort={handleChangeSort}
           limit={limit}
-          sortByList={sortByList}
-          sortBy={sortBy}
         />
         <TableContainer sx={{ overflowX: "auto" }}>
           <Table sx={{ minWidth: 320 }} aria-labelledby="tableTitle">

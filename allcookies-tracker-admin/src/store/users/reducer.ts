@@ -1,7 +1,6 @@
 import { userState } from "./store";
 import {
   GET_ALL_USER_TYPE,
-  UserError,
   UserState,
   UserType,
   USER_ERROR,
@@ -22,7 +21,6 @@ export const userReducer = (
     case USER_ERROR: {
       return {
         ...state,
-        errorData: action.payload,
       };
     }
     default:
