@@ -7,6 +7,8 @@ import { IconButton } from "@mui/material";
 import {
   getSellingPointsThunk,
   deleteSellingPointThunk,
+  displaySellingPointThunk,
+  editSellingPointThunk,
 } from "../store/selling-points/thunk";
 import { useDispatch, useSelector } from "react-redux";
 import { selectSellingPointsStore } from "../store/selling-points/selectors";
@@ -20,7 +22,6 @@ import { RootStore } from "../store/rootStore";
 import EditIcon from "@mui/icons-material/Edit";
 import DoneIcon from "@mui/icons-material/Done";
 
-import { editSellingPointThunk } from "../store/selling-points/thunk";
 import DoDisturbIcon from "@mui/icons-material/DoDisturb";
 
 import { TextField } from "@mui/material";
@@ -65,6 +66,12 @@ const SellingPointsContainer =
         );
       }
     };
+    const handleChangeShowHidePoint = (id: number, is_disabled: boolean) => {
+      dispatch(displaySellingPointThunk(id, !is_disabled));
+    };
+    const handleDeleteSellingPoint = (id: number) => {
+      dispatch(deleteSellingPointThunk({ id: id }));
+    };
     const handleCancel = () => {
       setEditableRowId(null);
     };
@@ -94,6 +101,8 @@ const SellingPointsContainer =
             "Изменен",
             " ",
           ]}
+          changeVisibilityItem={handleChangeShowHidePoint}
+          deleteItem={handleDeleteSellingPoint}
           renderRow={(row: any) => {
             return (
               <>

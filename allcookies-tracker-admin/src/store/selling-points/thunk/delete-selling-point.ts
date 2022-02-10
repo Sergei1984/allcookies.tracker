@@ -17,17 +17,18 @@ export const deleteSellingPointThunk = ({ id }: DeleteSellingPointPayload) => {
   return async (dispatch: Dispatch, getState: () => RootStore) => {
     try {
       dispatch(setAppStatusAction({ status: StatusEnum.running }));
-      getSellingPointsAction({
-        data: [
-          ...getState().sellingPointsStore.data?.filter(
-            (point: SellingPointModel) => point.id !== id
-          ),
-        ],
-        total: getState().sellingPointsStore.total - 1,
-      });
+      
       const response: AxiosResponse =
         await SellingPointsService.deleteSellingPoint(id);
       if (response) {
+        getSellingPointsAction({
+          data: [
+            ...getState().sellingPointsStore.data?.filter(
+              (point: SellingPointModel) => point.id !== id
+            ),
+          ],
+          total: getState().sellingPointsStore.total - 1,
+        });
         dispatch(setAppStatusAction({ status: StatusEnum.success }));
         dispatch(
           deleteSellingPointAction({
