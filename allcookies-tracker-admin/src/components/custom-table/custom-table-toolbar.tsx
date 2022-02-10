@@ -1,10 +1,14 @@
-import React from "react";
+import React, {Dispatch, SetStateAction, useEffect, useState} from "react";
 import Box from "@mui/material/Box";
 import NestedTableOptionsList from "../more-options";
 // ICONS
 import CustomizedInput from "../custom-input";
 import TableDotsPopover from "../popover";
 import Dropdown from "../dropdown";
+import {useLocation} from "react-router-dom";
+import {UsersRoute} from "../../routes/urls";
+import Datepicker from "../datepicker";
+import moment, {Moment} from "moment";
 
 type Order = "asc" | "desc";
 
@@ -13,6 +17,8 @@ interface EnhancedTableToolbarProps {
   handleSearchClick: (value: string) => void;
   handleChangeLimit: (values: ListType) => void;
   limit: number;
+  selectedDate?: Moment | null;
+  setSelectedDate?: Dispatch<SetStateAction<Moment | null>>;
 }
 
 type ListType = {
@@ -27,8 +33,14 @@ const CustomTableToolbar = (props: EnhancedTableToolbarProps): JSX.Element => {
     handleSearchClick,
     handleChangeLimit,
     limit,
+    selectedDate,
+    setSelectedDate
   } = props;
   const [searchString, setSearch] = React.useState("");
+  const [isDatePickerOpen, setIsDatePickerOpen] = useState<boolean>(false)
+
+  const router = useLocation()
+  const isUserPage = router.pathname === UsersRoute
 
   const handleChangeSearch = (event: any) => {
     setSearch(event.target.value);
@@ -59,6 +71,14 @@ const CustomTableToolbar = (props: EnhancedTableToolbarProps): JSX.Element => {
           onClick={onClick}
         />
       </Box>
+      { isUserPage && setSelectedDate &&
+        <Box sx={{
+          ml: 'auto',
+        }}>
+          <Datepicker selectedDate={selectedDate ? selectedDate : moment()} setSelectedDate={setSelectedDate}/>
+        </Box>
+      }
+
       <Box
         display="flex"
         justifyContent="space-between"

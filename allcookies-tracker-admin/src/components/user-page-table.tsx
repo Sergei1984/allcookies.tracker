@@ -8,6 +8,8 @@ import CustomTable from "./custom-table";
 import CustomTableCell from "./custom-table/custom-table-cell";
 import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
 import { getAppStoreSelector } from "../store/app/selectors";
+import {useEffect, useState} from "react";
+import moment, {Moment} from "moment";
 
 export default function UserPageTable() {
   const dispatch = useDispatch();
@@ -20,8 +22,8 @@ export default function UserPageTable() {
     dispatch(getAllUserThunk(skip, take, search));
   };
 
-
   const [open, setOpen] = React.useState(false);
+  const [selectedDate, setSelectedDate] = useState<Moment | null>(moment());
 
   return (
     <CustomTable
@@ -31,18 +33,12 @@ export default function UserPageTable() {
       isAdditions={false}
       hasCollapseRow
       loading={appStore.status === "running"}
-      headData={["Пользователь", "Рабочее время", "Магазины", "Email", ""]}
+      headData={["Пользователь", "Email", ""]}
       renderRow={(row: any) => {
         return (
           <>
             <CustomTableCell component="th" align="left" scope="row">
               {formatToTableValue(row.name)}
-            </CustomTableCell>
-            <CustomTableCell align="center">
-              {formatToTableValue(row.skip)}
-            </CustomTableCell>
-            <CustomTableCell align="center">
-              {formatToTableValue(row.skip)}
             </CustomTableCell>
             <CustomTableCell align="center">
               {formatToTableValue(row.login)}
@@ -53,6 +49,8 @@ export default function UserPageTable() {
       IconClickPath={AddUserRoute}
       Icon={PersonAddAltIcon}
       IconText={"Добавить пользователя"}
+      selectedDate={selectedDate}
+      setSelectedDate={setSelectedDate}
     />
   );
 }

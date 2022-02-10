@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, {Dispatch, Fragment, SetStateAction} from "react";
 import Box from "@mui/material/Box";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -28,6 +28,8 @@ import {
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import UserActivity from "../user-activity";
+import {getCurrentDate, getDate} from "../../utils";
+import moment, {Moment} from "moment";
 
 type Order = "asc" | "desc";
 
@@ -45,6 +47,8 @@ interface CustomTableProps {
   IconText: string;
   isAdditions?: boolean;
   hasCollapseRow?: boolean;
+  selectedDate?: Moment | null;
+  setSelectedDate?: Dispatch<SetStateAction<Moment | null>>
 }
 
 const CustomTable = ({
@@ -61,6 +65,8 @@ const CustomTable = ({
   hasCollapseRow,
   changeVisibilityItem,
   deleteItem,
+  selectedDate,
+  setSelectedDate
 }: CustomTableProps): JSX.Element => {
   const [page, setPage] = React.useState(1);
   const [limit, setLimit] = React.useState(15);
@@ -186,7 +192,7 @@ const CustomTable = ({
               >
                 <Collapse in={open[row.id]} timeout="auto" unmountOnExit>
                   {open[row.id] && (
-                      <UserActivity id={row.id} />
+                      <UserActivity selectedDate={selectedDate ? getDate(selectedDate, 'YYYY-MM-DD') : getCurrentDate('YYYY-MM-DD')} id={row.id} />
                   )}
                 </Collapse>
               </CustomTableCell>
@@ -210,6 +216,8 @@ const CustomTable = ({
           handleSearchClick={handleSearchClick}
           handleChangeLimit={handleChangeLimit}
           limit={limit}
+          selectedDate={selectedDate ? selectedDate :  moment()}
+          setSelectedDate={setSelectedDate}
         />
         <TableContainer sx={{ overflowX: "auto" }}>
           <Table sx={{ minWidth: 320 }} aria-labelledby="tableTitle">

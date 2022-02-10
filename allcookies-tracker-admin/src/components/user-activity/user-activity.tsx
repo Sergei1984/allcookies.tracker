@@ -9,18 +9,19 @@ import {getDate} from "../../utils";
 import {IUsersActivityData} from "../../store/users-activity/types";
 
 type Props = {
-  id: number
+  id: number,
+  selectedDate: string
 }
 
-const UserActivity: FC<Props> = ({ id }) => {
+const UserActivity: FC<Props> = ({ id, selectedDate }) => {
   const dispatch = useDispatch();
 
   const {data} = useSelector((state: RootStore) => state.usersActivityStore);
   const [userActivity, setUserActivity] = useState<IUsersActivityData[]>([])
 
   useEffect(() => {
-    dispatch(getUsersActivityThunk())
-  }, [])
+    dispatch(getUsersActivityThunk(selectedDate))
+  }, [selectedDate])
 
   useEffect(() => {
     if (data && id) {
@@ -60,7 +61,7 @@ const UserActivity: FC<Props> = ({ id }) => {
               } else return null
             })
             :
-            <h3>Сегодня не работал</h3>
+            <h3>В этот день не работал</h3>
         }
       </Box>
   )

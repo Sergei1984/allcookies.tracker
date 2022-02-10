@@ -1,4 +1,4 @@
-import moment from "moment";
+import moment, {Moment} from "moment";
 
 export function apiUrl(path: string): string {
   if (!path) {
@@ -27,7 +27,7 @@ export function formatValueToDate(value: string): string {
     return moment(value).format("DD.MM.YYYY-T:HH:MM");
   }
 }
-export function getDate(value: string, format: string): string {
+export function getDate(value: string | Moment, format: string): string {
   if(!value) {
     return 'n/a'
   }
@@ -36,4 +36,4 @@ export function getDate(value: string, format: string): string {
   }
 }
 
-export const getCurrentDate = (dateFormat: string = 'YYYY-MM-DD') => moment().format(dateFormat);
+export const getCurrentDate = (dateFormat?: string) => moment().format(dateFormat);
