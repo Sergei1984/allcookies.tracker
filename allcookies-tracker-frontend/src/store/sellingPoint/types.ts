@@ -22,6 +22,7 @@ export interface SellingPointState {
     data: SellingPoint[];
     newSellingPoints: SellingPoint[];
     activityId: number | null;
+    errorReport: string
 }
 
 export interface SellingPointData {

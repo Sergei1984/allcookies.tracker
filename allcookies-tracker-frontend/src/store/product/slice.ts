@@ -18,8 +18,9 @@ export const productSlice = createSlice({
           )
         },
         clearDefaultData: (state) => {
-            state.data = []
+            state.data = state.data.map(item => ({...item, count: 0}))
         }
+
     },
     extraReducers: {
         [getProductsThunk.fulfilled.type]: (state, action: PayloadAction<ProductState>) => {

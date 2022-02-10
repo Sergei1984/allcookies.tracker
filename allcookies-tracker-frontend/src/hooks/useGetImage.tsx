@@ -16,8 +16,8 @@ export const useGetImage = () => {
       try {
         const image = await ImagePicker.openCamera({
           cropping: cropping,
-          width: 100,
-          height: 100,
+          // width: 100,
+          // height: 100,
           includeExif: true,
           mediaType,
           includeBase64: true,
@@ -49,15 +49,11 @@ export const useGetImage = () => {
     async (cropping: boolean, circular = false) => {
       try {
         const selectedImages = await ImagePicker.openPicker({
-          width: 100,
-          height: 100,
+          // width: 100,
+          // height: 100,
           cropping: cropping,
           cropperCircleOverlay: circular,
           sortOrder: "none",
-          compressImageMaxWidth: 100,
-          compressImageMaxHeight: 100,
-          compressImageQuality: 1,
-          compressVideoPreset: "MediumQuality",
           includeExif: true,
           cropperStatusBarColor: "white",
           cropperToolbarColor: "white",

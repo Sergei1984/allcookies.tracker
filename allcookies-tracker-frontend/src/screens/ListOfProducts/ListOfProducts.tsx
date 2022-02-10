@@ -3,6 +3,7 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import React from "react";
 import { View, FlatList, TouchableOpacity, Image } from "react-native";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import Ionicons from "react-native-vector-icons/Ionicons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { AppButton } from "../../components/AppButton";
 import { AppText } from "../../components/AppText";
@@ -31,12 +32,15 @@ const ListOfProducts: React.FC<Props> = ({ route, navigation }) => {
   const navigate = useNavigation();
   const { data, handle } = useGetImage();
   const [searchTerm, setSearchTerm] = React.useState("");
+  const [showReportToast, setShowReportToast] = React.useState(false);
 
   const {
     data: dataOfProducts,
     filteredData,
     total,
   } = useAppSelector((state) => state.productReducer);
+
+  const { errorReport } = useAppSelector((state) => state.sellingPointReducer);
 
   React.useEffect(() => {
     (async () => {
@@ -46,12 +50,6 @@ const ListOfProducts: React.FC<Props> = ({ route, navigation }) => {
 
   const { handleIncrementCount, handleDecrementCount, clearDefaultData } =
     productSlice.actions;
-
-  React.useEffect(() => {
-    return () => {
-      dispatch(clearDefaultData());
-    };
-  }, []);
 
   const handleIncrement = React.useCallback((name) => {
     dispatch(handleIncrementCount(name));
@@ -96,8 +94,18 @@ const ListOfProducts: React.FC<Props> = ({ route, navigation }) => {
         images: data.images,
       })
     );
-    navigation.navigate("Главная");
+    await dispatch(clearDefaultData());
+    handle.setImages([]);
+    setShowReportToast(true);
   }, [dataOfProducts, activity, data.images]);
+
+  React.useEffect(() => {
+    if (showReportToast) {
+      setTimeout(() => {
+        setShowReportToast(false);
+      }, 5000);
+    }
+  }, [showReportToast]);
 
   const handleLoadMore = React.useCallback(async () => {
     if (dataOfProducts.length < total) {
@@ -245,10 +253,46 @@ const ListOfProducts: React.FC<Props> = ({ route, navigation }) => {
 
   return (
     <View style={styles.container}>
+      {showReportToast && (
+        <View
+          style={
+            errorReport
+              ? [styles.toast, { backgroundColor: "red" }]
+              : [styles.toast, { backgroundColor: "#EFF4F7" }]
+          }
+        >
+          {errorReport ? (
+            <View
+              style={{
+                justifyContent: "center",
+                alignItems: "center",
+                flexDirection: "row",
+              }}
+            >
+              <Ionicons name="alert-circle" size={24} color={"red"} />
+              <AppText style={styles.reportTitle}>Отчет не отправлен</AppText>
+            </View>
+          ) : (
+            <View
+              style={{
+                justifyContent: "center",
+                alignItems: "center",
+                flexDirection: "row",
+              }}
+            >
+              <Ionicons name="checkmark-circle" size={24} color={"#42A6A6"} />
+              <AppText style={styles.reportTitle}>Отчет отправлен</AppText>
+            </View>
+          )}
+          <TouchableOpacity onPress={() => setShowReportToast(false)}>
+            <Ionicons name="ios-close-outline" size={32} color={"#858585"} />
+          </TouchableOpacity>
+        </View>
+      )}
       <View style={{ marginBottom: 16 }}>
         <AppButton
           name="Сделать фото"
-          onPress={() => handle.pickSingleWithCamera(true)}
+          onPress={() => handle.pickSingle(true)}
         />
         {/* Photos */}
         {renderPhotos()}

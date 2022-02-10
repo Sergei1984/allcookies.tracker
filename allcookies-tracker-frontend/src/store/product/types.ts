@@ -16,5 +16,5 @@ export interface Product {
 export interface ProductState {
     total: number;
     data: Product[];
-    filteredData: Product[];
+    filteredData: Product[]
 }
