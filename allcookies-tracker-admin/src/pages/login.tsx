@@ -23,6 +23,7 @@ const defaultLogin = {
 const Login: React.FC = () => {
   const dispatch = useDispatch();
   const isLogin = useSelector((store: RootStore) => store.authStore.isLogin);
+  const { status, error } = useSelector((store: RootStore) => store.appStore);
   const navigate = useNavigate();
 
   const handleLogin = (values: ILogin): void => {
@@ -90,8 +91,12 @@ const Login: React.FC = () => {
               name="checked"
               value="rememberMe"
             ></Field>
-            <button className={classes.button} type="submit">
-              Войти
+            <button
+              className={classes.button}
+              type="submit"
+              disabled={status === "running"}
+            >
+              {status === "running" ? "Авторизация..." : "Войти"}
             </button>
           </Form>
         )}

@@ -22,12 +22,7 @@ type ListType = {
 };
 
 const CustomTableToolbar = (props: EnhancedTableToolbarProps): JSX.Element => {
-  const {
-    numSelected,
-    handleSearchClick,
-    handleChangeLimit,
-    limit,
-  } = props;
+  const { numSelected, handleSearchClick, handleChangeLimit, limit } = props;
   const [searchString, setSearch] = React.useState("");
 
   const handleChangeSearch = (event: any) => {
@@ -42,16 +37,14 @@ const CustomTableToolbar = (props: EnhancedTableToolbarProps): JSX.Element => {
     <Box
       display="flex"
       justifyContent="space-between"
-      sx={{
-        padding: "10px",
-      }}
+      flexWrap={"wrap"}
+      padding={"10px"}
     >
       <Box
         display="flex"
         justifyContent="space-between"
-        sx={{
-          padding: "10px",
-        }}
+        padding={"10px"}
+        flexWrap={"wrap"}
       >
         <CustomizedInput
           value={searchString}
