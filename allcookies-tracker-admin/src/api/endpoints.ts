@@ -37,4 +37,4 @@ export const Users = (skip: number, take: number, search?: string) =>
   );
 export const User = () => apiUrl(`/admin/user-accounts`);
 
-export const UsersActivities = (date: string) => apiUrl(`/admin/activity?date=${date}`);
+export const UsersActivity = (date: string) => apiUrl(`/admin/activity?date=${date}`);

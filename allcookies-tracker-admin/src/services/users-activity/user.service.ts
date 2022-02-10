@@ -1,9 +1,9 @@
 import axiosInstance from "../../api";
-import { UsersActivities } from "../../api/endpoints";
+import { UsersActivity } from "../../api/endpoints";
 
 class UsersActivityService {
   public getUsersActivity = async (date: string) => {
-    const response = await axiosInstance.get(UsersActivities(date));
+    const response = await axiosInstance.get(UsersActivity(date));
     return response.data;
   };
 }

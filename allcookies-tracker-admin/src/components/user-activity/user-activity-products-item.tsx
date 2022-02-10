@@ -26,7 +26,6 @@ const UserActivityProductsItem: FC<Props> = ({
         py: '8px',
         borderRadius: '3px',
       }}
-       className={classes.activityItem}
       >
         <img
             src={src}
