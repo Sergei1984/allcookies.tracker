@@ -7,7 +7,6 @@ import { formatToTableValue } from "../utils";
 import CustomTable from "./custom-table";
 import CustomTableCell from "./custom-table/custom-table-cell";
 import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
-
 import { getAppStoreSelector } from "../store/app/selectors";
 
 export default function UserPageTable() {
@@ -20,6 +19,7 @@ export default function UserPageTable() {
   const getUsers = (skip: number, take: number, search?: string) => {
     dispatch(getAllUserThunk(skip, take, search));
   };
+
 
   const [open, setOpen] = React.useState(false);
 

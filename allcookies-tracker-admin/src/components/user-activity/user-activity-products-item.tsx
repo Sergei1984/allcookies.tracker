@@ -19,11 +19,12 @@ const UserActivityProductsItem: FC<Props> = ({
   return (
       <Box sx={{
         background: "#E6E9F4",
-        width: '25%',
+        width: 'calc(25% - 3px)',
         display: 'flex',
         alignItems: 'center',
         px: '10px',
-        py: '8px'
+        py: '8px',
+        borderRadius: '3px',
       }}
        className={classes.activityItem}
       >

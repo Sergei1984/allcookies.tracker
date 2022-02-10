@@ -1,9 +1,38 @@
-import {FC} from "react";
+import {FC, useEffect, useState} from "react";
 import UserActivityTime from "./user-activity-time";
 import Box from "@mui/material/Box";
 import UserActivityProducts from "./user-activity-products";
+import {useDispatch, useSelector} from "react-redux";
+import {RootStore} from "../../store/rootStore";
+import {getUsersActivityThunk} from "../../store/users-activity/thunk/getUsersActivityThunk";
+import {getDate} from "../../utils";
+import {IUsersActivityData} from "../../store/users-activity/types";
 
-const UserActivity: FC = () => {
+type Props = {
+  id: number
+}
+
+const UserActivity: FC<Props> = ({ id }) => {
+  const dispatch = useDispatch();
+
+  const {data} = useSelector((state: RootStore) => state.usersActivityStore);
+  const [userActivity, setUserActivity] = useState<IUsersActivityData[]>([])
+
+  useEffect(() => {
+    dispatch(getUsersActivityThunk())
+  }, [])
+
+  useEffect(() => {
+    if (data && id) {
+      setUserActivity(
+          data
+              .filter(item => item.created.id === id)
+              .sort((a, b) => {
+                return +getDate(a.time, 'X') - +getDate(b.time, 'X')
+              })
+      )
+    }
+  }, [data])
 
   return (
       <Box sx={{
@@ -13,12 +42,26 @@ const UserActivity: FC = () => {
         flexDirection: 'column',
         gap: '8px'
       }}>
-        <UserActivityTime time={'2022-01-01 10:00'} text={'Начал день'} />
-        <UserActivityTime time={'2022-01-01 12:00'} text={'Проверка ЧП ООО'} />
-        <UserActivityProducts />
-        <UserActivityTime time={'2022-01-01 14-00'} text={'Проверка ЧП2'} />
-        <UserActivityProducts />
-        <UserActivityTime time={'2022-01-01 17:00'} text={'Закончил день'} />
+        {userActivity.length ?
+            userActivity.map((item, index) => {
+              if (item.activity_type === 'open_day' && index === 0) {
+                return <UserActivityTime key={index} time={item.time} text={'Начал день'}/>
+              }
+              if (item.activity_type === 'point_check' && item.selling_point && item.products) {
+                return (
+                    <div key={index}>
+                      <UserActivityTime time={item.time} text={item.selling_point.title}/>
+                      <UserActivityProducts items={item.products}/>
+                    </div>
+                )
+              }
+              if (item.activity_type === 'close_day' && index === userActivity.length - 1) {
+                return <UserActivityTime key={index} time={item.time} text={'Закончил день'}/>
+              } else return null
+            })
+            :
+            <h3>Сегодня не работал</h3>
+        }
       </Box>
   )
 

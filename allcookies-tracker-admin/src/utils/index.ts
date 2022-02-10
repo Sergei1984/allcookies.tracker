@@ -35,3 +35,5 @@ export function getDate(value: string, format: string): string {
     return moment(value).format(format);
   }
 }
+
+export const getCurrentDate = (dateFormat: string = 'YYYY-MM-DD') => moment().format(dateFormat);

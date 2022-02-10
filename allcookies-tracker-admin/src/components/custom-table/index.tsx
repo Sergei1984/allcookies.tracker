@@ -180,7 +180,7 @@ const CustomTable = ({
               >
                 <Collapse in={open[row.id]} timeout="auto" unmountOnExit>
                   {open[row.id] && (
-                      <UserActivity />
+                      <UserActivity id={row.id} />
                   )}
                 </Collapse>
               </CustomTableCell>

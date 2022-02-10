@@ -1,4 +1,4 @@
-import { apiUrl } from "../utils";
+import {apiUrl, getCurrentDate} from "../utils";
 
 // Selling points
 export const SellingPoint = () => apiUrl(`/admin/selling-point/`);
@@ -36,3 +36,5 @@ export const Users = (skip: number, take: number, search?: string) =>
     }`
   );
 export const User = () => apiUrl(`/admin/user-accounts`);
+
+export const UsersActivities = (date: string) => apiUrl(`/admin/activity?date=${date}`);

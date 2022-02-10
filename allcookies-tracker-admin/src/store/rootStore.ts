@@ -6,11 +6,13 @@ import appReducer from "./app/reducer";
 import { userReducer } from "./users/reducer";
 import { productReducer } from "./products/reducer";
 import profileReducer from "./profile/reducer";
+import {usersActivityReducer} from "./users-activity/reducer";
 
 export const rootReducer = combineReducers({
   authStore: authReducer,
   sellingPointsStore: sellingPointsReducer,
   userStore: userReducer,
+  usersActivityStore: usersActivityReducer,
   appStore: appReducer,
   productStore: productReducer,
   profileStore: profileReducer,
