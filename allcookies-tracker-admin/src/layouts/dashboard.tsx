@@ -11,6 +11,14 @@ import DrawerHeader from "../components/app-drawer/drawer-header";
 import Main from "../components/main";
 import AppDrawer from "../components/app-drawer/app-drawer";
 import AppBar from "../components/app-bar";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import LocalStorageService, {
+  clearToken,
+} from "../services/localStorage/localStorage.service";
+import { SignInRoute } from "../routes/urls";
+import { setUserAction } from "../store/auth/actions";
+
 const drawerWidth = 240;
 
 interface DashboardLayoutProps {
@@ -19,6 +27,9 @@ interface DashboardLayoutProps {
 const DashboardLayout = ({ children }: DashboardLayoutProps): JSX.Element => {
   const theme = useTheme();
   const [open, setOpen] = React.useState(true);
+  const navigate = useNavigate();
+
+  const dispatch = useDispatch();
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -26,6 +37,12 @@ const DashboardLayout = ({ children }: DashboardLayoutProps): JSX.Element => {
 
   const handleDrawerClose = () => {
     setOpen(false);
+  };
+
+  const handleSignOut = () => {
+    LocalStorageService.signOut();
+    dispatch(setUserAction(false));
+    navigate(SignInRoute);
   };
 
   return (
@@ -61,6 +78,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps): JSX.Element => {
         anchor="left"
         isOpen={open}
         handleDrawerClose={handleDrawerClose}
+        handleSignOut={handleSignOut}
       />
       <Main open={open} drawerwidth={drawerWidth}>
         <DrawerHeader />

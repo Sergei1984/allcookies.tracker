@@ -32,6 +32,11 @@ class LocalStorageService {
   public removeUser = () => {
     localStorage.removeItem("user");
   };
+  public signOut = () => {
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
+    localStorage.removeItem("user");
+  };
 }
 
 export default new LocalStorageService();
