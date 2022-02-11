@@ -244,7 +244,7 @@ const ListOfProducts: React.FC<Props> = ({ route, navigation }) => {
       <View style={{ marginBottom: 16 }}>
         <AppButton
           name="Сделать фото"
-          onPress={() => handle.pickSingle(true)}
+          onPress={() => handle.pickSingleWithCamera(true)}
         />
         {/* Photos */}
         {renderPhotos()}
