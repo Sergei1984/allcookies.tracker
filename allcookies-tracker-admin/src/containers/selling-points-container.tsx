@@ -41,10 +41,6 @@ const SellingPointsContainer =
       );
     };
 
-    const deletePoint = (id: number) => {
-      dispatch(deleteSellingPointThunk({ id: id }));
-    };
-
     const [editableRowId, setEditableRowId] = React.useState<number | null>(
       null
     );

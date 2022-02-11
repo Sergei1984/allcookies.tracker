@@ -15,12 +15,14 @@ interface AppDrawerProps extends DrawerProps {
   isOpen: boolean;
   drawerwidth: number;
   handleDrawerClose: () => void;
+  handleSignOut: () => void;
 }
 
 const AppDrawer = ({
   isOpen,
   drawerwidth,
   handleDrawerClose,
+  handleSignOut
 }: AppDrawerProps) => {
   return (
     <Drawer
@@ -51,7 +53,7 @@ const AppDrawer = ({
       </DrawerHeader>
       <Divider variant="middle" />
       <Navigation />
-      <DrawerBottomTitle />
+      <DrawerBottomTitle handleSignOut={handleSignOut} />
     </Drawer>
   );
 };
