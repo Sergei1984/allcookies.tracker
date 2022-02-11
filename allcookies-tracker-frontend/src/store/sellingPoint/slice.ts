@@ -20,9 +20,6 @@ export const sellingPointSlice = createSlice({
         [checkSellingPointThunk.fulfilled.type]: (state, action: PayloadAction<any>) => {
             state.activityId = action.payload.id
         },
-        [checkSellingPointThunk.rejected.type]: (state, action: PayloadAction<any>) => {
-            state.errorReport = action.payload
-        },
         [searchSellingPointThunk.fulfilled.type]: (state, action: PayloadAction<SellingPointState>) => {
             state.data = action.payload.data,
             state.total = action.payload.total

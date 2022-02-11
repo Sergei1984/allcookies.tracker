@@ -22,6 +22,8 @@ import useLocation from "../../hooks/useLocation";
 import { RFValue } from "react-native-responsive-fontsize";
 import { useDebounce } from "../../hooks/useDebounce";
 import { productSlice } from "../../store/product/slice";
+import { AppNotification } from "../../components/AppNotification";
+import { appSlice } from "../../store/app/slice";
 
 type Props = NativeStackScreenProps<HomeStackParamList, "ListOfProducts">;
 
@@ -40,7 +42,7 @@ const ListOfProducts: React.FC<Props> = ({ route, navigation }) => {
     total,
   } = useAppSelector((state) => state.productReducer);
 
-  const { errorReport } = useAppSelector((state) => state.sellingPointReducer);
+  const { notification } = useAppSelector((state) => state.appReducer);
 
   React.useEffect(() => {
     (async () => {
@@ -50,6 +52,8 @@ const ListOfProducts: React.FC<Props> = ({ route, navigation }) => {
 
   const { handleIncrementCount, handleDecrementCount, clearDefaultData } =
     productSlice.actions;
+
+  const { showNotificationAction } = appSlice.actions;
 
   const handleIncrement = React.useCallback((name) => {
     dispatch(handleIncrementCount(name));
@@ -64,18 +68,6 @@ const ListOfProducts: React.FC<Props> = ({ route, navigation }) => {
   React.useEffect(() => {
     dispatch(searchProductThunk(debouncedSearchTerm));
   }, [debouncedSearchTerm]);
-
-  // const searchProduct = (value: string) => {
-  //   const data = products.map((item) =>
-  //     item.title
-  //       .replace(/[^A-Za-zА-Яа-я0-9]/g, "")
-  //       .toLowerCase()
-  //       .includes(value.replace(/[^A-Za-zА-Яа-я0-9]/g, "").toLowerCase())
-  //       ? { ...item, isShow: true }
-  //       : { ...item, isShow: false }
-  //   );
-  //   setProducts(data);
-  // };
 
   const activity = useAppSelector(
     (state) => state.sellingPointReducer.activityId
@@ -96,16 +88,21 @@ const ListOfProducts: React.FC<Props> = ({ route, navigation }) => {
     );
     await dispatch(clearDefaultData());
     handle.setImages([]);
-    setShowReportToast(true);
   }, [dataOfProducts, activity, data.images]);
 
   React.useEffect(() => {
-    if (showReportToast) {
+    if (notification.show) {
       setTimeout(() => {
-        setShowReportToast(false);
+        dispatch(
+          showNotificationAction({
+            error: false,
+            show: false,
+            message: "",
+          })
+        );
       }, 5000);
     }
-  }, [showReportToast]);
+  }, [notification.show]);
 
   const handleLoadMore = React.useCallback(async () => {
     if (dataOfProducts.length < total) {
@@ -236,58 +233,13 @@ const ListOfProducts: React.FC<Props> = ({ route, navigation }) => {
     );
   };
 
-  // React.useEffect(() => {
-  //   if (data.images.length) {
-  //     const data1 = new FormData();
-  //     data1.append("file", data.image);
-  //     (async () => {
-  //       await dispatch(
-  //         uploadPhotoThunk({
-  //           id: activity,
-  //           photo: data1,
-  //         })
-  //       );
-  //     })();
-  //   }
-  // }, [data.images]);
-
   return (
     <View style={styles.container}>
-      {showReportToast && (
-        <View
-          style={
-            errorReport
-              ? [styles.toast, { backgroundColor: "red" }]
-              : [styles.toast, { backgroundColor: "#EFF4F7" }]
-          }
-        >
-          {errorReport ? (
-            <View
-              style={{
-                justifyContent: "center",
-                alignItems: "center",
-                flexDirection: "row",
-              }}
-            >
-              <Ionicons name="alert-circle" size={24} color={"red"} />
-              <AppText style={styles.reportTitle}>Отчет не отправлен</AppText>
-            </View>
-          ) : (
-            <View
-              style={{
-                justifyContent: "center",
-                alignItems: "center",
-                flexDirection: "row",
-              }}
-            >
-              <Ionicons name="checkmark-circle" size={24} color={"#42A6A6"} />
-              <AppText style={styles.reportTitle}>Отчет отправлен</AppText>
-            </View>
-          )}
-          <TouchableOpacity onPress={() => setShowReportToast(false)}>
-            <Ionicons name="ios-close-outline" size={32} color={"#858585"} />
-          </TouchableOpacity>
-        </View>
+      {notification.show && (
+        <AppNotification
+          error={notification.error}
+          message={notification.message}
+        />
       )}
       <View style={{ marginBottom: 16 }}>
         <AppButton
