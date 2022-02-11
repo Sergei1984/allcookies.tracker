@@ -16,18 +16,24 @@ export const useGetImage = () => {
       try {
         const image = await ImagePicker.openCamera({
           cropping: cropping,
-          width: 100,
-          height: 100,
+          // width: 100,
+          // height: 100,
+          width: 1000,
+          height: 800,
           includeExif: true,
           mediaType,
+          cropperStatusBarColor: "white",
+          cropperToolbarColor: "white",
+          cropperActiveWidgetColor: "white",
+          cropperToolbarWidgetColor: "#3498DB",
           includeBase64: true,
         });
-        setImage({
-          uri: image.path,
-          width: image.width,
-          height: image.height,
-          mime: image.mime,
-        });
+        // setImage({
+        //   uri: image.path,
+        //   width: image.width,
+        //   height: image.height,
+        //   mime: image.mime,
+        // });
         setImages([
           ...images,
           {
@@ -49,15 +55,11 @@ export const useGetImage = () => {
     async (cropping: boolean, circular = false) => {
       try {
         const selectedImages = await ImagePicker.openPicker({
-          width: 100,
-          height: 100,
+          // width: 100,
+          // height: 100,
           cropping: cropping,
           cropperCircleOverlay: circular,
           sortOrder: "none",
-          compressImageMaxWidth: 100,
-          compressImageMaxHeight: 100,
-          compressImageQuality: 1,
-          compressVideoPreset: "MediumQuality",
           includeExif: true,
           cropperStatusBarColor: "white",
           cropperToolbarColor: "white",

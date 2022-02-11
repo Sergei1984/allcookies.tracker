@@ -3,6 +3,7 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import React from "react";
 import { View, FlatList, TouchableOpacity, Image } from "react-native";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import Ionicons from "react-native-vector-icons/Ionicons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { AppButton } from "../../components/AppButton";
 import { AppText } from "../../components/AppText";
@@ -21,6 +22,8 @@ import useLocation from "../../hooks/useLocation";
 import { RFValue } from "react-native-responsive-fontsize";
 import { useDebounce } from "../../hooks/useDebounce";
 import { productSlice } from "../../store/product/slice";
+import { AppNotification } from "../../components/AppNotification";
+import { appSlice } from "../../store/app/slice";
 
 type Props = NativeStackScreenProps<HomeStackParamList, "ListOfProducts">;
 
@@ -31,12 +34,15 @@ const ListOfProducts: React.FC<Props> = ({ route, navigation }) => {
   const navigate = useNavigation();
   const { data, handle } = useGetImage();
   const [searchTerm, setSearchTerm] = React.useState("");
+  const [showReportToast, setShowReportToast] = React.useState(false);
 
   const {
     data: dataOfProducts,
     filteredData,
     total,
   } = useAppSelector((state) => state.productReducer);
+
+  const { notification } = useAppSelector((state) => state.appReducer);
 
   React.useEffect(() => {
     (async () => {
@@ -47,11 +53,7 @@ const ListOfProducts: React.FC<Props> = ({ route, navigation }) => {
   const { handleIncrementCount, handleDecrementCount, clearDefaultData } =
     productSlice.actions;
 
-  React.useEffect(() => {
-    return () => {
-      dispatch(clearDefaultData());
-    };
-  }, []);
+  const { showNotificationAction } = appSlice.actions;
 
   const handleIncrement = React.useCallback((name) => {
     dispatch(handleIncrementCount(name));
@@ -66,18 +68,6 @@ const ListOfProducts: React.FC<Props> = ({ route, navigation }) => {
   React.useEffect(() => {
     dispatch(searchProductThunk(debouncedSearchTerm));
   }, [debouncedSearchTerm]);
-
-  // const searchProduct = (value: string) => {
-  //   const data = products.map((item) =>
-  //     item.title
-  //       .replace(/[^A-Za-zА-Яа-я0-9]/g, "")
-  //       .toLowerCase()
-  //       .includes(value.replace(/[^A-Za-zА-Яа-я0-9]/g, "").toLowerCase())
-  //       ? { ...item, isShow: true }
-  //       : { ...item, isShow: false }
-  //   );
-  //   setProducts(data);
-  // };
 
   const activity = useAppSelector(
     (state) => state.sellingPointReducer.activityId
@@ -96,8 +86,23 @@ const ListOfProducts: React.FC<Props> = ({ route, navigation }) => {
         images: data.images,
       })
     );
-    navigation.navigate("Главная");
+    await dispatch(clearDefaultData());
+    handle.setImages([]);
   }, [dataOfProducts, activity, data.images]);
+
+  React.useEffect(() => {
+    if (notification.show) {
+      setTimeout(() => {
+        dispatch(
+          showNotificationAction({
+            error: false,
+            show: false,
+            message: "",
+          })
+        );
+      }, 5000);
+    }
+  }, [notification.show]);
 
   const handleLoadMore = React.useCallback(async () => {
     if (dataOfProducts.length < total) {
@@ -228,23 +233,14 @@ const ListOfProducts: React.FC<Props> = ({ route, navigation }) => {
     );
   };
 
-  // React.useEffect(() => {
-  //   if (data.images.length) {
-  //     const data1 = new FormData();
-  //     data1.append("file", data.image);
-  //     (async () => {
-  //       await dispatch(
-  //         uploadPhotoThunk({
-  //           id: activity,
-  //           photo: data1,
-  //         })
-  //       );
-  //     })();
-  //   }
-  // }, [data.images]);
-
   return (
     <View style={styles.container}>
+      {notification.show && (
+        <AppNotification
+          error={notification.error}
+          message={notification.message}
+        />
+      )}
       <View style={{ marginBottom: 16 }}>
         <AppButton
           name="Сделать фото"

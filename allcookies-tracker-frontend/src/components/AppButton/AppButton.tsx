@@ -14,6 +14,7 @@ interface Props extends Touchable {
 export const AppButton: React.FC<Props> = (props) => {
   const { name, disabled = false, onPress, icon } = props;
   const styles = React.useMemo(() => createStyles(), []);
+
   return (
     <TouchableOpacity
       style={disabled ? styles.buttonDisabled : styles.buttonWrapper}
