@@ -365,11 +365,14 @@ impl<'a, 'c> ActivityRepo for PersistentActivityRepo<'a, 'c> {
 
         let extra = activity_info!(
             &mut *self.db,
-            r#" order by
+            r#" where
+                    at::date = $3 or $3 is null
+                order by
                     created_at desc
                 offset $1 limit $2 "#,
             skip,
-            take
+            take,
+            date
         );
 
         Ok((
