@@ -3,11 +3,11 @@ import Box from "@mui/material/Box";
 import UserActivityProductsItem from "./user-activity-products-item";
 import {IUsersActivityDataProducts} from "../../store/users-activity/types";
 
-type Props = {
+interface UserActivityProductsProps {
   items: IUsersActivityDataProducts[]
 }
 
-const UserActivityProducts: FC<Props> = ({ items }) => {
+const UserActivityProducts: FC<UserActivityProductsProps> = ({ items }) => {
 
   return (
       <Box sx={{

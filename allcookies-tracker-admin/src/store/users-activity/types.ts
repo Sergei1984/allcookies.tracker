@@ -16,17 +16,6 @@ export interface UserError {
 export type activityType = 'close_day' | 'point_check' | 'open_day'
 
 
-export interface IUsersActivityData {
-  activity_type: activityType,
-  created: IUsersActivityDataCreated,
-  id: number,
-  location: SellingPointLocation,
-  time: string
-  photos?: any[],
-  products?: IUsersActivityDataProducts[],
-  selling_point?: IUsersActivityDataSellingPoints
-}
-
 export interface IUsersActivityDataCreated {
   at: string,
   id: number,
@@ -61,9 +50,28 @@ export interface IUsersActivityAction {
   payload: GetUsersActivityActionPayload;
 }
 
+export interface IUsersActivityPhotos {
+  id: number
+  time: string
+  url: string
+}
+
+
+
+export type UsersActivityType = IUsersActivityAction | UserError;
+
+export interface IUsersActivityData {
+  activity_type: activityType,
+  created: IUsersActivityDataCreated,
+  id: number,
+  location: SellingPointLocation,
+  time: string
+  photos?: IUsersActivityPhotos[],
+  products?: IUsersActivityDataProducts[],
+  selling_point?: IUsersActivityDataSellingPoints
+}
+
 export interface IUsersActivityState {
   data: IUsersActivityData[],
   total: number
 }
-
-export type UsersActivityType = IUsersActivityAction | UserError;

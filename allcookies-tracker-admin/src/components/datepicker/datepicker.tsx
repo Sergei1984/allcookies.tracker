@@ -1,4 +1,4 @@
-import {Dispatch, FC, SetStateAction, useEffect, useState} from "react";
+import {Dispatch, FC, SetStateAction, useState} from "react";
 import DateAdapter from '@mui/lab/AdapterMoment';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import DatePicker from '@mui/lab/DatePicker';
@@ -9,12 +9,12 @@ import {CalendarIcon} from "../../assets/icons";
 import 'moment/locale/ru';
 import PickersDay, {PickersDayProps, pickersDayClasses} from "@mui/lab/PickersDay";
 
-type Props = {
+interface DatepickerProps {
   selectedDate: Moment | null
   setSelectedDate: Dispatch<SetStateAction<Moment | null>>
 }
 
-const Datepicker:FC<Props> = ({selectedDate, setSelectedDate}) => {
+const Datepicker:FC<DatepickerProps> = ({selectedDate, setSelectedDate}) => {
   const [isDatePickerOpen, setIsDatePickerOpen] = useState<boolean>(false)
 
   const renderWeekPickerDay = (

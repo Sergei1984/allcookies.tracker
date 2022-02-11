@@ -8,7 +8,7 @@ import CustomTable from "./custom-table";
 import CustomTableCell from "./custom-table/custom-table-cell";
 import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
 import { getAppStoreSelector } from "../store/app/selectors";
-import {useEffect, useState} from "react";
+import {useState} from "react";
 import moment, {Moment} from "moment";
 
 export default function UserPageTable() {
@@ -22,7 +22,6 @@ export default function UserPageTable() {
     dispatch(getAllUserThunk(skip, take, search));
   };
 
-  const [open, setOpen] = React.useState(false);
   const [selectedDate, setSelectedDate] = useState<Moment | null>(moment());
 
   return (

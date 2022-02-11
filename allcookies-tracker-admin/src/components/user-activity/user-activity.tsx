@@ -5,15 +5,14 @@ import UserActivityProducts from "./user-activity-products";
 import {useDispatch, useSelector} from "react-redux";
 import {RootStore} from "../../store/rootStore";
 import {getUsersActivityThunk} from "../../store/users-activity/thunk/getUsersActivityThunk";
-import {getDate} from "../../utils";
 import {IUsersActivityData} from "../../store/users-activity/types";
 
-type Props = {
-  id: number,
+interface UserActivityProps {
+  id: number
   selectedDate: string
 }
 
-const UserActivity: FC<Props> = ({ id, selectedDate }) => {
+const UserActivity: FC<UserActivityProps> = ({id, selectedDate}) => {
   const dispatch = useDispatch();
 
   const {data} = useSelector((state: RootStore) => state.usersActivityStore);
@@ -21,19 +20,13 @@ const UserActivity: FC<Props> = ({ id, selectedDate }) => {
 
   useEffect(() => {
     dispatch(getUsersActivityThunk(selectedDate))
-  }, [selectedDate])
+  }, [selectedDate, dispatch])
 
   useEffect(() => {
-    if (data && id) {
-      setUserActivity(
-          data
-              .filter(item => item.created.id === id)
-              .sort((a, b) => {
-                return +getDate(a.time, 'X') - +getDate(b.time, 'X')
-              })
-      )
+    if (data.length && id) {
+      setUserActivity(data.filter(item => item.created.id === id))
     }
-  }, [data])
+  }, [data, id])
 
   return (
       <Box sx={{
@@ -49,12 +42,18 @@ const UserActivity: FC<Props> = ({ id, selectedDate }) => {
                 return <UserActivityTime key={index} time={item.time} text={'Начал день'}/>
               }
               if (item.activity_type === 'point_check' && item.selling_point && item.products) {
+                const isPhotoExist = !!item.photos?.length
                 return (
                     <div key={index}>
-                      <UserActivityTime time={item.time} text={item.selling_point.title}/>
+                      <UserActivityTime
+                          time={item.time}
+                          text={item.selling_point.title}
+                          isPhotoExist={isPhotoExist}
+                          photos={item.photos}
+                      />
                       <UserActivityProducts items={item.products}/>
                     </div>
-                )
+                );
               }
               if (item.activity_type === 'close_day' && index === userActivity.length - 1) {
                 return <UserActivityTime key={index} time={item.time} text={'Закончил день'}/>

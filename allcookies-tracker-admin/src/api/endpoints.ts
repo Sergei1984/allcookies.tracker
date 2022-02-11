@@ -1,4 +1,4 @@
-import {apiUrl, getCurrentDate} from "../utils";
+import {apiUrl} from "../utils";
 
 // Selling points
 export const SellingPoint = () => apiUrl(`/admin/selling-point/`);
