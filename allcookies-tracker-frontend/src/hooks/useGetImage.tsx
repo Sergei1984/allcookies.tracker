@@ -18,16 +18,22 @@ export const useGetImage = () => {
           cropping: cropping,
           // width: 100,
           // height: 100,
+          width: 1000,
+          height: 800,
           includeExif: true,
           mediaType,
+          cropperStatusBarColor: "white",
+          cropperToolbarColor: "white",
+          cropperActiveWidgetColor: "white",
+          cropperToolbarWidgetColor: "#3498DB",
           includeBase64: true,
         });
-        setImage({
-          uri: image.path,
-          width: image.width,
-          height: image.height,
-          mime: image.mime,
-        });
+        // setImage({
+        //   uri: image.path,
+        //   width: image.width,
+        //   height: image.height,
+        //   mime: image.mime,
+        // });
         setImages([
           ...images,
           {
