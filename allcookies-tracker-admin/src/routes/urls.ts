@@ -19,7 +19,7 @@ export const AddProductRoute: string = "/products/add-product";
 // DASHBOARD
 export const DashboardRoute: string = "/dashboard";
 
-export const SettingsRoute: string = "/settings";
+// export const SettingsRoute: string = "/settings";
 
 export const ProfileRoute: string = "/profile";
 export const UsersRoute: string = "/users";

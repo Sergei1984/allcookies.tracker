@@ -10,7 +10,7 @@ import {
   ProductsRoute,
   ProfileRoute,
   SellingPointsRoute,
-  SettingsRoute,
+  // SettingsRoute,
   UsersRoute,
 } from "../routes/urls";
 
@@ -65,16 +65,16 @@ const Navigation = (): JSX.Element => {
           )}
         </NavLink>
       </ListItem>
-      <ListItem>
-        <NavLink to={SettingsRoute}>
-          {({ isActive }) => (
-            <div className={isActive ? "navlink active" : "navlink"}>
-              <SettingsIcon />
-              <span>Настройки</span>
-            </div>
-          )}
-        </NavLink>
-      </ListItem>
+      {/*<ListItem>*/}
+      {/*  <NavLink to={SettingsRoute}>*/}
+      {/*    {({ isActive }) => (*/}
+      {/*      <div className={isActive ? "navlink active" : "navlink"}>*/}
+      {/*        <SettingsIcon />*/}
+      {/*        <span>Настройки</span>*/}
+      {/*      </div>*/}
+      {/*    )}*/}
+      {/*  </NavLink>*/}
+      {/*</ListItem>*/}
     </List>
   );
 };

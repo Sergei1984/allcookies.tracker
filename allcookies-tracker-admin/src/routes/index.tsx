@@ -9,7 +9,7 @@ import {
   ProductsPage,
   ProfilePage,
   SellingPointsPage,
-  SettingsPage,
+  // SettingsPage,
   UsersPage,
   AddSellingPointPage,
   AddProductPage,
@@ -36,7 +36,7 @@ const AppRoutes = () => {
           />
           <Route path={urls.ProfileRoute} element={<ProfilePage />} />
           <Route path={urls.UsersRoute} element={<UsersPage />} />
-          <Route path={urls.SettingsRoute} element={<SettingsPage />} />
+          {/*<Route path={urls.SettingsRoute} element={<SettingsPage />} />*/}
           <Route path={urls.AddUserRoute} element={<AddUser />} />
           <Route path={urls.AddProductRoute} element={<AddProductPage />} />
           <Route path="*" element={<Navigate to={urls.ProductsRoute} />} />
