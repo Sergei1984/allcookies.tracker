@@ -1,18 +1,35 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { initialState } from "./store";
-import { getProductsThunk } from "./thunk";
+import { getProductsThunk, searchProductThunk } from "./thunk";
 import { ProductState } from "./types";
 
 export const productSlice = createSlice({
     name: 'product',
     initialState,
     reducers: {
+        handleIncrementCount: (state, action: PayloadAction<string>) => {
+            state.data = state.data.map((el) => 
+            el.title === action.payload ? { ...el, count: el.count + 1} : el
+          )
+        },
+        handleDecrementCount: (state, action: PayloadAction<string>) => {
+            state.data = state.data.map((el) =>
+            el.title === action.payload ? { ...el, count: el.count - 1 } : el
+          )
+        },
+        clearDefaultData: (state) => {
+            state.data = state.data.map(item => ({...item, count: 0}))
+        }
 
     },
     extraReducers: {
         [getProductsThunk.fulfilled.type]: (state, action: PayloadAction<ProductState>) => {
             state.total = action.payload.total,
-            state.data = action.payload.data
+            state.data = [...state.data, ...action.payload.data]
+        },
+        [searchProductThunk.fulfilled.type]: (state, action: PayloadAction<ProductState>) => {
+            state.total = action.payload.total
+            state.filteredData = action.payload.data
         }
     }
 })

@@ -1,16 +1,17 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit"
-import { initialState } from "./store"
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { initialState } from "./store";
+import { Notification } from "./types";
 
 export const appSlice = createSlice({
     name: 'app',
     initialState,
     reducers: {
-        setAppLoadingAction: (state, action: PayloadAction<boolean>) => {
-            state.loading = action.payload
-        },
-        setAppLoaderAction: (state, action: PayloadAction<boolean>) => {
-            state.loader = action.payload
-        },
+        showNotificationAction: (state, action: PayloadAction<Notification>) => {
+            state.notification = action.payload
+        }
+    },
+    extraReducers: {
+      
     }
 })
 

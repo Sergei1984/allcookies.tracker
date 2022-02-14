@@ -63,7 +63,7 @@ Authorization: {{auth.response.body.jwt}}
 # < ./sample_photo.jpg
 
 ### 
-POST {{server}}/client/activity/42/photo
+POST {{server}}/client/activity/88/photo
 Authorization: {{auth.response.body.jwt}}
 Content-Type: multipart/form-data; boundary=BOUNDARY
 

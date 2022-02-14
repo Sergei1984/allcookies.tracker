@@ -38,7 +38,7 @@ where
         take: i64,
     ) -> Result<PagedResult<SellingPoint>, AnError> {
         self.selling_point_repo
-            .find_active(search_by_name, location, 1000.0, skip, take)
+            .find_active(search_by_name, location, skip, take)
             .await
     }
 

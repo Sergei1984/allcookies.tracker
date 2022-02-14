@@ -15,6 +15,8 @@ const AppNavigation = () => {
   return (
     <Tab.Navigator
       screenOptions={({ route, navigation }) => ({
+        tabBarHideOnKeyboard: true,
+        tabBarStyle: [{ display: "flex" }, null],
         tabBarIcon: ({ focused, color, size }) => {
           switch (route.name) {
             case "Главная": {

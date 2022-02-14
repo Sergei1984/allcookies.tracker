@@ -1,6 +1,5 @@
 import axios from "axios";
 import { SignInData } from "../store/user/types";
-
 class AuthService {
 
     public signIn = async (data: SignInData) => {

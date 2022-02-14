@@ -16,38 +16,50 @@ export const useGetImage = () => {
       try {
         const image = await ImagePicker.openCamera({
           cropping: cropping,
-          width: 500,
-          height: 500,
+          // width: 100,
+          // height: 100,
+          width: 1000,
+          height: 800,
           includeExif: true,
           mediaType,
+          cropperStatusBarColor: "white",
+          cropperToolbarColor: "white",
+          cropperActiveWidgetColor: "white",
+          cropperToolbarWidgetColor: "#3498DB",
           includeBase64: true,
         });
-        setImage({
-          uri: image.path,
-          width: image.width,
-          height: image.height,
-          mime: image.mime,
-        });
+        // setImage({
+        //   uri: image.path,
+        //   width: image.width,
+        //   height: image.height,
+        //   mime: image.mime,
+        // });
+        setImages([
+          ...images,
+          {
+            uri: image.path,
+            width: image.width,
+            height: image.height,
+            mime: image.mime,
+            index: images.length + 1,
+          },
+        ]);
       } catch (error) {
         console.log(error);
       }
     },
-    []
+    [images]
   );
 
   const pickSingle = React.useCallback(
     async (cropping: boolean, circular = false) => {
       try {
         const selectedImages = await ImagePicker.openPicker({
-          width: 100,
-          height: 100,
+          // width: 100,
+          // height: 100,
           cropping: cropping,
           cropperCircleOverlay: circular,
           sortOrder: "none",
-          compressImageMaxWidth: 100,
-          compressImageMaxHeight: 100,
-          compressImageQuality: 1,
-          compressVideoPreset: "MediumQuality",
           includeExif: true,
           cropperStatusBarColor: "white",
           cropperToolbarColor: "white",
@@ -58,14 +70,13 @@ export const useGetImage = () => {
         });
         setImages([
           ...images,
-          ...selectedImages.map((i: any) => {
-            console.log("received image", i);
+          ...selectedImages.map((i: any, index) => {
             return {
               uri: i.path,
               width: i.width,
               height: i.height,
               mime: i.mime,
-              data: i.data,
+              index: index,
             };
           }),
         ]);
@@ -87,6 +98,7 @@ export const useGetImage = () => {
     handle: {
       pickSingle,
       pickSingleWithCamera,
+      setImages,
     },
   };
 };

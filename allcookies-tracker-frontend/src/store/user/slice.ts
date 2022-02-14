@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { initialState } from "./store"
-import { getProfileThunk, signInThunk } from "./thunk"
+import { getProfileThunk, openDayThunk, signInThunk } from "./thunk"
 import { IUser } from "./types"
 
 export const userSlice = createSlice({
@@ -14,6 +14,12 @@ export const userSlice = createSlice({
         },
         setIsAuthorized: (state) => {
             state.isAuthorized = true
+        },
+        setCurrentActivity: (state, action: PayloadAction<any>) => {
+            state.activity = action.payload
+        },
+        clearError: (state) => {
+            state.error = ''
         }
     },
     extraReducers: {
@@ -28,11 +34,14 @@ export const userSlice = createSlice({
         },
         [signInThunk.rejected.type]: (state, action: PayloadAction<string>) => {
             state.isLoading = false,
-            state.error = action.payload,
+            state.error = 'Wrong email or password',
             state.isAuthorized = false
         },
         [getProfileThunk.fulfilled.type]: (state, action: PayloadAction<IUser>) => {
             state.user = action.payload
+        },
+        [openDayThunk.fulfilled.type]: (state, action: PayloadAction<any>) => {
+            state.activity = action.payload
         }
     }
 })

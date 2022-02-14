@@ -3,6 +3,7 @@ use crate::features::{
     ActivityInfo, AdminActivityService, AdminUserInfo, PagedResult, PhotoSigningInfo, SkipTake,
 };
 use actix_web::{dev::HttpResponseBuilder, error, get, http::StatusCode, web, Responder, Scope};
+use chrono::NaiveDate;
 use serde::Deserialize;
 
 pub fn activity_admin_route() -> Scope {
@@ -16,12 +17,29 @@ pub struct GetActivityPhotoPath {
     pub token: String,
 }
 
+#[derive(Deserialize)]
+pub struct ActivityByDatePath {
+    pub date: Option<String>,
+}
+
 #[get("")]
 pub async fn get_activity(
     skip_take: web::Query<SkipTake>,
+    date: web::Query<ActivityByDatePath>,
     current_user: AdminUserInfo,
     pool: web::Data<sqlx::Pool<sqlx::Postgres>>,
 ) -> Result<web::Json<PagedResult<ActivityInfo>>, actix_web::Error> {
+    let mut activity_date: Option::<NaiveDate> = None;
+
+    if date.date.is_some() {
+        let parsed = NaiveDate::parse_from_str(&date.date.as_ref().unwrap().clone(), "%Y-%m-%d");
+        if parsed.is_err() {
+            return Err(error::ErrorBadRequest("Query date parameter has incorrect format"));
+        }
+
+        activity_date = Some(parsed.unwrap());
+    }
+
     let mut trans = pool.begin().await.map_err(|e| error::ErrorBadRequest(e))?;
 
     let result: Result<web::Json<PagedResult<ActivityInfo>>, actix_web::Error>;
@@ -31,7 +49,7 @@ pub async fn get_activity(
             AdminActivityService::new(current_user, PersistentActivityRepo::new(&mut trans));
 
         let data = svc
-            .get_activity(skip_take.skip.unwrap_or(0), skip_take.take.unwrap_or(50))
+            .get_activity(activity_date, skip_take.skip.unwrap_or(0), skip_take.take.unwrap_or(50))
             .await
             .map_err(|e| error::ErrorBadRequest(e))?;
 

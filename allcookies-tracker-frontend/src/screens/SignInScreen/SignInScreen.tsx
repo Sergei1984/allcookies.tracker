@@ -30,6 +30,7 @@ import { signInThunk } from "../../store/user/thunk";
 import createStyles from "./styles";
 import * as Keychain from "react-native-keychain";
 import images from "../../constants/images";
+import { userSlice } from "../../store/user/slice";
 
 interface IProps {
   navigation: NavigationProp<ParamListBase>;
@@ -49,6 +50,7 @@ export const SignInScreen: React.FC<IProps> = ({ navigation }) => {
     (state) => state.userReducer
   );
 
+  const { clearError } = userSlice.actions;
   const { formData, handleChange } = useForm<TData>({
     login: "",
     password: "",
@@ -148,35 +150,51 @@ export const SignInScreen: React.FC<IProps> = ({ navigation }) => {
             <View style={styles.logoWrapper}>
               <Image source={images.LOGO} />
             </View>
-            <AppText style={styles.title}>
+            <AppText style={styles.title} color="#262C30">
               Добро пожаловать в Allcookies
             </AppText>
-            <AppText style={styles.preTitle}>Войдите чтобы продолжить</AppText>
+            <AppText style={styles.preTitle} color="#9098B1">
+              Войдите чтобы продолжить
+            </AppText>
             <AppTextInput
               value={formData.login}
-              onChangeText={(value: string) => handleChange(value, "login")}
+              onChangeText={(value: string) => {
+                handleChange(value, "login");
+                if (error) {
+                  console.log("error");
+                  dispatch(clearError());
+                }
+              }}
               placeholder="Логин"
               autoCapitalize="none"
               style={styles.input}
             />
             <AppTextInput
               value={formData.password}
-              onChangeText={(value: string) => handleChange(value, "password")}
+              onChangeText={(value: string) => {
+                handleChange(value, "password");
+                if (error) {
+                  console.log("error");
+                  dispatch(clearError());
+                }
+              }}
               placeholder="Пароль"
               autoCapitalize="none"
               secureTextEntry
-              style={[styles.input, { marginBottom: 57 }]}
+              style={[styles.input]}
             />
             {error ? (
               <AppText style={{ textAlign: "center" }} color={Colors.RED}>
                 {error}
               </AppText>
             ) : null}
-            <AppButton
-              onPress={handleSignIn}
-              name="Войти"
-              disabled={isLoading || !nextDisabled}
-            />
+            <View style={{ marginTop: 57 }}>
+              <AppButton
+                onPress={handleSignIn}
+                name="Войти"
+                disabled={isLoading || !nextDisabled}
+              />
+            </View>
           </View>
         </View>
       </DismissKeyboardView>

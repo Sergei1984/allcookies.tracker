@@ -1,8 +1,9 @@
-import { useRoute } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import React from "react";
-import { View, Text, FlatList, TouchableOpacity, Image } from "react-native";
+import { View, FlatList, TouchableOpacity, Image } from "react-native";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import Ionicons from "react-native-vector-icons/Ionicons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { AppButton } from "../../components/AppButton";
 import { AppText } from "../../components/AppText";
@@ -11,15 +12,18 @@ import { useAppDispatch } from "../../hooks/useAppDispatch";
 import { useAppSelector } from "../../hooks/useAppSelector";
 import { useGetImage } from "../../hooks/useGetImage";
 import { HomeStackParamList } from "../../navigation/HomeNavigation";
-import { getProductsThunk } from "../../store/product/thunk";
-import { Product } from "../../store/product/types";
-import ImagePicker from "react-native-image-crop-picker";
+import {
+  getProductsThunk,
+  searchProductThunk,
+} from "../../store/product/thunk";
 import createStyles from "./styles";
 import { checkSellingPointThunk } from "../../store/sellingPoint/thunk";
 import useLocation from "../../hooks/useLocation";
 import { RFValue } from "react-native-responsive-fontsize";
-import { btoa, atob, toByteArray } from "react-native-quick-base64";
-import { uploadPhotoThunk } from "../../store/user/thunk";
+import { useDebounce } from "../../hooks/useDebounce";
+import { productSlice } from "../../store/product/slice";
+import { AppNotification } from "../../components/AppNotification";
+import { appSlice } from "../../store/app/slice";
 
 type Props = NativeStackScreenProps<HomeStackParamList, "ListOfProducts">;
 
@@ -27,70 +31,86 @@ const ListOfProducts: React.FC<Props> = ({ route, navigation }) => {
   const styles = React.useMemo(() => createStyles(), []);
   const dispatch = useAppDispatch();
   const location = useLocation();
+  const navigate = useNavigation();
   const { data, handle } = useGetImage();
+  const [searchTerm, setSearchTerm] = React.useState("");
+  const [showReportToast, setShowReportToast] = React.useState(false);
+
+  const {
+    data: dataOfProducts,
+    filteredData,
+    total,
+  } = useAppSelector((state) => state.productReducer);
+
+  const { notification } = useAppSelector((state) => state.appReducer);
 
   React.useEffect(() => {
     (async () => {
-      await dispatch(getProductsThunk());
+      await dispatch(getProductsThunk({ skip: 0, take: 20 }));
     })();
   }, []);
 
-  const { data: dataOfProducts, total } = useAppSelector(
-    (state) => state.productReducer
-  );
+  const { handleIncrementCount, handleDecrementCount, clearDefaultData } =
+    productSlice.actions;
 
-  const [products, setProducts] = React.useState<Product[]>([]);
+  const { showNotificationAction } = appSlice.actions;
+
+  const handleIncrement = React.useCallback((name) => {
+    dispatch(handleIncrementCount(name));
+  }, []);
+
+  const handleDecrement = React.useCallback((name) => {
+    dispatch(handleDecrementCount(name));
+  }, []);
+
+  const debouncedSearchTerm = useDebounce(searchTerm, 500);
 
   React.useEffect(() => {
-    setProducts(
-      dataOfProducts.map((item) => ({ ...item, count: 0, isShow: true }))
-    );
-  }, [dataOfProducts]);
+    dispatch(searchProductThunk(debouncedSearchTerm));
+  }, [debouncedSearchTerm]);
 
-  const handleIncrement = React.useCallback(
-    (name) => {
-      let newProduct = products.map((el) =>
-        el.title === name ? { ...el, count: el.count + 1 } : el
-      );
-      setProducts(newProduct);
-    },
-    [products]
+  const activity = useAppSelector(
+    (state) => state.sellingPointReducer.activityId
   );
-
-  const handleDecrement = React.useCallback(
-    (name) => {
-      let newProduct = products.map((el) =>
-        el.title === name
-          ? { ...el, count: el.count !== 0 ? el.count - 1 : 0 }
-          : el
-      );
-      setProducts(newProduct);
-    },
-    [products]
-  );
-
-  const searchProduct = (value: string) => {
-    const data = products.map((item) =>
-      item.title.includes(value)
-        ? { ...item, isShow: true }
-        : { ...item, isShow: false }
-    );
-    setProducts(data);
-  };
 
   const sendReport = React.useCallback(async () => {
-    const data = products.flatMap((item) =>
+    const dataProducts = dataOfProducts.flatMap((item) =>
       item.count !== 0 ? { product_id: item.id, quantity: item.count } : []
     );
     await dispatch(
       checkSellingPointThunk({
         location: location,
         time: new Date(),
-        products: data,
+        products: dataProducts,
         selling_point_id: route.params.sellingPointId,
+        images: data.images,
       })
     );
-  }, [products]);
+    await dispatch(clearDefaultData());
+    handle.setImages([]);
+  }, [dataOfProducts, activity, data.images]);
+
+  React.useEffect(() => {
+    if (notification.show) {
+      setTimeout(() => {
+        dispatch(
+          showNotificationAction({
+            error: false,
+            show: false,
+            message: "",
+          })
+        );
+      }, 5000);
+    }
+  }, [notification.show]);
+
+  const handleLoadMore = React.useCallback(async () => {
+    if (dataOfProducts.length < total) {
+      await dispatch(
+        getProductsThunk({ skip: dataOfProducts.length, take: 20 })
+      );
+    }
+  }, [dataOfProducts]);
 
   const renderProducts = () => {
     const renderItem = ({ item }: any) => {
@@ -154,22 +174,51 @@ const ListOfProducts: React.FC<Props> = ({ route, navigation }) => {
     return (
       <View>
         <FlatList
-          data={products.flatMap((item) => (item.isShow ? item : []))}
+          data={
+            debouncedSearchTerm
+              ? dataOfProducts.filter((item1) =>
+                  filteredData.some((item2) => item2.id === item1.id)
+                )
+              : dataOfProducts
+          }
           style={{
             marginBottom: 20,
             height: data.images.length ? "47%" : "60%",
+            minHeight: "47%",
           }}
           renderItem={renderItem}
           keyExtractor={(_, index) => "products" + index}
+          onEndReached={handleLoadMore}
+          onEndReachedThreshold={0.5}
         />
-        <AppButton name="Отправить отчет" onPress={sendReport} />
+        <AppButton
+          name="Отправить отчет"
+          onPress={sendReport}
+          disabled={!dataOfProducts.find((item) => item.count !== 0)}
+        />
       </View>
     );
   };
 
   const renderPhotos = () => {
     const renderItem = ({ item }: any) => {
-      return <Image style={styles.avatar} source={item} />;
+      const deletePhoto = (index: number) => {
+        handle.setImages(
+          data.images.filter((item: any) => item.index !== index)
+        );
+      };
+
+      return (
+        <View style={styles.photoWrapper}>
+          <TouchableOpacity
+            style={styles.deletePhoto}
+            onPress={() => deletePhoto(item.index)}
+          >
+            <MaterialIcons name="close" size={16} color={"#232323"} />
+          </TouchableOpacity>
+          <Image style={styles.avatar} source={item} />
+        </View>
+      );
     };
     return (
       <View>
@@ -184,31 +233,14 @@ const ListOfProducts: React.FC<Props> = ({ route, navigation }) => {
     );
   };
 
-  // const _base64ToArrayBuffer = (base64: any) => {
-  //   var binary_string = atob(base64);
-  //   var len = binary_string.length;
-  //   var bytes = new Uint8Array(len);
-  //   for (var i = 0; i < len; i++) {
-  //     bytes[i] = binary_string.charCodeAt(i);
-  //   }
-  //   return bytes.buffer;
-  // };
-
-  React.useEffect(() => {
-    if (data.image) {
-      const data1 = new FormData();
-      data1.append("file", data.image);
-      dispatch(
-        uploadPhotoThunk({
-          id: route.params.sellingPointId,
-          photo: data1,
-        })
-      );
-    }
-  }, [data.image]);
-
   return (
     <View style={styles.container}>
+      {notification.show && (
+        <AppNotification
+          error={notification.error}
+          message={notification.message}
+        />
+      )}
       <View style={{ marginBottom: 16 }}>
         <AppButton
           name="Сделать фото"
@@ -230,7 +262,7 @@ const ListOfProducts: React.FC<Props> = ({ route, navigation }) => {
         <AppTextInput
           style={styles.searchInput}
           placeholder="Поиск"
-          onChangeText={(value) => searchProduct(value)}
+          onChangeText={(value) => setSearchTerm(value)}
         />
       </View>
       {renderProducts()}

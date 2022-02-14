@@ -1,6 +1,9 @@
-import { AppStore } from './types';
+import { AppState } from "./types";
 
-export const initialState: AppStore = {
-  loading: false,
-  loader: false,
-};
+export const initialState: AppState = {
+    notification: {
+        error: false,
+        message: '',
+        show: false
+    }
+}

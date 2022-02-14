@@ -1,3 +1,5 @@
+use chrono::NaiveDate;
+
 use crate::features::activity::repo::ActivityRepo;
 use crate::features::activity::svcs::utils::to_activity_info;
 use crate::features::{ActiveUserInfo, ActivityInfo, AdminUserInfo, PagedResult};
@@ -24,12 +26,13 @@ where
 
     pub async fn get_activity(
         &mut self,
+        date: Option<NaiveDate>,
         skip: i64,
         take: i64,
     ) -> Result<PagedResult<ActivityInfo>, AppError> {
         let (data, extra) = self
             .repo
-            .get_all_activity(skip, take)
+            .get_all_activity(date, skip, take)
             .await
             .map_err(|e| AppError::internal_server_err(Some(&e.to_string())))?;
 

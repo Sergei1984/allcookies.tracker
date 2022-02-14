@@ -1,7 +1,7 @@
 use crate::features::SellingPointCheckPhotos;
 use crate::features::{Activity, LatLonPoint, PagedResult, SellingPoint};
 use crate::{select_with_count, AnError};
-use chrono::{DateTime, Utc};
+use chrono::{DateTime, Utc, NaiveDate};
 use serde::{Deserialize, Serialize};
 use sqlx::{Postgres, Transaction};
 
@@ -35,29 +35,29 @@ macro_rules! activity_info {
                 SellingPoint,
                 r#"
                 select
-                    id, 
-                    title, 
-                    description, 
-                    address, 
-                    location as "location!: _", 
-                    is_disabled, 
-                    created_by, 
-                    created_at, 
-                    modified_by, 
-                    modified_at, 
-                    deleted_by, 
-                    deleted_at 
+                    id,
+                    title,
+                    description,
+                    address,
+                    location as "location!: _",
+                    is_disabled,
+                    created_by,
+                    created_at,
+                    modified_by,
+                    modified_at,
+                    deleted_by,
+                    deleted_at
                 from
                     selling_point sp
                 where
                     sp.id in (
-                        select 
+                        select
                             selling_point_id
                         from
                             activity "#  +
                             $where +
-                            r#"                        
-                    )            
+                            r#"
+                    )
                 "#,
                 $($params,)*
             )
@@ -68,20 +68,20 @@ macro_rules! activity_info {
                 SellingPointCheckPhotoInfo,
                 r#"
                 select
-                    id, 
-                    activity_id, 
+                    id,
+                    activity_id,
                     at
                 from
                     selling_point_check_photos
                 where
                     activity_id in (
-                        select 
+                        select
                             id
                         from
                             activity "#  +
                             $where +
-                            r#"                        
-                    )            
+                            r#"
+                    )
                 "#,
                 $($params,)*
             )
@@ -92,20 +92,20 @@ macro_rules! activity_info {
                 UserInfoRef,
                 r#"
                 select
-                    id, 
-                    login, 
+                    id,
+                    login,
                     name
                 from
                     user_account
                 where
                     id in (
-                        select 
+                        select
                             created_by
                         from
                             activity "#  +
                             $where +
-                            r#"                        
-                    )            
+                            r#"
+                    )
                 "#,
                 $($params,)*
             )
@@ -178,6 +178,7 @@ pub trait ActivityRepo {
 
     async fn get_all_activity(
         &mut self,
+        date: Option<NaiveDate>,
         skip: i64,
         take: i64,
     ) -> Result<(PagedResult<Activity>, ActivityExtraData), AnError>;
@@ -231,7 +232,7 @@ impl<'a, 'c> ActivityRepo for PersistentActivityRepo<'a, 'c> {
                 deleted_at
             from
                 activity
-            where 
+            where
                 id = $1
                 "#,
             id,
@@ -261,9 +262,9 @@ impl<'a, 'c> ActivityRepo for PersistentActivityRepo<'a, 'c> {
                 deleted_at
             from
                 activity
-            where 
+            where
                 created_by = $1 and deleted_by is null
-            order by 
+            order by
                 created_at desc
             offset 0 limit 1
                 "#,
@@ -297,9 +298,9 @@ impl<'a, 'c> ActivityRepo for PersistentActivityRepo<'a, 'c> {
                 deleted_at
             from
                 activity
-            where 
+            where
                 created_by = $1 and deleted_by is null
-            order by 
+            order by
                 created_at desc
             offset $2 limit $3
                 "#,
@@ -310,9 +311,9 @@ impl<'a, 'c> ActivityRepo for PersistentActivityRepo<'a, 'c> {
 
         let extra = activity_info!(
             &mut *self.db,
-            r#" where 
+            r#" where
                     created_by = $1 and deleted_by is null
-                order by 
+                order by
                     created_at desc
                 offset $2 limit $3 "#,
             current_user_id,
@@ -331,6 +332,7 @@ impl<'a, 'c> ActivityRepo for PersistentActivityRepo<'a, 'c> {
 
     async fn get_all_activity(
         &mut self,
+        date: Option<NaiveDate>,
         skip: i64,
         take: i64,
     ) -> Result<(PagedResult<Activity>, ActivityExtraData), AnError> {
@@ -350,21 +352,27 @@ impl<'a, 'c> ActivityRepo for PersistentActivityRepo<'a, 'c> {
                 deleted_at
             from
                 activity
-            order by 
+            where
+                at::date = $3 or $3 is null
+            order by
                 created_at desc
             offset $1 limit $2
                 "#,
             skip,
-            take
+            take,
+            date
         )?;
 
         let extra = activity_info!(
             &mut *self.db,
-            r#" order by 
+            r#" where
+                    at::date = $3 or $3 is null
+                order by
                     created_at desc
                 offset $1 limit $2 "#,
             skip,
-            take
+            take,
+            date
         );
 
         Ok((
@@ -395,7 +403,7 @@ impl<'a, 'c> ActivityRepo for PersistentActivityRepo<'a, 'c> {
                 deleted_at
             from
                 activity
-            where 
+            where
                 id = $1
                 "#,
             id
@@ -419,16 +427,16 @@ impl<'a, 'c> ActivityRepo for PersistentActivityRepo<'a, 'c> {
         let res = sqlx::query!(
             r#"
             insert into activity(
-                activity_type, 
-                at, 
-                location, 
+                activity_type,
+                at,
+                location,
                 selling_point_id,
                 created_by
             )
-            values (                
+            values (
                 $1,
                 $2,
-                $3, 
+                $3,
                 $4,
                 $5
             )
@@ -455,11 +463,11 @@ impl<'a, 'c> ActivityRepo for PersistentActivityRepo<'a, 'c> {
         let _ = sqlx::query!(
             r#"
             insert into selling_point_check(
-                activity_id, 
+                activity_id,
                 product_id,
                 quantity
             )
-            values (                
+            values (
                 $1,
                 $2,
                 $3
@@ -479,10 +487,10 @@ impl<'a, 'c> ActivityRepo for PersistentActivityRepo<'a, 'c> {
         let _ = sqlx::query!(
             r#"
             insert into selling_point_check_photos(
-                activity_id, 
+                activity_id,
                 photo_data
             )
-            values (                
+            values (
                 $1,
                 $2
             )
@@ -500,9 +508,9 @@ impl<'a, 'c> ActivityRepo for PersistentActivityRepo<'a, 'c> {
         let photo = sqlx::query_as!(
             SellingPointCheckPhotos,
             r#"
-            select 
-                * 
-            from 
+            select
+                *
+            from
                 selling_point_check_photos
             where
                 activity_id = $1 and id = $2

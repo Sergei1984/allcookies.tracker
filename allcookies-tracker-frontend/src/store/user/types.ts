@@ -20,6 +20,7 @@ export interface UserState {
     error: string;
     isAuthorized: boolean;
     isLogout: boolean;
+    activity: any;
 }
 
 export interface IOpenCloseDay {
