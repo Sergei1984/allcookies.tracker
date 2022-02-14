@@ -73,7 +73,8 @@ where
                                     title: c.product_title.clone(),
                                     image_url: c.product_image_url.clone(),
                                 },
-                                quantity: c.quantity,
+                                remaining_quantity: c.remaining_quantity,
+                                order_quantity: c.order_quantity,
                             })
                             .collect(),
                         photos: extra

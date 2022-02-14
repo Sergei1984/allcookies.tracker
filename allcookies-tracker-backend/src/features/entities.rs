@@ -61,7 +61,8 @@ pub struct SellingPointCheck {
     pub id: i64,
     pub activity_id: i64,
     pub product_id: i64,
-    pub quantity: Option<i64>,
+    pub remaining_quantity: Option<i64>,
+    pub order_quantity: i64
 }
 
 #[derive(Debug, Serialize, Deserialize)]
