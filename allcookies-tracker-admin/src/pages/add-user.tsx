@@ -1,67 +1,103 @@
-import {Field, Form, Formik} from "formik";
+import CloseIcon from "@mui/icons-material/Close";
+import IconButton from "@mui/material/IconButton";
+import { Field, Form, Formik } from "formik";
 import React from "react";
-import * as yup from 'yup';
-import classes from "../assets/scss/login.module.scss";
+import { useDispatch, useSelector } from "react-redux";
+import { NavLink } from "react-router-dom";
+import * as yup from "yup";
+import classes from "../assets/styles/scss/addUser.module.scss";
+import DashboardLayout from "../layouts/dashboard";
+import { UsersRoute } from "../routes/urls";
+import { createUserThunk } from "../store/users/thunk/createUserThunk";
+import IconLabelButton from "../components/button-back";
 
 const defaultUser = {
-	firstName:'',
-	lastName:'',
-	email:'',
-	password:''
-}
+  firstName: "",
+  lastName: "",
+  email: "",
+  password: "",
+};
 
 const loginSchema = yup.object().shape({
-	firstName: yup.string().required(''),
-	lastName: yup.string().required(''),
-	email: yup.string().email('некорректный email').required(''),
-	password: yup.string().min(6).max(15)
-})
+  firstName: yup.string().required(""),
+  lastName: yup.string().required(""),
+  email: yup.string().email("некорректный email").required(""),
+  password: yup.string().min(6).max(15),
+});
 
 const AddUser = () => {
-	const handleLogin = (values:any): void => {
-		console.log('gfdfs')
-	}
+  const dispatch = useDispatch();
+  const handleUser = (values: any) => {
+    const data = {
+      name: values.firstName + " " + values.lastName,
+      login: values.email,
+      password: values.password,
+      is_blocked: false,
+    };
+    dispatch(createUserThunk(data));
+  };
+  return (
+    <DashboardLayout>
+      <div>
+        <IconLabelButton path={UsersRoute} text="Добавление пользователя" />
+        <Formik
+          initialValues={defaultUser}
+          validationSchema={loginSchema}
+          onSubmit={(values) => {
+            handleUser(values);
+          }}
+        >
+          {({ errors, touched }) => (
+            <Form className={classes.fromAddUser}>
+              <div className={classes.value}>
+                <div className={classes.firstName}>
+                  <label htmlFor="firstName">Имя</label>
+                  <Field name="firstName" placeholder="Введите имя" />
 
-	return (
-		<div >
-			<h1>Добавление пользователя</h1>
-			<Formik
-				initialValues={defaultUser}
-				validationSchema={loginSchema}
-				onSubmit={handleLogin}
-				>
-				{({errors, touched}) => (
-					<Form>
-						<label className={classes.firstName} htmlFor="firstName">Имя</label>
-						<Field placeholder="Введите имя" />
+                  <label className={classes.lastname} htmlFor="lastName">
+                    Фамилия
+                  </label>
+                  <Field name="lastName" placeholder="Введите фамилию" />
+                </div>
+                <div className={classes.email}>
+                  <label htmlFor="email">Email</label>
+                  <Field
+                    name="email"
+                    className={
+                      errors.email && touched.email
+                        ? classes.inputFieldError
+                        : classes.inputField
+                    }
+                    placeholder="Введите Email"
+                  />
+                  {errors.email && touched.email ? (
+                    <p className={classes.errorEmail}>{errors.email}</p>
+                  ) : null}
 
-						<label className={classes.lastName} htmlFor="lastName">Фамилия</label>
-						<Field placeholder="Введите фамилию" />
+                  <label htmlFor="password">Пароль</label>
+                  <Field
+                    className={
+                      errors.password && touched.password
+                        ? classes.inputFieldError
+                        : classes.inputField
+                    }
+                    name="password"
+                    placeholder="Введите пароль"
+                  />
+                  {errors.password && touched.password ? (
+                    <p className={classes.errorEmail}>некорректный пароль</p>
+                  ) : null}
+                </div>
+              </div>
+              <button className={classes.button} type="submit">
+                Зарегистрировать
+              </button>
+            </Form>
+          )}
+        </Formik>
+      </div>
+    </DashboardLayout>
+  );
+};
 
-						<label className={classes.email} htmlFor="login">Email</label>
-						<Field name="login" className={errors.email && touched.email ? classes.inputFieldError : classes.inputField}
-									 placeholder="Введите Email"/>
-						{errors.email && touched.email ? (
-							<p className={classes.errorEmail}>{errors.email}</p>
-						) : null}
-
-						<label className={classes.password} htmlFor="password">Пароль</label>
-						<Field
-									 className={errors.password && touched.password ? classes.inputFieldError : classes.inputField}
-									 name="password" placeholder="Введите пароль"/>
-						{errors.password && touched.password ? (
-							<p className={classes.errorEmail}>некорректный пароль</p>
-						) : null}
-
-						<button className={classes.button} type="submit">Зарегистрировать</button>
-
-
-					</Form>
-
-				)}
-
-
-			</Formik>
-		</div>
-	)
-}
+export default AddUser;

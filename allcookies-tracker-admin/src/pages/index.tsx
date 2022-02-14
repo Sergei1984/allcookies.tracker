@@ -1,15 +1,19 @@
+import AddSellingPointPage from "./add-selling-point";
+import AddUser from "./add-user";
+import AddProductPage from "./addProduct";
 import ProductsPage from "./products";
-import SellingPointsPage from "./selling-points";
 import ProfilePage from "./profile";
-import UsersPage from "./users";
+import SellingPointsPage from "./selling-points";
 import SettingsPage from "./settings";
-
-
+import UsersPage from "./users";
 
 export {
-    ProductsPage,
-    SellingPointsPage,
-    ProfilePage,
-    UsersPage,
-    SettingsPage
-}
+  AddUser,
+  ProductsPage,
+  SellingPointsPage,
+  ProfilePage,
+  UsersPage,
+  SettingsPage,
+  AddSellingPointPage,
+  AddProductPage,
+};

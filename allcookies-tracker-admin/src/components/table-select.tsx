@@ -12,6 +12,8 @@ const BootstrapInput = styled(InputBase)(({ theme }) => ({
   // padding: "5px 26px 10px 20px",
   "label + &": {
     marginTop: theme.spacing(3),
+    padding: '20px',
+    color: "#B9B9B9"
   },
   "& .MuiInputBase-input": {
     borderRadius: 4,
@@ -22,7 +24,8 @@ const BootstrapInput = styled(InputBase)(({ theme }) => ({
     fontSize: 16,
     minHeight: "44px",
     width: "185px",
-    padding: "auto 10px auto 10px",
+    padding: "10px 10px 10px 10px",
+    color: "#B9B9B9",
 
     transition: theme.transitions.create(["border-color", "box-shadow"]),
     // Use the system font instead of the default Roboto font.
@@ -61,7 +64,9 @@ export function CustomizedTableSelect() {
         onChange={handleChange}
         input={<BootstrapInput />}
       >
-        <option aria-label="Адрес" value="Адрес" />
+        <option aria-label="Адрес" value="">
+          Адрес
+        </option>
         <option value={10}>Ten</option>
         <option value={20}>Twenty</option>
         <option value={30}>Thirty</option>

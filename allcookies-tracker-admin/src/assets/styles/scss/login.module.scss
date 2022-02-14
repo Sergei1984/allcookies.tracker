@@ -3,12 +3,11 @@ body {
 }
 
 .box {
-  display:inline-block;
+  display:flex;
+ margin-top: -22px;
   width:19px;
   height:19px;
-  margin:-1px 4px 0 0;
-  vertical-align:middle;
-  cursor:pointer
+
 }
 
 .form {
@@ -24,7 +23,7 @@ body {
 .hello {
   position: absolute;
   width: 418px;
-  height: 459px;
+  height: 470px;
   left: 43%;
   top: 20%;
 }
@@ -40,6 +39,7 @@ body {
   align-items: center;
   padding: 10px 20px;
   color: white;
+  margin-top: 12px;
 
   position: absolute;
   width: 370px;
@@ -51,11 +51,18 @@ body {
 }
 
 .inputField {
+  margin-top: 12px;
   display: flex;
   flex-direction: column;
 }
 
+.password {
+  display: flex;
+  margin-top: 12px;
+}
+
 .inputFieldError {
+  margin-top: 12px;
   display: flex;
   flex-direction: column;
   justify-content: left;
@@ -63,6 +70,7 @@ body {
 }
 
 input {
+  margin-top: 20px;
   display: flex;
   flex-direction: row;
   align-items: flex-start;
@@ -82,7 +90,10 @@ input {
 
 
 .rememberMe {
-  position: static;
+  display: flex;
+  margin-left: 35px;
+  margin-top: 12px;
+
   left: 28px;
   right: 0;
   top: 0;
@@ -103,10 +114,6 @@ input {
 
   /* Inside auto layout */
 
-  flex: none;
-  order: 1;
-  flex-grow: 0;
-  margin: 0 12px;
 }
 
 
