@@ -135,7 +135,6 @@ const UserActivityProductsItem: FC<UserActivityProductsItemProps> = ({
                 height: '37px',
                 ml: 'auto',
                 minWidth: '31px',
-                px: '5px',
                 fontSize: '18px',
                 textAlign: 'center',
                 lineHeight: '37px',
