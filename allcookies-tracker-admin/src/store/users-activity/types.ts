@@ -1,7 +1,7 @@
-import {SellingPointLocation} from "../../models/selling-point.model";
+import { SellingPointLocation } from '../../models/selling-point.model';
 
-export const GET_USERS_ACTIVITY_TYPE = "GET_USERS_ACTIVITY_TYPE";
-export const USERS_ACTIVITY_ERROR = "USERS_ACTIVITY_ERROR";
+export const GET_USERS_ACTIVITY_TYPE = 'GET_USERS_ACTIVITY_TYPE';
+export const USERS_ACTIVITY_ERROR = 'USERS_ACTIVITY_ERROR';
 
 export interface ErrorData {
   error: boolean;
@@ -13,31 +13,32 @@ export interface UserError {
   payload: ErrorData;
 }
 
-export type activityType = 'close_day' | 'point_check' | 'open_day'
-
+export type activityType = 'close_day' | 'point_check' | 'open_day';
 
 export interface IUsersActivityDataCreated {
-  at: string,
-  id: number,
-  login: string,
-  name: string
+  at: string;
+  id: number;
+  login: string;
+  name: string;
 }
 export interface IUsersActivityDataSellingPoints {
-  title: string,
-  address: string,
-  id: number,
-  location: SellingPointLocation
+  title: string;
+  address: string;
+  id: number;
+  location: SellingPointLocation;
 }
 
 export interface IUsersActivityDataProducts {
-  product: IUsersActivityDataProduct
-  quantity: number
+  product: IUsersActivityDataProduct;
+  quantity: number;
+  order_quantity: number;
+  remaining_quantity: number;
 }
 
 export interface IUsersActivityDataProduct {
-  id: number,
-  image_url: string,
-  title: string
+  id: number;
+  image_url: string;
+  title: string;
 }
 
 export interface GetUsersActivityActionPayload {
@@ -51,27 +52,25 @@ export interface IUsersActivityAction {
 }
 
 export interface IUsersActivityPhotos {
-  id: number
-  time: string
-  url: string
+  id: number;
+  time: string;
+  url: string;
 }
-
-
 
 export type UsersActivityType = IUsersActivityAction | UserError;
 
 export interface IUsersActivityData {
-  activity_type: activityType,
-  created: IUsersActivityDataCreated,
-  id: number,
-  location: SellingPointLocation,
-  time: string
-  photos?: IUsersActivityPhotos[],
-  products?: IUsersActivityDataProducts[],
-  selling_point?: IUsersActivityDataSellingPoints
+  activity_type: activityType;
+  created: IUsersActivityDataCreated;
+  id: number;
+  location: SellingPointLocation;
+  time: string;
+  photos?: IUsersActivityPhotos[];
+  products?: IUsersActivityDataProducts[];
+  selling_point?: IUsersActivityDataSellingPoints;
 }
 
 export interface IUsersActivityState {
-  data: IUsersActivityData[],
-  total: number
+  data: IUsersActivityData[];
+  total: number;
 }
