@@ -28,6 +28,9 @@ const UserActivityProductsItem: FC<UserActivityProductsItemProps> = ({
         mx: '10px',
         my: '8px',
         borderRadius: '3px',
+        border: '1px solid #D7D7D7',
+        boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.12)',
+        backdropFilter: 'blur(20px)',
       }}
     >
       <img
