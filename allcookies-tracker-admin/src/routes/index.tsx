@@ -4,16 +4,21 @@ import PrivateRoute from "../components/PrivateRoute/PrivateRoute";
 import * as urls from "./urls";
 
 // PAGES
-import Login from "../pages/login";
 import {
+  AddUser,
   ProductsPage,
   ProfilePage,
   SellingPointsPage,
-  SettingsPage,
+  // SettingsPage,
   UsersPage,
+  AddSellingPointPage,
+  AddProductPage,
 } from "../pages";
+import Login from "../pages/login";
+import useNotifier from "../hooks/useNotifier";
 
 const AppRoutes = () => {
+  useNotifier();
   return (
     <BrowserRouter>
       <Routes>
@@ -25,11 +30,17 @@ const AppRoutes = () => {
             path={urls.SellingPointsRoute}
             element={<SellingPointsPage />}
           />
+          <Route
+            path={urls.AddSellingPointRoute}
+            element={<AddSellingPointPage />}
+          />
           <Route path={urls.ProfileRoute} element={<ProfilePage />} />
           <Route path={urls.UsersRoute} element={<UsersPage />} />
-          <Route path={urls.SettingsRoute} element={<SettingsPage />} />
+          {/*<Route path={urls.SettingsRoute} element={<SettingsPage />} />*/}
+          <Route path={urls.AddUserRoute} element={<AddUser />} />
+          <Route path={urls.AddProductRoute} element={<AddProductPage />} />
+          <Route path="*" element={<Navigate to={urls.ProductsRoute} />} />
         </Route>
-        <Route path="*" element={<Navigate to={urls.ProductsRoute} />} />
       </Routes>
     </BrowserRouter>
   );

@@ -1,5 +1,7 @@
+ 
 @server=http://localhost:8088
-# @server=https://allcookies-tracker.a-dev.com
+@server=https://allcookies-tracker.a-dev.com
+ 
 
 ###
 GET {{server}}/health

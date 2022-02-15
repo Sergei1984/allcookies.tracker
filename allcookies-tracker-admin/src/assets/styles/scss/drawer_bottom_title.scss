@@ -1,0 +1,33 @@
+.profile-box {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 213px;
+    height: 68px;
+    bottom: 37px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    & > .user {
+        & > .name {
+            font-weight: 600;
+            font-size: 14px;
+            letter-spacing: 0.75px;
+            color: #42a6a6;
+            padding: 0;
+            margin: 0;
+        }
+        & > .position {
+            font-weight: 500;
+            font-size: 10px;
+            letter-spacing: 0.859533px;
+            color: rgba(66, 166, 166, 0.5);
+        }
+    }
+    & > .buttons {
+
+    }
+   
+}

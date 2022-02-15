@@ -1,0 +1,44 @@
+a {
+    text-decoration: none;
+    & > .navlink {
+        display: flex;
+        align-items: center;
+        text-decoration: none;
+        border: 1px solid transparent;
+        border-radius: 8px;
+        padding: 3px 20px 3px 12px;
+        transition: all 200ms ease-out;
+        min-width: 180px;
+        & > svg {
+            color: #42a6a6;
+            opacity: 0.6;
+            margin-right: 20px;
+            font-size: 19px;
+        }
+        & > span {
+            color: #42a6a6;
+            opacity: 0.6;
+        }
+        &:hover {
+            border: 1px solid #42a6a6;
+            box-sizing: border-box;
+            transition: all 200 ms ease-out;
+            & > svg {
+                opacity: 1;
+            }
+            & > span {
+                opacity: 1;
+            }
+        }
+        &.active {
+            border: 1px solid #42a6a6;
+            box-sizing: border-box;
+            & > svg {
+                opacity: 1;
+            }
+            & > span {
+                opacity: 1;
+            }
+        }
+    }
+}

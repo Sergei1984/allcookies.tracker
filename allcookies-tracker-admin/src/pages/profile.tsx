@@ -1,12 +1,13 @@
 import React from "react";
 import DashboardLayout from "../layouts/dashboard";
+import ProfileContainer from "../containers/profile-container";
 
 interface ProfilePageProps {}
 
 const ProfilePage = ({}: ProfilePageProps): JSX.Element => {
   return (
     <DashboardLayout>
-      <h3>Profile page</h3>
+      <ProfileContainer />
     </DashboardLayout>
   );
 };

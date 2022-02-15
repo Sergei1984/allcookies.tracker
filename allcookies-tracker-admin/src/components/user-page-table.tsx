@@ -1,91 +1,55 @@
-import {DataGrid, GridColDef} from '@mui/x-data-grid';
-import * as React from 'react';
-
-
-const columns: GridColDef[] = [
-	{field: "user", headerName: "Пользователи", width: 400},
-	{field: "worked", headerName: "Рабочее время", width: 400},
-	{field: "market", headerName: "Магазины", width: 400},
-	{field: "email", headerName: "email", width: 400},
-]
-
-const rows = [
-	{
-		id: 1,
-		user: "Андрей Переулов",
-		worked: "Работал: Вс 12:01 - 18:43",
-		market: "Рост",
-		email: "afgjnarfgij@gmail.com",
-	},
-	{
-		id: 2,
-		user: "Не Андрей Переулов",
-		worked: "Работал: Вс 12:01 - 18:43",
-		market: "Рост",
-		email: "afgjnarfgij@gmail.com",
-	},
-	{
-		id: 3,
-		user: "точно не Андрей Переулов",
-		worked: "Работал: Вс 12:01 - 18:43",
-		market: "Рост",
-		email: "afgjnarfgij@gmail.com",
-	},
-	{
-		id: 4,
-		user: "может быть Андрей Переулов",
-		worked: "Работал: Вс 12:01 - 18:43",
-		market: "Рост",
-		email: "afgjnarfgij@gmail.com",
-	},
-	{
-		id: 5,
-		user: "или не Андрей Переулов",
-		worked: "Работал: Вс 12:01 - 18:43",
-		market: "Рост",
-		email: "afgjnarfgij@gmail.com",
-	},
-	{
-		id: 5,
-		user: "или не Андрей Переулов",
-		worked: "Работал: Вс 12:01 - 18:43",
-		market: "Рост",
-		email: "afgjnarfgij@gmail.com",
-	},
-	{
-		id: 5,
-		user: "или не Андрей Переулов",
-		worked: "Работал: Вс 12:01 - 18:43",
-		market: "Рост",
-		email: "afgjnarfgij@gmail.com",
-	},
-	{
-		id: 5,
-		user: "или не Андрей Переулов",
-		worked: "Работал: Вс 12:01 - 18:43",
-		market: "Рост",
-		email: "afgjnarfgij@gmail.com",
-	},
-	{
-		id: 5,
-		user: "или не Андрей Переулов",
-		worked: "Работал: Вс 12:01 - 18:43",
-		market: "Рост",
-		email: "afgjnarfgij@gmail.com",
-	},
-];
+import * as React from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { AddUserRoute } from "../routes/urls";
+import { RootStore } from "../store/rootStore";
+import { getAllUserThunk } from "../store/users/thunk/getAllUserThunk";
+import { formatToTableValue } from "../utils";
+import CustomTable from "./custom-table";
+import CustomTableCell from "./custom-table/custom-table-cell";
+import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
+import { getAppStoreSelector } from "../store/app/selectors";
+import {useState} from "react";
+import moment, {Moment} from "moment";
 
 export default function UserPageTable() {
-	return (
-			<div style={{height: '80%', width: '100%'}}>
-				<DataGrid
-					rows={rows}
-					columns={columns}
-					pageSize={5}
-					rowsPerPageOptions={[5]}
-					checkboxSelection
-				/>
-		</div>
-	);
-}
+  const dispatch = useDispatch();
 
+  const { data, total } = useSelector((state: RootStore) => state.userStore);
+
+  const appStore = useSelector(getAppStoreSelector);
+
+  const getUsers = (skip: number, take: number, search?: string) => {
+    dispatch(getAllUserThunk(skip, take, search));
+  };
+
+  const [selectedDate, setSelectedDate] = useState<Moment | null>(moment());
+
+  return (
+    <CustomTable
+      getPageData={getUsers}
+      total={total || 0}
+      data={data}
+      isAdditions={false}
+      hasCollapseRow
+      loading={appStore.status === "running"}
+      headData={["Пользователь", "Email", ""]}
+      renderRow={(row: any) => {
+        return (
+          <>
+            <CustomTableCell component="th" align="left" scope="row">
+              {formatToTableValue(row.name)}
+            </CustomTableCell>
+            <CustomTableCell align="center">
+              {formatToTableValue(row.login)}
+            </CustomTableCell>
+          </>
+        );
+      }}
+      IconClickPath={AddUserRoute}
+      Icon={PersonAddAltIcon}
+      IconText={"Добавить пользователя"}
+      selectedDate={selectedDate}
+      setSelectedDate={setSelectedDate}
+    />
+  );
+}

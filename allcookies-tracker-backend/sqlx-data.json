@@ -118,6 +118,21 @@
       ]
     }
   },
+  "1825b7f4c3e3bd0e31fb0e94cd2e4364ff5a6259078f86302fa28dce802ccc05": {
+    "query": "\n            insert into selling_point_check(\n                activity_id,\n                product_id,\n                remaining_quantity,\n                order_quantity\n            )\n            values (\n                $1,\n                $2,\n                $3,\n                $4\n            )\n            ",
+    "describe": {
+      "columns": [],
+      "parameters": {
+        "Left": [
+          "Int8",
+          "Int8",
+          "Int4",
+          "Int4"
+        ]
+      },
+      "nullable": []
+    }
+  },
   "18fe280c6714c56af43392953029a48b577494a816e7650c7599f786c61603f2": {
     "query": "\n            update selling_point\n            set\n                deleted_by = $2,\n                deleted_at = current_timestamp\n            where\n                id = $1\n            ",
     "describe": {
@@ -131,8 +146,8 @@
       "nullable": []
     }
   },
-  "246761b599c4b44419363c5129a91a258f42467b6def95210f044c5e3678f8dd": {
-    "query": "\n                select\n                    spc.id,\n                    spc.activity_id,\n                    spc.product_id,\n                    p.title as \"product_title!\",\n                    p.image_url as product_image_url,\n                    p.is_disabled product_is_disabled,\n                    spc.quantity\n                from\n                    selling_point_check spc inner join\n                    product p on spc.product_id = p.id\n                where\n                    spc.activity_id in ( select id from activity  order by\n                    created_at desc\n                offset $1 limit $2  ) ",
+  "1a2fa55533aa9e5ca81176cdfdf30b17ab85abc7a6dc9f1f87ed973e304ab221": {
+    "query": "\n                select\n                    id,\n                    title,\n                    description,\n                    address,\n                    location as \"location!: _\",\n                    is_disabled,\n                    created_by,\n                    created_at,\n                    modified_by,\n                    modified_at,\n                    deleted_by,\n                    deleted_at\n                from\n                    selling_point sp\n                where\n                    sp.id in (\n                        select\n                            selling_point_id\n                        from\n                            activity  where\n                    at::date = $3 or $3 is null\n                order by\n                    created_at desc\n                offset $1 limit $2 \n                    )\n                ",
     "describe": {
       "columns": [
         {
@@ -142,106 +157,84 @@
         },
         {
           "ordinal": 1,
-          "name": "activity_id",
-          "type_info": "Int8"
+          "name": "title",
+          "type_info": "Text"
         },
         {
           "ordinal": 2,
-          "name": "product_id",
-          "type_info": "Int8"
+          "name": "description",
+          "type_info": "Text"
         },
         {
           "ordinal": 3,
-          "name": "product_title!",
+          "name": "address",
           "type_info": "Text"
         },
         {
           "ordinal": 4,
-          "name": "product_image_url",
-          "type_info": "Text"
+          "name": "location!: _",
+          "type_info": {
+            "Custom": {
+              "name": "geometry",
+              "kind": "Simple"
+            }
+          }
         },
         {
           "ordinal": 5,
-          "name": "product_is_disabled",
+          "name": "is_disabled",
           "type_info": "Bool"
         },
         {
           "ordinal": 6,
-          "name": "quantity",
-          "type_info": "Int4"
-        }
-      ],
-      "parameters": {
-        "Left": [
-          "Int8",
-          "Int8"
-        ]
-      },
-      "nullable": [
-        false,
-        false,
-        false,
-        false,
-        true,
-        false,
-        true
-      ]
-    }
-  },
-  "28ad08725534b2abeea324f96677032b9283db717a94c7169fff6222525e36e2": {
-    "query": "\n                select\n                    spc.id,\n                    spc.activity_id,\n                    spc.product_id,\n                    p.title as \"product_title!\",\n                    p.image_url as product_image_url,\n                    p.is_disabled product_is_disabled,\n                    spc.quantity\n                from\n                    selling_point_check spc inner join\n                    product p on spc.product_id = p.id\n                where\n                    spc.activity_id in ( select id from activity  where\n                    created_by = $1 and deleted_by is null\n                order by\n                    created_at desc\n                offset $2 limit $3  ) ",
-    "describe": {
-      "columns": [
-        {
-          "ordinal": 0,
-          "name": "id",
+          "name": "created_by",
           "type_info": "Int8"
         },
         {
-          "ordinal": 1,
-          "name": "activity_id",
+          "ordinal": 7,
+          "name": "created_at",
+          "type_info": "Timestamptz"
+        },
+        {
+          "ordinal": 8,
+          "name": "modified_by",
           "type_info": "Int8"
         },
         {
-          "ordinal": 2,
-          "name": "product_id",
+          "ordinal": 9,
+          "name": "modified_at",
+          "type_info": "Timestamptz"
+        },
+        {
+          "ordinal": 10,
+          "name": "deleted_by",
           "type_info": "Int8"
         },
         {
-          "ordinal": 3,
-          "name": "product_title!",
-          "type_info": "Text"
-        },
-        {
-          "ordinal": 4,
-          "name": "product_image_url",
-          "type_info": "Text"
-        },
-        {
-          "ordinal": 5,
-          "name": "product_is_disabled",
-          "type_info": "Bool"
-        },
-        {
-          "ordinal": 6,
-          "name": "quantity",
-          "type_info": "Int4"
+          "ordinal": 11,
+          "name": "deleted_at",
+          "type_info": "Timestamptz"
         }
       ],
       "parameters": {
         "Left": [
           "Int8",
           "Int8",
-          "Int8"
+          "Date"
         ]
       },
       "nullable": [
         false,
         false,
+        true,
+        true,
+        true,
+        false,
+        false,
+        false,
         false,
         false,
         true,
-        false,
         true
       ]
     }
@@ -269,18 +262,100 @@
       ]
     }
   },
-  "2e448f79dd4bce741930e225d5308f55c28b60b2641b8e833929590dd47139f6": {
-    "query": "\n            insert into selling_point_check(\n                activity_id,\n                product_id,\n                quantity\n            )\n            values (\n                $1,\n                $2,\n                $3\n            )\n            ",
+  "33bab3ebee9d1ca9dabf4232dcb9ff4c96ec341ebd0e77f7d1039cd98c5bb702": {
+    "query": "\n                select\n                    id,\n                    login,\n                    name\n                from\n                    user_account\n                where\n                    id in (\n                        select\n                            created_by\n                        from\n                            activity  where\n                    at::date = $3 or $3 is null\n                order by\n                    created_at desc\n                offset $1 limit $2 \n                    )\n                ",
     "describe": {
-      "columns": [],
+      "columns": [
+        {
+          "ordinal": 0,
+          "name": "id",
+          "type_info": "Int8"
+        },
+        {
+          "ordinal": 1,
+          "name": "login",
+          "type_info": "Text"
+        },
+        {
+          "ordinal": 2,
+          "name": "name",
+          "type_info": "Text"
+        }
+      ],
       "parameters": {
         "Left": [
           "Int8",
           "Int8",
-          "Int4"
+          "Date"
         ]
       },
-      "nullable": []
+      "nullable": [
+        false,
+        false,
+        false
+      ]
+    }
+  },
+  "34333aaf1de21ad92fadba73034efdd7ab1f37ddcd1cb9b62ebb268b3e28cd48": {
+    "query": "\n                select\n                    spc.id,\n                    spc.activity_id,\n                    spc.product_id,\n                    p.title as \"product_title!\",\n                    p.image_url as product_image_url,\n                    p.is_disabled product_is_disabled,\n                    spc.remaining_quantity,\n                    spc.order_quantity\n                from\n                    selling_point_check spc inner join\n                    product p on spc.product_id = p.id\n                where\n                    spc.activity_id in ( select id from activity where id = $1 ) ",
+    "describe": {
+      "columns": [
+        {
+          "ordinal": 0,
+          "name": "id",
+          "type_info": "Int8"
+        },
+        {
+          "ordinal": 1,
+          "name": "activity_id",
+          "type_info": "Int8"
+        },
+        {
+          "ordinal": 2,
+          "name": "product_id",
+          "type_info": "Int8"
+        },
+        {
+          "ordinal": 3,
+          "name": "product_title!",
+          "type_info": "Text"
+        },
+        {
+          "ordinal": 4,
+          "name": "product_image_url",
+          "type_info": "Text"
+        },
+        {
+          "ordinal": 5,
+          "name": "product_is_disabled",
+          "type_info": "Bool"
+        },
+        {
+          "ordinal": 6,
+          "name": "remaining_quantity",
+          "type_info": "Int4"
+        },
+        {
+          "ordinal": 7,
+          "name": "order_quantity",
+          "type_info": "Int4"
+        }
+      ],
+      "parameters": {
+        "Left": [
+          "Int8"
+        ]
+      },
+      "nullable": [
+        false,
+        false,
+        false,
+        false,
+        true,
+        false,
+        true,
+        false
+      ]
     }
   },
   "3e0075fc0be7c5052531652ae19177393bf8973fb65278e5e3b4611f17bb4aba": {
@@ -314,62 +389,6 @@
         false,
         false,
         false
-      ]
-    }
-  },
-  "45b1d79f6516c2e6a03ccd544e75974fca62745df24086fbf32e23c6e41ccdfa": {
-    "query": "\n                select\n                    spc.id,\n                    spc.activity_id,\n                    spc.product_id,\n                    p.title as \"product_title!\",\n                    p.image_url as product_image_url,\n                    p.is_disabled product_is_disabled,\n                    spc.quantity\n                from\n                    selling_point_check spc inner join\n                    product p on spc.product_id = p.id\n                where\n                    spc.activity_id in ( select id from activity where id = $1 ) ",
-    "describe": {
-      "columns": [
-        {
-          "ordinal": 0,
-          "name": "id",
-          "type_info": "Int8"
-        },
-        {
-          "ordinal": 1,
-          "name": "activity_id",
-          "type_info": "Int8"
-        },
-        {
-          "ordinal": 2,
-          "name": "product_id",
-          "type_info": "Int8"
-        },
-        {
-          "ordinal": 3,
-          "name": "product_title!",
-          "type_info": "Text"
-        },
-        {
-          "ordinal": 4,
-          "name": "product_image_url",
-          "type_info": "Text"
-        },
-        {
-          "ordinal": 5,
-          "name": "product_is_disabled",
-          "type_info": "Bool"
-        },
-        {
-          "ordinal": 6,
-          "name": "quantity",
-          "type_info": "Int4"
-        }
-      ],
-      "parameters": {
-        "Left": [
-          "Int8"
-        ]
-      },
-      "nullable": [
-        false,
-        false,
-        false,
-        false,
-        true,
-        false,
-        true
       ]
     }
   },
@@ -442,6 +461,70 @@
         false,
         false,
         false,
+        false
+      ]
+    }
+  },
+  "49cd6aa8899ee5e9efde3683445fa096e51512da205bbd2f4efc0a6dc08a7c4f": {
+    "query": "\n                select\n                    spc.id,\n                    spc.activity_id,\n                    spc.product_id,\n                    p.title as \"product_title!\",\n                    p.image_url as product_image_url,\n                    p.is_disabled product_is_disabled,\n                    spc.remaining_quantity,\n                    spc.order_quantity\n                from\n                    selling_point_check spc inner join\n                    product p on spc.product_id = p.id\n                where\n                    spc.activity_id in ( select id from activity  where\n                    created_by = $1 and deleted_by is null\n                order by\n                    created_at desc\n                offset $2 limit $3  ) ",
+    "describe": {
+      "columns": [
+        {
+          "ordinal": 0,
+          "name": "id",
+          "type_info": "Int8"
+        },
+        {
+          "ordinal": 1,
+          "name": "activity_id",
+          "type_info": "Int8"
+        },
+        {
+          "ordinal": 2,
+          "name": "product_id",
+          "type_info": "Int8"
+        },
+        {
+          "ordinal": 3,
+          "name": "product_title!",
+          "type_info": "Text"
+        },
+        {
+          "ordinal": 4,
+          "name": "product_image_url",
+          "type_info": "Text"
+        },
+        {
+          "ordinal": 5,
+          "name": "product_is_disabled",
+          "type_info": "Bool"
+        },
+        {
+          "ordinal": 6,
+          "name": "remaining_quantity",
+          "type_info": "Int4"
+        },
+        {
+          "ordinal": 7,
+          "name": "order_quantity",
+          "type_info": "Int4"
+        }
+      ],
+      "parameters": {
+        "Left": [
+          "Int8",
+          "Int8",
+          "Int8"
+        ]
+      },
+      "nullable": [
+        false,
+        false,
+        false,
+        false,
+        true,
+        false,
+        true,
         false
       ]
     }
@@ -1141,6 +1224,40 @@
       ]
     }
   },
+  "92d660841a9372805ffe68ddfd48696eb00a869dde6cfeaef9ccf623cf2deda1": {
+    "query": "\n                select\n                    id,\n                    activity_id,\n                    at\n                from\n                    selling_point_check_photos\n                where\n                    activity_id in (\n                        select\n                            id\n                        from\n                            activity  where\n                    at::date = $3 or $3 is null\n                order by\n                    created_at desc\n                offset $1 limit $2 \n                    )\n                ",
+    "describe": {
+      "columns": [
+        {
+          "ordinal": 0,
+          "name": "id",
+          "type_info": "Int8"
+        },
+        {
+          "ordinal": 1,
+          "name": "activity_id",
+          "type_info": "Int8"
+        },
+        {
+          "ordinal": 2,
+          "name": "at",
+          "type_info": "Timestamptz"
+        }
+      ],
+      "parameters": {
+        "Left": [
+          "Int8",
+          "Int8",
+          "Date"
+        ]
+      },
+      "nullable": [
+        false,
+        false,
+        false
+      ]
+    }
+  },
   "9ad671f0e109c02814590397b1e81fff41a9b2615eeb03fe32070a2697f1461c": {
     "query": "\n                select\n                    id,\n                    login,\n                    name\n                from\n                    user_account\n                where\n                    id in (\n                        select\n                            created_by\n                        from\n                            activity where id = $1\n                    )\n                ",
     "describe": {
@@ -1329,8 +1446,8 @@
       "nullable": []
     }
   },
-  "b15bbd463accb2a2cd1d23de8c7da1388a70e825c051f5e0a3242021aefa292a": {
-    "query": "\n                select\n                    id,\n                    activity_id,\n                    at\n                from\n                    selling_point_check_photos\n                where\n                    activity_id in (\n                        select\n                            id\n                        from\n                            activity  order by\n                    created_at desc\n                offset $1 limit $2 \n                    )\n                ",
+  "b134c66ec347d6f7ea7f896a142240c10049d952dd056fd390a8d457d2050aab": {
+    "query": "\n                select\n                    spc.id,\n                    spc.activity_id,\n                    spc.product_id,\n                    p.title as \"product_title!\",\n                    p.image_url as product_image_url,\n                    p.is_disabled product_is_disabled,\n                    spc.remaining_quantity,\n                    spc.order_quantity\n                from\n                    selling_point_check spc inner join\n                    product p on spc.product_id = p.id\n                where\n                    spc.activity_id in ( select id from activity  where\n                    at::date = $3 or $3 is null\n                order by\n                    created_at desc\n                offset $1 limit $2  ) ",
     "describe": {
       "columns": [
         {
@@ -1345,19 +1462,50 @@
         },
         {
           "ordinal": 2,
-          "name": "at",
-          "type_info": "Timestamptz"
+          "name": "product_id",
+          "type_info": "Int8"
+        },
+        {
+          "ordinal": 3,
+          "name": "product_title!",
+          "type_info": "Text"
+        },
+        {
+          "ordinal": 4,
+          "name": "product_image_url",
+          "type_info": "Text"
+        },
+        {
+          "ordinal": 5,
+          "name": "product_is_disabled",
+          "type_info": "Bool"
+        },
+        {
+          "ordinal": 6,
+          "name": "remaining_quantity",
+          "type_info": "Int4"
+        },
+        {
+          "ordinal": 7,
+          "name": "order_quantity",
+          "type_info": "Int4"
         }
       ],
       "parameters": {
         "Left": [
           "Int8",
-          "Int8"
+          "Int8",
+          "Date"
         ]
       },
       "nullable": [
         false,
         false,
+        false,
+        false,
+        true,
+        false,
+        true,
         false
       ]
     }
@@ -1793,98 +1941,6 @@
       ]
     }
   },
-  "df948b4acab06a1b2933e37100ce0e5b8ae3c077fa0aece29aa1bdbfdce6be56": {
-    "query": "\n                select\n                    id,\n                    title,\n                    description,\n                    address,\n                    location as \"location!: _\",\n                    is_disabled,\n                    created_by,\n                    created_at,\n                    modified_by,\n                    modified_at,\n                    deleted_by,\n                    deleted_at\n                from\n                    selling_point sp\n                where\n                    sp.id in (\n                        select\n                            selling_point_id\n                        from\n                            activity  order by\n                    created_at desc\n                offset $1 limit $2 \n                    )\n                ",
-    "describe": {
-      "columns": [
-        {
-          "ordinal": 0,
-          "name": "id",
-          "type_info": "Int8"
-        },
-        {
-          "ordinal": 1,
-          "name": "title",
-          "type_info": "Text"
-        },
-        {
-          "ordinal": 2,
-          "name": "description",
-          "type_info": "Text"
-        },
-        {
-          "ordinal": 3,
-          "name": "address",
-          "type_info": "Text"
-        },
-        {
-          "ordinal": 4,
-          "name": "location!: _",
-          "type_info": {
-            "Custom": {
-              "name": "geometry",
-              "kind": "Simple"
-            }
-          }
-        },
-        {
-          "ordinal": 5,
-          "name": "is_disabled",
-          "type_info": "Bool"
-        },
-        {
-          "ordinal": 6,
-          "name": "created_by",
-          "type_info": "Int8"
-        },
-        {
-          "ordinal": 7,
-          "name": "created_at",
-          "type_info": "Timestamptz"
-        },
-        {
-          "ordinal": 8,
-          "name": "modified_by",
-          "type_info": "Int8"
-        },
-        {
-          "ordinal": 9,
-          "name": "modified_at",
-          "type_info": "Timestamptz"
-        },
-        {
-          "ordinal": 10,
-          "name": "deleted_by",
-          "type_info": "Int8"
-        },
-        {
-          "ordinal": 11,
-          "name": "deleted_at",
-          "type_info": "Timestamptz"
-        }
-      ],
-      "parameters": {
-        "Left": [
-          "Int8",
-          "Int8"
-        ]
-      },
-      "nullable": [
-        false,
-        false,
-        true,
-        true,
-        true,
-        false,
-        false,
-        false,
-        false,
-        false,
-        true,
-        true
-      ]
-    }
-  },
   "e7aa6312e7377387cfdf2fad8322b2fb23fe60610da3bcfb56d9701d39bc2e91": {
     "query": "\n            insert into activity(\n                activity_type,\n                at,\n                location,\n                selling_point_id,\n                created_by\n            )\n            values (\n                $1,\n                $2,\n                $3,\n                $4,\n                $5\n            )\n            returning id\n            ",
     "describe": {
@@ -1941,39 +1997,6 @@
         ]
       },
       "nullable": [
-        false
-      ]
-    }
-  },
-  "ed3463902d52ba3c0faa2fb3077955355b4bd8146e53e2c4ec43cf7ec459786b": {
-    "query": "\n                select\n                    id,\n                    login,\n                    name\n                from\n                    user_account\n                where\n                    id in (\n                        select\n                            created_by\n                        from\n                            activity  order by\n                    created_at desc\n                offset $1 limit $2 \n                    )\n                ",
-    "describe": {
-      "columns": [
-        {
-          "ordinal": 0,
-          "name": "id",
-          "type_info": "Int8"
-        },
-        {
-          "ordinal": 1,
-          "name": "login",
-          "type_info": "Text"
-        },
-        {
-          "ordinal": 2,
-          "name": "name",
-          "type_info": "Text"
-        }
-      ],
-      "parameters": {
-        "Left": [
-          "Int8",
-          "Int8"
-        ]
-      },
-      "nullable": [
-        false,
-        false,
         false
       ]
     }

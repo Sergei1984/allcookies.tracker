@@ -1,5 +1,5 @@
 @server=http://localhost:8088
-@server=https://allcookies-tracker.a-dev.com
+#@server=https://allcookies-tracker.a-dev.com
 
 ###
 GET {{server}}/health
@@ -16,7 +16,7 @@ Content-Type: application/json
 
 ###
 # @name activity
-GET {{server}}/admin/activity?date=2022-02-08
+GET {{server}}/admin/activity?date=2022-02-14
 Authorization: {{auth.response.body.jwt}}
 
 
