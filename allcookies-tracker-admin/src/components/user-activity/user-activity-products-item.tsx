@@ -81,6 +81,7 @@ const UserActivityProductsItem: FC<UserActivityProductsItemProps> = ({
               justifyContent: 'space-between',
               padding: '3px',
               borderRight: '1px solid #D7D7D7',
+              width: '100%',
             }}
           >
             <Typography
@@ -116,6 +117,7 @@ const UserActivityProductsItem: FC<UserActivityProductsItemProps> = ({
               alignItems: 'center',
               justifyContent: 'space-between',
               padding: '5px',
+              width: '100%',
             }}
           >
             <Typography
