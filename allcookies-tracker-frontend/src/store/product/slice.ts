@@ -7,14 +7,24 @@ export const productSlice = createSlice({
     name: 'product',
     initialState,
     reducers: {
-        handleIncrementCount: (state, action: PayloadAction<string>) => {
+        handleIncrementRemainingCount: (state, action: PayloadAction<string>) => {
             state.data = state.data.map((el) => 
-            el.title === action.payload ? { ...el, count: el.count + 1} : el
+            el.title === action.payload ? { ...el, remaining_quantity: el.remaining_quantity + 1} : el
           )
         },
-        handleDecrementCount: (state, action: PayloadAction<string>) => {
+        handleDecrementRemainingCount: (state, action: PayloadAction<string>) => {
             state.data = state.data.map((el) =>
-            el.title === action.payload ? { ...el, count: el.count - 1 } : el
+            el.title === action.payload ? { ...el, remaining_quantity: el.remaining_quantity - 1 } : el
+          )
+        },
+        handleIncrementOrderCount: (state, action: PayloadAction<string>) => {
+            state.data = state.data.map((el) => 
+            el.title === action.payload ? { ...el, order_quantity: el.order_quantity + 1} : el
+          )
+        },
+        handleDecrementOrderCount: (state, action: PayloadAction<string>) => {
+            state.data = state.data.map((el) =>
+            el.title === action.payload ? { ...el, order_quantity: el.order_quantity - 1 } : el
           )
         },
         clearDefaultData: (state) => {
