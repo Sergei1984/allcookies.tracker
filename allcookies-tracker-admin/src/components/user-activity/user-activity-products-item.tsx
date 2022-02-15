@@ -115,7 +115,7 @@ const UserActivityProductsItem: FC<UserActivityProductsItemProps> = ({
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
-              padding: '5px',
+              padding: '3px',
               width: '100%',
             }}
           >
