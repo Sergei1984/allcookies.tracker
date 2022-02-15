@@ -25,8 +25,9 @@ const UserActivityProductsItem: FC<UserActivityProductsItemProps> = ({
         width: 'auto',
         display: 'flex',
         alignItems: 'center',
-        mx: '10px',
-        my: '8px',
+        // mx: '10px',
+        // my: '8px',
+        margin: '8px 8px 8px 0',
         borderRadius: '3px',
         border: '1px solid #D7D7D7',
         boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.12)',
@@ -40,8 +41,8 @@ const UserActivityProductsItem: FC<UserActivityProductsItemProps> = ({
           height: '65px',
           width: '65px',
           objectFit: 'contain',
-          marginLeft: '10px',
-          marginRight: '10px',
+          marginLeft: '8px',
+          marginRight: '8px',
         }}
       />
       <Box
@@ -78,7 +79,7 @@ const UserActivityProductsItem: FC<UserActivityProductsItemProps> = ({
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
-              padding: '5px',
+              padding: '3px',
               borderRight: '1px solid #D7D7D7',
             }}
           >
@@ -98,7 +99,7 @@ const UserActivityProductsItem: FC<UserActivityProductsItemProps> = ({
                 height: '37px',
                 ml: 'auto',
                 minWidth: '31px',
-                px: '5px',
+                // px: '5px',
                 fontSize: '18px',
                 textAlign: 'center',
                 lineHeight: '37px',
