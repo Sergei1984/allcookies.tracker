@@ -96,18 +96,17 @@ const ListOfProducts: React.FC<Props> = ({ route, navigation }) => {
           }
         : []
     );
-    console.log(dataProducts);
-    // await dispatch(
-    //   checkSellingPointThunk({
-    //     location: location,
-    //     time: new Date(),
-    //     products: dataProducts,
-    //     selling_point_id: route.params.sellingPointId,
-    //     images: data.images,
-    //   })
-    // );
-    // await dispatch(clearDefaultData());
-    // handle.setImages([]);
+    await dispatch(
+      checkSellingPointThunk({
+        location: location,
+        time: new Date(),
+        products: dataProducts,
+        selling_point_id: route.params.sellingPointId,
+        images: data.images,
+      })
+    );
+    await dispatch(clearDefaultData());
+    handle.setImages([]);
   }, [dataOfProducts, activity, data.images]);
 
   React.useEffect(() => {
