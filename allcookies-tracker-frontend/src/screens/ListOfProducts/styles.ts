@@ -22,7 +22,7 @@ const createStyles = () => StyleSheet.create({
         height: '100%',
         width: 72,
         backgroundColor: Colors.WHITE,
-        borderRightColor: Colors.PRIMARY,
+        borderRightColor: "#D7D7D7",
         borderWidth: 1,
         borderTopLeftRadius: SIZES.paddingHorizontal,
         borderBottomLeftRadius: SIZES.paddingHorizontal,
@@ -30,20 +30,20 @@ const createStyles = () => StyleSheet.create({
         alignItems: 'center',
     },
     rightSide: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
+        // flexDirection: 'row',
+        // alignItems: 'center',
+        // justifyContent: 'space-between',
         flex: 1,
-        paddingVertical: 33,
+        // paddingVertical: 33,
         borderWidth: 1,
         borderLeftWidth: 0,
-        paddingLeft: 10,
         borderTopRightRadius: SIZES.paddingHorizontal,
         borderBottomRightRadius: SIZES.paddingHorizontal,
     },
     countWrapper: {
         flexDirection: 'row',
-        alignItems: 'center'
+        alignItems: 'center',
+        marginTop: 10
     },
     productName: {
         fontSize: RFValue(24),

@@ -50,17 +50,30 @@ const ListOfProducts: React.FC<Props> = ({ route, navigation }) => {
     })();
   }, []);
 
-  const { handleIncrementCount, handleDecrementCount, clearDefaultData } =
-    productSlice.actions;
+  const {
+    handleIncrementRemainingCount,
+    handleDecrementRemainingCount,
+    handleIncrementOrderCount,
+    handleDecrementOrderCount,
+    clearDefaultData,
+  } = productSlice.actions;
 
   const { showNotificationAction } = appSlice.actions;
 
-  const handleIncrement = React.useCallback((name) => {
-    dispatch(handleIncrementCount(name));
+  const handleIncrementRemaining = React.useCallback((name) => {
+    dispatch(handleIncrementRemainingCount(name));
   }, []);
 
-  const handleDecrement = React.useCallback((name) => {
-    dispatch(handleDecrementCount(name));
+  const handleDecrementRemaining = React.useCallback((name) => {
+    dispatch(handleDecrementRemainingCount(name));
+  }, []);
+
+  const handleIncrementOrder = React.useCallback((name) => {
+    dispatch(handleIncrementOrderCount(name));
+  }, []);
+
+  const handleDecrementOrder = React.useCallback((name) => {
+    dispatch(handleDecrementOrderCount(name));
   }, []);
 
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
@@ -75,7 +88,13 @@ const ListOfProducts: React.FC<Props> = ({ route, navigation }) => {
 
   const sendReport = React.useCallback(async () => {
     const dataProducts = dataOfProducts.flatMap((item) =>
-      item.count !== 0 ? { product_id: item.id, quantity: item.count } : []
+      item.remaining_quantity !== 0 || item.order_quantity
+        ? {
+            product_id: item.id,
+            remaining_quantity: item.remaining_quantity,
+            order_quantity: item.order_quantity,
+          }
+        : []
     );
     await dispatch(
       checkSellingPointThunk({
@@ -131,40 +150,100 @@ const ListOfProducts: React.FC<Props> = ({ route, navigation }) => {
                 fontSize: RFValue(14),
                 fontWeight: "600",
                 flexWrap: "wrap",
-                width: 150,
+                padding: 10,
               }}
             >
               {item.title}
             </AppText>
-            <View style={styles.countWrapper}>
-              <TouchableOpacity
-                style={styles.countBtn}
-                onPress={() => handleDecrement(item.title)}
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+                borderTopColor: "#D7D7D7",
+                borderTopWidth: 1,
+              }}
+            >
+              <View
+                style={{
+                  borderRightWidth: 1,
+                  borderRightColor: "#d7d7d7",
+                  width: "50%",
+                  paddingVertical: 20,
+                  alignItems: "center",
+                }}
               >
-                <MaterialCommunityIcons
-                  name={"minus"}
-                  size={32}
-                  color={"#24244A"}
-                />
-              </TouchableOpacity>
-              <View style={styles.productCount}>
-                <AppText
-                  style={[styles.productCountTitle, { marginHorizontal: 10 }]}
-                >
-                  {item.count}
-                </AppText>
-              </View>
+                <AppText>Сколько осталось</AppText>
+                <View style={styles.countWrapper}>
+                  <TouchableOpacity
+                    style={styles.countBtn}
+                    onPress={() => handleDecrementRemaining(item.title)}
+                  >
+                    <MaterialCommunityIcons
+                      name={"minus"}
+                      size={32}
+                      color={"#24244A"}
+                    />
+                  </TouchableOpacity>
+                  <View style={styles.productCount}>
+                    <AppText
+                      style={[
+                        styles.productCountTitle,
+                        { marginHorizontal: 10 },
+                      ]}
+                    >
+                      {item.remaining_quantity}
+                    </AppText>
+                  </View>
 
-              <TouchableOpacity
-                style={styles.countBtn}
-                onPress={() => handleIncrement(item.title)}
-              >
-                <MaterialCommunityIcons
-                  name={"plus"}
-                  size={32}
-                  color={"#24244A"}
-                />
-              </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.countBtn}
+                    onPress={() => handleIncrementRemaining(item.title)}
+                  >
+                    <MaterialCommunityIcons
+                      name={"plus"}
+                      size={32}
+                      color={"#24244A"}
+                    />
+                  </TouchableOpacity>
+                </View>
+              </View>
+              <View style={{ width: "50%", alignItems: "center" }}>
+                <AppText>Сколько заказать</AppText>
+                <View style={styles.countWrapper}>
+                  <TouchableOpacity
+                    style={styles.countBtn}
+                    onPress={() => handleDecrementOrder(item.title)}
+                  >
+                    <MaterialCommunityIcons
+                      name={"minus"}
+                      size={32}
+                      color={"#24244A"}
+                    />
+                  </TouchableOpacity>
+                  <View style={styles.productCount}>
+                    <AppText
+                      style={[
+                        styles.productCountTitle,
+                        { marginHorizontal: 10 },
+                      ]}
+                    >
+                      {item.order_quantity}
+                    </AppText>
+                  </View>
+
+                  <TouchableOpacity
+                    style={styles.countBtn}
+                    onPress={() => handleIncrementOrder(item.title)}
+                  >
+                    <MaterialCommunityIcons
+                      name={"plus"}
+                      size={32}
+                      color={"#24244A"}
+                    />
+                  </TouchableOpacity>
+                </View>
+              </View>
             </View>
           </View>
         </View>
@@ -194,7 +273,12 @@ const ListOfProducts: React.FC<Props> = ({ route, navigation }) => {
         <AppButton
           name="Отправить отчет"
           onPress={sendReport}
-          disabled={!dataOfProducts.find((item) => item.count !== 0)}
+          disabled={
+            !dataOfProducts.find(
+              (item) =>
+                item.remaining_quantity !== 0 || item.order_quantity !== 0
+            )
+          }
         />
       </View>
     );

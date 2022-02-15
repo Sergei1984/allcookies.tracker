@@ -33,6 +33,9 @@ pub struct ProductCheck {
     #[validate(range(min = 1))]
     pub product_id: i64,
 
-    #[validate(range(min = 1))]
-    pub quantity: Option<i32>,
+    #[validate(range(min = 0))]
+    pub remaining_quantity: Option<i32>,
+
+    #[validate(range(min = 0))]
+    pub order_quantity: i32,
 }

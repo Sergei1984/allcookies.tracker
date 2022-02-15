@@ -32,7 +32,8 @@ export interface SellingPointData {
 
 interface ProductToSending {
     product_id: number,
-    quantity: number
+    remaining_quantity: number,
+    order_quantity: number,
 }
 export interface CheckSellingPointData {
     location: Location,
