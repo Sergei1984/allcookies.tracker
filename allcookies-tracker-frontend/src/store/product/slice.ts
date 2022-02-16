@@ -28,7 +28,7 @@ export const productSlice = createSlice({
           )
         },
         clearDefaultData: (state) => {
-            state.data = state.data.map(item => ({...item, count: 0}))
+            state.data = state.data.map(item => ({...item, order_quantity: 0, remaining_quantity: 0}))
         }
 
     },
