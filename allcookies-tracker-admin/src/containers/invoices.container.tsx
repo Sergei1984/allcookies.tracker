@@ -37,6 +37,7 @@ const InvoicesContainer = ({}: InvoicesContainerProps): JSX.Element => {
         total={total || 0}
         data={data}
         isAdditions={false}
+        hasCollapseRow
         loading={appStore.status === 'running'}
         headData={['Пользователь', 'Накладная', 'Email', ' ']}
         renderRow={(row: any) => {
