@@ -1,14 +1,14 @@
-import React from "react";
-import TableCell from "@mui/material/TableCell";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import Button from "@mui/material/Button";
+import React from 'react';
+import TableCell from '@mui/material/TableCell';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Button from '@mui/material/Button';
 
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
 // ICONS
-import CustomCheckbox from "../custom-checkbox";
+import CustomCheckbox from '../custom-checkbox';
 
-type Order = "asc" | "desc";
+type Order = 'asc' | 'desc';
 
 interface EnhancedTableProps {
   numSelected: number;
@@ -16,9 +16,9 @@ interface EnhancedTableProps {
   order: Order;
   rowCount: number;
   headData: Array<string>;
-  IconClickPath: string;
-  Icon: any;
-  IconText: string;
+  IconClickPath?: string;
+  Icon?: any;
+  IconText?: string;
   isAdditions?: boolean;
 }
 
@@ -38,61 +38,65 @@ const CustomTableHead = (props: EnhancedTableProps): JSX.Element => {
   const navigate = useNavigate();
 
   const handleBackClick = () => {
-    navigate(IconClickPath);
+    if (IconClickPath) {
+      navigate(IconClickPath);
+    }
   };
 
   return (
     <TableHead>
       <TableRow
-        style={{ backgroundColor: "#EFF0F6", boxShadow: "0px 1px 0px #DADBE4" }}
+        style={{ backgroundColor: '#EFF0F6', boxShadow: '0px 1px 0px #DADBE4' }}
       >
         <TableCell
-          padding="checkbox"
+          padding='checkbox'
           style={{
             fontWeight: 500,
-            fontSize: "14px",
-            lineHeight: "140%",
-            letterSpacing: "-0.3px",
-            color: "#767676",
+            fontSize: '14px',
+            lineHeight: '140%',
+            letterSpacing: '-0.3px',
+            color: '#767676',
           }}
         >
           <CustomCheckbox
-            style={{ color: "#67cfcf" }}
+            style={{ color: '#67cfcf' }}
             indeterminate={numSelected > 0 && numSelected < rowCount}
             checked={rowCount > 0 && numSelected === rowCount}
             onChange={onSelectAllClick}
             inputProps={{
-              "aria-label": "select all points",
+              'aria-label': 'select all points',
             }}
           />
         </TableCell>
         {headData?.map((item, index) => {
           return (
-            <TableCell key={index} align="center">
+            <TableCell key={index} align='center'>
               {item}
             </TableCell>
           );
         })}
-        {isAdditions && <TableCell align="center">Доп.</TableCell>}
+        {isAdditions && <TableCell align='center'>Доп.</TableCell>}
       </TableRow>
-      <TableRow>
-        <TableCell colSpan={headData?.length + 2}>
-          <Button
-            sx={{
-              color: "#767676",
-              fontSize: "14px",
-              textTransform: "capitalize",
-              letterSpacing: "-0.3px",
-              lineHeight: "140%",
-              fontWeight: 500,
-            }}
-            onClick={handleBackClick}
-          >
-            <Icon sx={{ color: "#42A6A6", ml: 2, mr: 1 }} />
-            {IconText}
-          </Button>
-        </TableCell>
-      </TableRow>
+      {IconText && Icon && IconClickPath && (
+        <TableRow>
+          <TableCell colSpan={headData?.length + 2}>
+            <Button
+              sx={{
+                color: '#767676',
+                fontSize: '14px',
+                textTransform: 'capitalize',
+                letterSpacing: '-0.3px',
+                lineHeight: '140%',
+                fontWeight: 500,
+              }}
+              onClick={handleBackClick}
+            >
+              <Icon sx={{ color: '#42A6A6', ml: 2, mr: 1 }} />
+              {IconText}
+            </Button>
+          </TableCell>
+        </TableRow>
+      )}
     </TableHead>
   );
 };

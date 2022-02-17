@@ -6,7 +6,7 @@ import CustomizedInput from "../custom-input";
 import TableDotsPopover from "../popover";
 import Dropdown from "../dropdown";
 import {useLocation} from "react-router-dom";
-import {UsersRoute} from "../../routes/urls";
+import {UsersRoute, InvoicesRoute} from "../../routes/urls";
 import Datepicker from "../datepicker";
 import moment, {Moment} from "moment";
 
@@ -40,7 +40,7 @@ const CustomTableToolbar = (props: EnhancedTableToolbarProps): JSX.Element => {
   const [isDatePickerOpen, setIsDatePickerOpen] = useState<boolean>(false)
 
   const router = useLocation()
-  const isUserPage = router.pathname === UsersRoute
+  const isUserPage = router.pathname === UsersRoute || InvoicesRoute;
 
   const handleChangeSearch = (event: any) => {
     setSearch(event.target.value);
