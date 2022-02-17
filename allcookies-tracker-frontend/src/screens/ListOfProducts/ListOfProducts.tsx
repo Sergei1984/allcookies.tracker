@@ -131,6 +131,12 @@ const ListOfProducts: React.FC<Props> = ({ route, navigation }) => {
     }
   }, [dataOfProducts]);
 
+  React.useEffect(() => {
+    return () => {
+      dispatch(clearDefaultData());
+    };
+  }, []);
+
   const renderProducts = () => {
     const renderItem = ({ item }: any) => {
       return (
