@@ -11,7 +11,9 @@ import { getAppStoreSelector } from '../store/app/selectors';
 import { useState } from 'react';
 import moment, { Moment } from 'moment';
 
-export default function UserPageTable() {
+interface UserPageTableProps {}
+
+export default function UserPageTable({}: UserPageTableProps): JSX.Element {
   const dispatch = useDispatch();
 
   const { data, total } = useSelector((state: RootStore) => state.userStore);

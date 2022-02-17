@@ -1,26 +1,77 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import '../assets/styles/scss/add-selling-point-form.scss';
+
+import { useLocation, useParams } from 'react-router-dom';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { selectSellingPointsStore } from '../store/selling-points/selectors';
 import { getAppStoreSelector } from '../store/app/selectors';
 import { SellingPointsState } from '../store/selling-points/types';
+import LocalStorageService from '../services/localStorage/localStorage.service';
 
 import * as yup from 'yup';
 import { InvoicesRoute } from '../routes/urls';
 import Box from '@mui/material/Box';
 import IconLabelButton from '../components/button-back';
 import InvoiceTable from '../components/invoice-table';
+import { getUsersActivityThunk } from '../store/users-activity/thunk/getUsersActivityThunk';
+import moment, { Moment } from 'moment';
+import { IUsersActivityData } from '../store/users-activity/types';
+import { RootStore } from '../store/rootStore';
+import { getCurrentDate, getDate } from '../utils';
 
 interface InvoiceContainerProps {}
 
 const InvoiceContainer = ({}: InvoiceContainerProps): JSX.Element => {
+  const params = useParams();
+  const location = useLocation();
+
   const dispatch = useDispatch();
 
-  const data: SellingPointsState = useSelector(selectSellingPointsStore);
+  //   const data: SellingPointsState = useSelector(selectSellingPointsStore);
 
   const appStore = useSelector(getAppStoreSelector);
 
+  const { data } = useSelector((state: RootStore) => state.usersActivityStore);
+  const [userActivity, setUserActivity] = useState<IUsersActivityData[]>([]);
+  const [id, setId] = useState();
+  const [selectedDate, setSelectedDate] = useState<Moment | null>(moment());
+
+  const lastInvoice: any = LocalStorageService.getLastInvoice();
+
+  //   useEffect(() => {
+  //     dispatch(getUsersActivityThunk(selectedDate));
+  //   }, [selectedDate, dispatch]);
+
+  //   useEffect(() => {
+  //     if (data.length && id) {
+  //       setUserActivity(data.filter((item) => item.created.id === id));
+  //     }
+  //   }, [data, id]);
+
+  useEffect(() => {
+    if (selectedDate) {
+      const date = selectedDate
+        ? getDate(selectedDate, 'YYYY-MM-DD')
+        : getCurrentDate('YYYY-MM-DD');
+      dispatch(getUsersActivityThunk(date));
+    }
+  }, [selectedDate, id, dispatch]);
+
+  useEffect(() => {
+    setUserActivity(
+      data.filter((item) => {
+        item.created.id === lastInvoice.id;
+      })
+    );
+  }, [data, id]);
+
+  useEffect(() => {
+    if (lastInvoice) {
+      setSelectedDate(lastInvoice.date);
+      setId(lastInvoice.id);
+    }
+  }, [lastInvoice]);
   const invoiceFake = {
     activity_type: 'point_check',
     created: {

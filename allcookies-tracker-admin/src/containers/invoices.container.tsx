@@ -9,7 +9,7 @@ import CustomTableCell from '../components/custom-table/custom-table-cell';
 import { formatToTableValue } from '../utils';
 import { InvoiceRoute } from '../routes/urls';
 import { RootStore } from '../store/rootStore';
-
+import LocalStorageService from '../services/localStorage/localStorage.service';
 import { getAppStoreSelector } from '../store/app/selectors';
 import { getAllUserThunk } from '../store/users/thunk/getAllUserThunk';
 import moment, { Moment } from 'moment';
@@ -48,9 +48,12 @@ const InvoicesContainer = ({}: InvoicesContainerProps): JSX.Element => {
               </CustomTableCell>
               <CustomTableCell component='th' align='left' scope='row'>
                 <Link
-                  to={InvoiceRoute.format(row.id)}
+                  to={InvoiceRoute.format(row.id, String(selectedDate))}
                   style={{ color: '#42A6A6' }}
                   color='#42A6A6'
+                  onClick={() => {
+                    LocalStorageService.setLastInvoice(row.id, selectedDate);
+                  }}
                 >
                   Накладная
                 </Link>
