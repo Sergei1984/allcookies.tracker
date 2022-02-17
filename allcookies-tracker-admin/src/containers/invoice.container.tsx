@@ -58,13 +58,13 @@ const InvoiceContainer = ({}: InvoiceContainerProps): JSX.Element => {
     }
   }, [selectedDate, id, dispatch]);
 
-  useEffect(() => {
-    setUserActivity(
-      data.filter((item) => {
-        item.created.id === lastInvoice.id;
-      })
-    );
-  }, [data, id]);
+  //   useEffect(() => {
+  //     setUserActivity(
+  //       data.filter((item) => {
+  //         item.created.id === lastInvoice.id;
+  //       })
+  //     );
+  //   }, [data, id]);
 
   useEffect(() => {
     if (lastInvoice) {

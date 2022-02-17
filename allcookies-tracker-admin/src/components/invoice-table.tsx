@@ -34,20 +34,19 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 function createData(
   name: string,
-  calories: number,
+  calories: string,
   fat: number,
-  carbs: number,
   protein: number
 ) {
-  return { name, calories, fat, carbs, protein };
+  return { name, calories, fat, protein };
 }
 
 const rows = [
-  createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-  createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-  createData('Eclair', 262, 16.0, 24, 6.0),
-  createData('Cupcake', 305, 3.7, 67, 4.3),
-  createData('Gingerbread', 356, 16.0, 49, 3.9),
+  createData('Барабашово', 'Ежик', 6, 24),
+  createData('Ice cream sandwich', 'Шоколапки', 9, 37),
+  createData('Eclair', 'Шоколапки', 262, 24),
+  createData('Cupcake', 'Ежик', 305, 67),
+  createData('Gingerbread', 'Бисквитик', 16, 49),
 ];
 
 interface InvoiceTableProps {
@@ -85,7 +84,7 @@ const InvoiceTable = ({ invoice }: InvoiceTableProps): JSX.Element => {
                     color: '#171717',
                   }}
                 >
-                  {row.calories}
+                  {row.name}
                 </Typography>
               </StyledTableCell>
               <StyledTableCell align='left'>
@@ -96,7 +95,7 @@ const InvoiceTable = ({ invoice }: InvoiceTableProps): JSX.Element => {
                     color: '#171717',
                   }}
                 >
-                  {row.fat}
+                  {row.calories}
                 </Typography>
               </StyledTableCell>
               <StyledTableCell align='right'>
@@ -108,7 +107,7 @@ const InvoiceTable = ({ invoice }: InvoiceTableProps): JSX.Element => {
                     lineHeight: '138.02%',
                   }}
                 >
-                  {row.protein}
+                  {row.fat}
                 </Typography>
               </StyledTableCell>
               <StyledTableCell align='right'>
