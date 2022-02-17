@@ -1,5 +1,6 @@
+import { TryOutlined } from "@mui/icons-material";
 import axiosInstance from "../../api";
-import { Users, User } from "../../api/endpoints";
+import { Users, User, UserWithId } from "../../api/endpoints";
 import { IUser } from "../../store/users/types";
 
 interface IUserService {
@@ -15,6 +16,17 @@ class UserService implements IUserService {
   public createUser = async (body: IUser) => {
     const response = await axiosInstance.post(User(), body);
     return response.data;
+  };
+  public deleteUser = async (id: number) => {
+    return await axiosInstance.patch(UserWithId(id), {
+      is_blocked: true
+    });
+  };
+  public editUser = async (id: number, title: string) => {
+    return await axiosInstance.patch(UserWithId(id), {
+      name: title,
+      is_blocked: false,
+    });
   };
 }
 

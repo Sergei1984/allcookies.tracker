@@ -45,4 +45,11 @@ export interface UserState {
   total: number;
 }
 
-export type UserType = UserAction | UserError;
+export const REMOVE_USER_ACTION = 'REMOVE_USER_ACTION';
+export interface RemoveUserAction {
+  type: typeof REMOVE_USER_ACTION,
+  payload: number
+}
+
+
+export type UserType = UserAction | UserError | RemoveUserAction;

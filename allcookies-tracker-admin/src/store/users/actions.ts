@@ -1,4 +1,4 @@
-import { GET_ALL_USER_TYPE, UserType, GetAllUserActionPayload } from "./types";
+import { GET_ALL_USER_TYPE, REMOVE_USER_ACTION, UserType, GetAllUserActionPayload, RemoveUserAction } from "./types";
 
 export const getAllUserAction = (
   payload: GetAllUserActionPayload
@@ -8,3 +8,11 @@ export const getAllUserAction = (
     payload,
   };
 };
+
+export const removeUserAction = (payload: number):RemoveUserAction => {
+	return {
+		type: REMOVE_USER_ACTION,
+		payload
+	}
+}
+

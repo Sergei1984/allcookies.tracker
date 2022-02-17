@@ -36,5 +36,8 @@ export const Users = (skip: number, take: number, search?: string) =>
     }`
   );
 export const User = () => apiUrl(`/admin/user-accounts`);
+export const UserWithId = (id: string | number) =>
+  apiUrl(`/admin/user-accounts/${id}`);
+
 
 export const UsersActivity = (date: string) => apiUrl(`/admin/activity?date=${date}`);
