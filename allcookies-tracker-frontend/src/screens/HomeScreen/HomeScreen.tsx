@@ -63,7 +63,7 @@ const HomeScreen: React.FC<IProps> = ({ navigation }) => {
         getSellingPointsThunk({ skip: sellingPointData.length, take: 20 })
       );
     }
-  }, [sellingPointData]);
+  }, [sellingPointData.length]);
 
   React.useEffect(() => {
     setShops(sellingPointData);
@@ -167,7 +167,7 @@ const HomeScreen: React.FC<IProps> = ({ navigation }) => {
           style={{ height: "60%", marginTop: 16 }}
           numColumns={2}
           renderItem={renderItem}
-          keyExtractor={(item) => item.id.toString()}
+          keyExtractor={(item, index) => item.id.toString() + index}
           onEndReached={handleLoadMore}
           onEndReachedThreshold={0.5}
           refreshControl={

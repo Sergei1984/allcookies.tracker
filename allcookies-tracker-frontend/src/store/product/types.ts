@@ -9,7 +9,8 @@ export interface Product {
     modified_at: string;
     deleted_by: string | null;
     deleted_at: string | null;
-    count: number;
+    remaining_quantity: number;
+    order_quantity: number;
     isShow: boolean;
 }
 

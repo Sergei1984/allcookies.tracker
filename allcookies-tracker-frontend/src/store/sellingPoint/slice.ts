@@ -11,7 +11,7 @@ export const sellingPointSlice = createSlice({
     },
     extraReducers: {
         [getSellingPointsThunk.fulfilled.type]: (state, action: PayloadAction<SellingPointState>) => {
-            state.data = action.payload.data,
+            state.data = [...state.data, ...action.payload.data],
             state.total = action.payload.total
         },
         [getNewSellingPointsThunk.fulfilled.type]: (state, action: PayloadAction<SellingPointState>) => {

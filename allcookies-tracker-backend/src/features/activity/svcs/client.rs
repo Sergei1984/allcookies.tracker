@@ -147,7 +147,12 @@ where
         for product in point_check.products {
             let _ = self
                 .repo
-                .create_selling_point_check(activity_id, product.product_id, product.quantity)
+                .create_selling_point_check(
+                    activity_id,
+                    product.product_id,
+                    product.remaining_quantity,
+                    product.order_quantity,
+                )
                 .await
                 .map_err(|e| {
                     AppError::new(

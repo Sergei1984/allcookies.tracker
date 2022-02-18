@@ -1,7 +1,7 @@
 use crate::features::SellingPointCheckPhotos;
 use crate::features::{Activity, LatLonPoint, PagedResult, SellingPoint};
 use crate::{select_with_count, AnError};
-use chrono::{DateTime, Utc, NaiveDate};
+use chrono::{DateTime, NaiveDate, Utc};
 use serde::{Deserialize, Serialize};
 use sqlx::{Postgres, Transaction};
 
@@ -18,7 +18,8 @@ macro_rules! activity_info {
                     p.title as "product_title!",
                     p.image_url as product_image_url,
                     p.is_disabled product_is_disabled,
-                    spc.quantity
+                    spc.remaining_quantity,
+                    spc.order_quantity
                 from
                     selling_point_check spc inner join
                     product p on spc.product_id = p.id
@@ -130,7 +131,8 @@ pub struct SellingPointCheckDto {
     pub product_title: String,
     pub product_image_url: Option<String>,
     pub product_is_disabled: bool,
-    pub quantity: Option<i32>,
+    pub remaining_quantity: Option<i32>,
+    pub order_quantity: i32,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -196,7 +198,8 @@ pub trait ActivityRepo {
         &mut self,
         activity_id: i64,
         product_id: i64,
-        quantity: Option<i32>,
+        remaining_quantity: Option<i32>,
+        order_quantity: i32
     ) -> Result<(), AnError>;
 
     async fn create_photo(&mut self, activity_id: i64, photo_bytes: &[u8]) -> Result<(), AnError>;
@@ -458,24 +461,28 @@ impl<'a, 'c> ActivityRepo for PersistentActivityRepo<'a, 'c> {
         &mut self,
         activity_id: i64,
         product_id: i64,
-        quantity: Option<i32>,
+        remaining_quantity: Option<i32>,
+        order_quantity: i32,
     ) -> Result<(), AnError> {
         let _ = sqlx::query!(
             r#"
             insert into selling_point_check(
                 activity_id,
                 product_id,
-                quantity
+                remaining_quantity,
+                order_quantity
             )
             values (
                 $1,
                 $2,
-                $3
+                $3,
+                $4
             )
             "#,
             activity_id,
             product_id,
-            quantity
+            remaining_quantity,
+            order_quantity
         )
         .execute(&mut *self.db)
         .await?;
