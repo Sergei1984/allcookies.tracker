@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import CustomTable from '../components/custom-table';
 import CustomTableCell from '../components/custom-table/custom-table-cell';
-import { formatToTableValue } from '../utils';
+import { formatToTableValue, getDate } from '../utils';
 import { InvoiceRoute } from '../routes/urls';
 import { RootStore } from '../store/rootStore';
 import LocalStorageService from '../services/localStorage/localStorage.service';
@@ -48,11 +48,23 @@ const InvoicesContainer = ({}: InvoicesContainerProps): JSX.Element => {
               </CustomTableCell>
               <CustomTableCell component='th' align='left' scope='row'>
                 <Link
-                  to={InvoiceRoute.format(row.id, String(selectedDate))}
+                  to={InvoiceRoute.format(
+                    row.id,
+                    getDate(
+                      selectedDate ? selectedDate : moment(),
+                      'YYYY-MM-DD'
+                    )
+                  )}
                   style={{ color: '#42A6A6' }}
                   color='#42A6A6'
                   onClick={() => {
-                    LocalStorageService.setLastInvoice(row.id, selectedDate);
+                    LocalStorageService.setLastInvoice(
+                      row.id,
+                      getDate(
+                        selectedDate ? selectedDate : moment(),
+                        'YYYY-MM-DD'
+                      )
+                    );
                   }}
                 >
                   Накладная

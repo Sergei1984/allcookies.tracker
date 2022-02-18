@@ -1,6 +1,7 @@
-import { UserState } from "./types";
+import { UserState } from './types';
 
 export const userState: UserState = {
   data: [],
   total: 0,
+  user: null,
 };

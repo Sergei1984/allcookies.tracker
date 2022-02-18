@@ -1,5 +1,6 @@
-export const GET_ALL_USER_TYPE = "GET_ALL_USER_TYPE";
-export const USER_ERROR = "USER_ERROR";
+export const GET_ALL_USER_TYPE = 'GET_ALL_USER_TYPE';
+export const GET_USER_TYPE = 'GET_USER_TYPE';
+export const USER_ERROR = 'USER_ERROR';
 
 export interface IUser {
   firstName: string;
@@ -23,6 +24,14 @@ export interface GetAllUserActionPayload {
   total: number;
 }
 
+export interface GetUserAction {
+  type: typeof GET_USER_TYPE;
+  payload: any;
+}
+export interface GetUserActionPayload {
+  user: any;
+}
+
 export interface INewUser {
   login: string;
   password: string;
@@ -43,6 +52,7 @@ export interface UserAction {
 export interface UserState {
   data: INewUser[];
   total: number;
+  user: any | null;
 }
 
 export type UserType = UserAction | UserError;

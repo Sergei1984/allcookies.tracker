@@ -31,6 +31,6 @@ export const AddSellingPointRoute: string = '/selling-points/add-selling-point';
 
 export const InvoicesRoute: string = '/invoices';
 export const InvoiceRoute = {
-  template: `${InvoicesRoute}/:id`,
-  format: (id: string, date: string) => `${InvoicesRoute}/${id}?date=${date}`,
+  template: `${InvoicesRoute}/:userId/:date`,
+  format: (id: string, date: string) => `${InvoicesRoute}/${id}/${date}`,
 };

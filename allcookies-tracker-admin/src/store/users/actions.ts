@@ -1,4 +1,11 @@
-import { GET_ALL_USER_TYPE, UserType, GetAllUserActionPayload } from "./types";
+import {
+  GET_ALL_USER_TYPE,
+  GET_USER_TYPE,
+  UserType,
+  GetUserActionPayload,
+  GetAllUserActionPayload,
+  GetUserAction,
+} from './types';
 
 export const getAllUserAction = (
   payload: GetAllUserActionPayload
@@ -8,3 +15,10 @@ export const getAllUserAction = (
     payload,
   };
 };
+
+export const getUserAction = (
+  payload: GetUserActionPayload
+): GetUserAction => ({
+  type: GET_USER_TYPE,
+  payload: payload,
+});
