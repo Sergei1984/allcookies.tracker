@@ -35,9 +35,9 @@ interface CustomTableProps {
     renderRow: (row: any) => React.ReactNode;
     changeVisibilityItem?: (id: number, is_disabled: boolean) => void;
     deleteItem?: (id: number) => void;
-    IconClickPath: string;
-    Icon: any;
-    IconText: string;
+    IconClickPath?: string;
+    Icon?: any;
+    IconText?: string;
     isAdditions?: boolean;
     hasCollapseRow?: boolean;
     selectedDate?: Moment | null;
@@ -147,7 +147,9 @@ const CustomTable = ({
                                             [row.id]: !prev[row.id]
                                         }))
                                     }>
-                                    {open[row.id] ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+                                    {hasCollapseRow && (
+                                        <>{open[row.id] ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}</>
+                                    )}
                                 </IconButton>
                             </CustomTableCell>
                         ) : null}

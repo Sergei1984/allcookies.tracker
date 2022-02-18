@@ -1,7 +1,7 @@
-import React from "react";
-import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
-import PrivateRoute from "../components/PrivateRoute/PrivateRoute";
-import * as urls from "./urls";
+import React from 'react';
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
+import PrivateRoute from '../components/PrivateRoute/PrivateRoute';
+import * as urls from './urls';
 
 // PAGES
 import {
@@ -13,9 +13,11 @@ import {
   UsersPage,
   AddSellingPointPage,
   AddProductPage,
-} from "../pages";
-import Login from "../pages/login";
-import useNotifier from "../hooks/useNotifier";
+  InvoicesPage,
+  InvoicePage,
+} from '../pages';
+import Login from '../pages/login';
+import useNotifier from '../hooks/useNotifier';
 
 const AppRoutes = () => {
   useNotifier();
@@ -39,7 +41,9 @@ const AppRoutes = () => {
           {/*<Route path={urls.SettingsRoute} element={<SettingsPage />} />*/}
           <Route path={urls.AddUserRoute} element={<AddUser />} />
           <Route path={urls.AddProductRoute} element={<AddProductPage />} />
-          <Route path="*" element={<Navigate to={urls.ProductsRoute} />} />
+          <Route path={urls.InvoicesRoute} element={<InvoicesPage />} />
+          <Route path={urls.InvoiceRoute.template} element={<InvoicePage />} />
+          <Route path='*' element={<Navigate to={urls.ProductsRoute} />} />
         </Route>
       </Routes>
     </BrowserRouter>

@@ -1,18 +1,19 @@
-import React from "react";
-import "../assets/styles/scss/navlink.scss";
+import React from 'react';
+import '../assets/styles/scss/navlink.scss';
 
-import { NavLink } from "react-router-dom";
+import { NavLink } from 'react-router-dom';
 
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
 
 import {
+  InvoicesRoute,
   ProductsRoute,
   ProfileRoute,
   SellingPointsRoute,
   // SettingsRoute,
   UsersRoute,
-} from "../routes/urls";
+} from '../routes/urls';
 
 import {
   ProductsIcon,
@@ -20,7 +21,8 @@ import {
   ProfileIcon,
   UsersIcon,
   SettingsIcon,
-} from "../assets/icons";
+  InvoicesIcon,
+} from '../assets/icons';
 
 const Navigation = (): JSX.Element => {
   return (
@@ -28,9 +30,19 @@ const Navigation = (): JSX.Element => {
       <ListItem>
         <NavLink to={ProductsRoute}>
           {({ isActive }) => (
-            <div className={isActive ? "navlink active" : "navlink"}>
-              <ProductsIcon sx={{ color: "#42A6A6", opacity: 0.6 }} />
+            <div className={isActive ? 'navlink active' : 'navlink'}>
+              <ProductsIcon sx={{ color: '#42A6A6', opacity: 0.6 }} />
               <span>Продукты</span>
+            </div>
+          )}
+        </NavLink>
+      </ListItem>
+      <ListItem>
+        <NavLink to={InvoicesRoute}>
+          {({ isActive }) => (
+            <div className={isActive ? 'navlink active' : 'navlink'}>
+              <InvoicesIcon sx={{ color: '#42A6A6', opacity: 0.6 }} />
+              <span>Накладные</span>
             </div>
           )}
         </NavLink>
@@ -38,8 +50,8 @@ const Navigation = (): JSX.Element => {
       <ListItem>
         <NavLink to={SellingPointsRoute}>
           {({ isActive }) => (
-            <div className={isActive ? "navlink active" : "navlink"}>
-              <SellingPointsIcon sx={{ color: "#42A6A6", opacity: 0.6 }} />
+            <div className={isActive ? 'navlink active' : 'navlink'}>
+              <SellingPointsIcon sx={{ color: '#42A6A6', opacity: 0.6 }} />
               <span>Магазины</span>
             </div>
           )}
@@ -48,7 +60,7 @@ const Navigation = (): JSX.Element => {
       <ListItem>
         <NavLink to={ProfileRoute}>
           {({ isActive }) => (
-            <div className={isActive ? "navlink active" : "navlink"}>
+            <div className={isActive ? 'navlink active' : 'navlink'}>
               <ProfileIcon />
               <span>Профиль</span>
             </div>
@@ -58,7 +70,7 @@ const Navigation = (): JSX.Element => {
       <ListItem>
         <NavLink to={UsersRoute}>
           {({ isActive }) => (
-            <div className={isActive ? "navlink active" : "navlink"}>
+            <div className={isActive ? 'navlink active' : 'navlink'}>
               <UsersIcon />
               <span>Пользователи</span>
             </div>
