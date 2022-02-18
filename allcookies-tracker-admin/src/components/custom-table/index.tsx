@@ -1,22 +1,22 @@
-import React, {Dispatch, Fragment, SetStateAction} from "react";
-import Box from "@mui/material/Box";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableContainer from "@mui/material/TableContainer";
-import Paper from "@mui/material/Paper";
+import React, { Dispatch, Fragment, SetStateAction } from 'react';
+import Box from '@mui/material/Box';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableContainer from '@mui/material/TableContainer';
+import Paper from '@mui/material/Paper';
 
 // ICONS
-import CustomPagination from "../pagination/pagination";
-import TableDotsPopover from "../popover";
-import CustomCheckbox from "../custom-checkbox";
+import CustomPagination from '../pagination/pagination';
+import TableDotsPopover from '../popover';
+import CustomCheckbox from '../custom-checkbox';
 
-import PaginationBox from "../pagination/pagination-box";
-import { TableSkeleton } from "../skeletons";
-import CustomTableHead from "./custom-table-head";
-import CustomTableToolbar from "./custom-table-toolbar";
-import NestedTableOptionsList from "../more-options";
-import CustomTableCell from "./custom-table-cell";
-import CustomTableRow from "./custom-table-row";
+import PaginationBox from '../pagination/pagination-box';
+import { TableSkeleton } from '../skeletons';
+import CustomTableHead from './custom-table-head';
+import CustomTableToolbar from './custom-table-toolbar';
+import NestedTableOptionsList from '../more-options';
+import CustomTableCell from './custom-table-cell';
+import CustomTableRow from './custom-table-row';
 import {
   Collapse,
   IconButton,
@@ -24,14 +24,14 @@ import {
   TableHead,
   TableRow,
   Typography,
-} from "@mui/material";
-import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
-import UserActivity from "../user-activity";
-import {getCurrentDate, getDate} from "../../utils";
-import moment, {Moment} from "moment";
+} from '@mui/material';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import UserActivity from '../user-activity';
+import { getCurrentDate, getDate } from '../../utils';
+import moment, { Moment } from 'moment';
 
-type Order = "asc" | "desc";
+type Order = 'asc' | 'desc';
 
 interface CustomTableProps {
   loading: boolean;
@@ -42,13 +42,13 @@ interface CustomTableProps {
   renderRow: (row: any) => React.ReactNode;
   changeVisibilityItem?: (id: number, is_disabled: boolean) => void;
   deleteItem?: (id: number) => void;
-  IconClickPath: string;
-  Icon: any;
-  IconText: string;
+  IconClickPath?: string;
+  Icon?: any;
+  IconText?: string;
   isAdditions?: boolean;
   hasCollapseRow?: boolean;
   selectedDate?: Moment | null;
-  setSelectedDate?: Dispatch<SetStateAction<Moment | null>>
+  setSelectedDate?: Dispatch<SetStateAction<Moment | null>>;
 }
 
 const CustomTable = ({
@@ -66,13 +66,13 @@ const CustomTable = ({
   changeVisibilityItem,
   deleteItem,
   selectedDate,
-  setSelectedDate
+  setSelectedDate,
 }: CustomTableProps): JSX.Element => {
   const [page, setPage] = React.useState(1);
   const [limit, setLimit] = React.useState(15);
-  const [order, setOrder] = React.useState<Order>("asc");
+  const [order, setOrder] = React.useState<Order>('asc');
   const [selected, setSelected] = React.useState<readonly string[]>([]);
-  const [searchString, setSearch] = React.useState("");
+  const [searchString, setSearch] = React.useState('');
 
   const handleSearchClick = (value: string) => {
     setPage(1);
@@ -130,18 +130,18 @@ const CustomTable = ({
         <React.Fragment key={row.id}>
           <CustomTableRow
             hover
-            role="checkbox"
+            role='checkbox'
             aria-checked={isItemSelected}
             tabIndex={-1}
             selected={isItemSelected}
           >
-            <CustomTableCell padding="checkbox">
+            <CustomTableCell padding='checkbox'>
               <CustomCheckbox
-                color="primary"
+                color='primary'
                 onClick={(event) => handleClick(event, String(row.id))}
                 checked={isItemSelected}
                 inputProps={{
-                  "aria-labelledby": labelId,
+                  'aria-labelledby': labelId,
                 }}
               />
             </CustomTableCell>
@@ -150,8 +150,8 @@ const CustomTable = ({
             {!isAdditions ? (
               <CustomTableCell>
                 <IconButton
-                  aria-label="expand row"
-                  size="small"
+                  aria-label='expand row'
+                  size='small'
                   onClick={() =>
                     setOpen((prev: any) => ({
                       ...prev,
@@ -159,19 +159,23 @@ const CustomTable = ({
                     }))
                   }
                 >
-                  {open[row.id] ? (
-                    <KeyboardArrowUpIcon />
-                  ) : (
-                    <KeyboardArrowDownIcon />
+                  {hasCollapseRow && (
+                    <>
+                      {open[row.id] ? (
+                        <KeyboardArrowUpIcon />
+                      ) : (
+                        <KeyboardArrowDownIcon />
+                      )}
+                    </>
                   )}
                 </IconButton>
               </CustomTableCell>
             ) : null}
             {isAdditions ? (
-              <CustomTableCell align="center">
+              <CustomTableCell align='center'>
                 <TableDotsPopover>
                   <NestedTableOptionsList
-                    title={"Доп операции: " + row.id}
+                    title={'Доп операции: ' + row.id}
                     item={row}
                     changeVisibilityItem={changeVisibilityItem}
                     deleteItem={deleteItem}
@@ -186,13 +190,20 @@ const CustomTable = ({
                 style={{
                   paddingBottom: 0,
                   paddingTop: 0,
-                  background: "#EFFAFA",
+                  background: '#EFFAFA',
                 }}
                 colSpan={12}
               >
-                <Collapse in={open[row.id]} timeout="auto" unmountOnExit>
+                <Collapse in={open[row.id]} timeout='auto' unmountOnExit>
                   {open[row.id] && (
-                      <UserActivity selectedDate={selectedDate ? getDate(selectedDate, 'YYYY-MM-DD') : getCurrentDate('YYYY-MM-DD')} id={row.id} />
+                    <UserActivity
+                      selectedDate={
+                        selectedDate
+                          ? getDate(selectedDate, 'YYYY-MM-DD')
+                          : getCurrentDate('YYYY-MM-DD')
+                      }
+                      id={row.id}
+                    />
                   )}
                 </Collapse>
               </CustomTableCell>
@@ -210,17 +221,17 @@ const CustomTable = ({
 
   return (
     <Box>
-      <Paper sx={{ width: "100%", mb: 2 }}>
+      <Paper sx={{ width: '100%', mb: 2 }}>
         <CustomTableToolbar
           numSelected={selected.length}
           handleSearchClick={handleSearchClick}
           handleChangeLimit={handleChangeLimit}
           limit={limit}
-          selectedDate={selectedDate ? selectedDate :  moment()}
+          selectedDate={selectedDate ? selectedDate : moment()}
           setSelectedDate={setSelectedDate}
         />
-        <TableContainer sx={{ overflowX: "auto" }}>
-          <Table sx={{ minWidth: 320 }} aria-labelledby="tableTitle">
+        <TableContainer sx={{ overflowX: 'auto' }}>
+          <Table sx={{ minWidth: 320 }} aria-labelledby='tableTitle'>
             <CustomTableHead
               numSelected={selected.length}
               order={order}
@@ -242,7 +253,7 @@ const CustomTable = ({
                 renderItems(data)
               ) : (
                 <CustomTableRow>
-                  <CustomTableCell colSpan={headData.length + 2} align="center">
+                  <CustomTableCell colSpan={headData.length + 2} align='center'>
                     Не найдено
                   </CustomTableCell>
                 </CustomTableRow>

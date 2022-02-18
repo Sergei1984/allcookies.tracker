@@ -1,9 +1,11 @@
-import React from "react";
-import DashboardLayout from "../layouts/dashboard";
+import React from 'react';
+import DashboardLayout from '../layouts/dashboard';
 
-import AddSellingPointContainer from "../containers/add-selling-point-container";
+import AddSellingPointContainer from '../containers/add-selling-point-container';
 
-const AddSellingPointPage = () => {
+interface AddSellingPointPageProps {}
+
+const AddSellingPointPage = ({}: AddSellingPointPageProps): JSX.Element => {
   return (
     <DashboardLayout>
       <AddSellingPointContainer />
