@@ -37,6 +37,7 @@ export interface INewUser {
   password: string;
   name: string;
   is_blocked: boolean;
+  id?: number
 }
 
 export interface UsersResponse {

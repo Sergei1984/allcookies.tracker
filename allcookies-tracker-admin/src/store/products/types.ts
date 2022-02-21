@@ -23,8 +23,10 @@ export interface CreateProduct {
     urlPhoto: string,
     is_disabled: boolean
 }
+
 export const SET_ALL_PRODUCTS = 'SET_ALL_PRODUCTS';
 export const REMOVE_PRODUCT_ACTION = 'REMOVE_PRODUCT_ACTION';
+export const EDIT_PRODUCT_ACTION = 'EDIT_PRODUCT_ACTION';
 
 export interface SetAllProductsAction  {
     type: typeof SET_ALL_PRODUCTS,
@@ -36,5 +38,11 @@ export interface RemoveProductAction {
     payload: number
 }
 
+export type EditProductPayload = Pick<Product, "id" | "title">
 
-export type ProductType = SetAllProductsAction | RemoveProductAction;
+export interface EditProductAction {
+    type: typeof EDIT_PRODUCT_ACTION,
+    payload: EditProductPayload
+}
+
+export type ProductType = SetAllProductsAction | RemoveProductAction | EditProductAction;

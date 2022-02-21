@@ -5,7 +5,7 @@ import {
   GET_USER_TYPE,
   UserState,
   UserType,
-  USER_ERROR,
+  USER_ERROR, REMOVE_USER_ACTION,
 } from './types';
 
 export const userReducer = (
@@ -27,6 +27,13 @@ export const userReducer = (
     }
     case GET_USER_TYPE: {
       return { ...state, user: action.payload.user };
+    }
+    case REMOVE_USER_ACTION: {
+      console.log('state', state);
+      return {
+        ...state,
+        data: [...state.data.filter(item => item.id !== action.payload)]
+      }
     }
     default:
       return state;

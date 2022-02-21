@@ -8,12 +8,13 @@ import {
   showNotificationAction,
 } from "../../app/actions";
 import { ProductsAPI } from "../../../services/products/products.service";
-import { removeProductAction } from "../actions";
+import {editProductAction, removeProductAction} from "../actions";
 
 export const editProductThunk = (id: number, title: string) => {
   return async (dispatch: Dispatch, getState: () => RootStore) => {
     try {
       dispatch(setAppStatusAction({ status: StatusEnum.running }));
+      dispatch(editProductAction({ id, title }));
       await ProductsAPI.editProduct(id, title);
       dispatch(setAppStatusAction({ status: StatusEnum.success }));
       dispatch(

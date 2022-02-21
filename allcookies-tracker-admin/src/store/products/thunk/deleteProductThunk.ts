@@ -8,7 +8,7 @@ import {
   showNotificationAction,
 } from "../../app/actions";
 import { ProductsAPI } from "../../../services/products/products.service";
-import { removeProductAction } from "../actions";
+import {editProductAction, removeProductAction} from "../actions";
 
 export const deleteProductThunk = (id: number) => {
   return async (dispatch: Dispatch, getState: () => RootStore) => {
@@ -16,6 +16,7 @@ export const deleteProductThunk = (id: number) => {
       dispatch(setAppStatusAction({ status: StatusEnum.running }));
       await ProductsAPI.deleteProduct(id);
       await dispatch(removeProductAction(id));
+      dispatch(setAppStatusAction({ status: StatusEnum.success }));
       dispatch(setAppStatusAction({ status: StatusEnum.success }));
       dispatch(
         showNotificationAction({
