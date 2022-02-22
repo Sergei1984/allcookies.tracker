@@ -16,6 +16,9 @@ import DoneIcon from "@mui/icons-material/Done";
 import { deleteProductThunk } from "../store/products/thunk/deleteProductThunk";
 import { editProductThunk } from "../store/products/thunk/editProductThunk";
 import { TextField, IconButton } from "@mui/material";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import AppModal from "../components/app-modal";
 
 interface ProductsPageProps {}
 
@@ -24,6 +27,8 @@ const ProductsPage = ({}: ProductsPageProps): JSX.Element => {
     (store: RootStore) => store.productStore
   );
   const appStore = useSelector((state: RootStore) => state.appStore);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false)
+  const [deletingUserData, setDeletingUserData] = useState<{ id: number, name: string } | undefined>()
 
   const dispatch = useDispatch();
   const getAllProducts = async (
@@ -34,8 +39,16 @@ const ProductsPage = ({}: ProductsPageProps): JSX.Element => {
     await dispatch(getAllProductsThunk({ skip, take, search }));
   };
 
-  const handleDeleteProduct = async (id: number) => {
-    dispatch(deleteProductThunk(id));
+  const handleConfirmDeleteProduct = (id: number, name: string) => {
+    setIsDeleteModalOpen(true)
+    setDeletingUserData({id, name})
+  };
+
+  const handleDeleteProduct = async () => {
+    if(deletingUserData) {
+      dispatch(deleteProductThunk(deletingUserData.id));
+      setIsDeleteModalOpen(false)
+    }
   };
 
   const [editableRowId, setEditableRowId] = useState<number | null>(null);
@@ -89,7 +102,7 @@ const ProductsPage = ({}: ProductsPageProps): JSX.Element => {
                   )}
                 </div>
               </CustomTableCell>
-              <CustomTableCell onClick={() => handleDeleteProduct(row.id)}>
+              <CustomTableCell onClick={() => handleConfirmDeleteProduct(row.id, row.title)}>
                 <IconButton aria-label="delete">
                   <DeleteIcon />
                 </IconButton>
@@ -114,6 +127,42 @@ const ProductsPage = ({}: ProductsPageProps): JSX.Element => {
         Icon={AddBusinessIcon}
         IconText={"Добавить продукт"}
       />
+      <AppModal
+          open={isDeleteModalOpen}
+          handleClose={() => setIsDeleteModalOpen(false)}
+      >
+        <Box sx={{mb: 2}}>
+          Вы действительно хотите удалить продукт {deletingUserData && deletingUserData.name}?
+        </Box>
+        <Button
+            sx={{
+              width: 'calc(50% - 10px)',
+              mr: '20px',
+              backgroundColor: '#42A6A6',
+              "&:hover": {
+                background: "#42A6A6",
+              },
+            }}
+            variant="contained"
+            onClick={handleDeleteProduct}
+        >
+          Да
+        </Button>
+        <Button
+            sx={{
+              width: 'calc(50% - 10px)',
+              border: '1px solid #42a6a6',
+              color: '#42a6a6',
+              "&:hover": {
+                border: '1px solid #42a6a6',
+              },
+            }}
+            variant="outlined"
+            onClick={() => setIsDeleteModalOpen(false)}
+        >
+          Нет
+        </Button>
+      </AppModal>
     </DashboardLayout>
   );
 };
