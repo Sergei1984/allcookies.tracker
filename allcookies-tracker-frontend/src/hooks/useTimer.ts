@@ -21,6 +21,7 @@ export const useTimer = () => {
             let currentActivity = await AsyncStorageLib.getItem('currentActivity');
             let date = await AsyncStorageLib.getItem('date');
             let getActualDate = date && new Date(JSON.parse(date)).getDate() === new Date().getDate();
+            console.log('asdds', isActiveTimer && JSON.parse(isActiveTimer) === true && getActualDate)
             if (isActiveTimer && JSON.parse(isActiveTimer) === true && getActualDate) {
                 setToggle(true);
                 await dispatch(setCurrentActivity(currentActivity && JSON.parse(currentActivity)))
