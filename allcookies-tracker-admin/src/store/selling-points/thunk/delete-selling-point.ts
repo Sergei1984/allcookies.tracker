@@ -28,7 +28,7 @@ export const deleteSellingPointThunk = ({ id }: DeleteSellingPointPayload) => {
             ...getState().sellingPointsStore.data,
             getState().sellingPointsStore.data[sellingPointIndex].deleted_by = 1
           ],
-          total: getState().sellingPointsStore.total - 1,
+          total: getState().sellingPointsStore.total,
         });
         dispatch(setAppStatusAction({ status: StatusEnum.success }));
         dispatch(
@@ -53,11 +53,10 @@ export const deleteSellingPointThunk = ({ id }: DeleteSellingPointPayload) => {
         dispatch(
           getSellingPointsAction({
             data: [
-              ...getState().sellingPointsStore.data?.filter(
-                (point: SellingPointModel) => point.id !== id
-              ),
+              ...getState().sellingPointsStore.data,
+              getState().sellingPointsStore.data[sellingPointIndex].deleted_by = 1
             ],
-            total: getState().sellingPointsStore.total - 1,
+            total: getState().sellingPointsStore.total,
           })
         );
       }
