@@ -123,7 +123,8 @@ const CustomTable = ({
                         role="checkbox"
                         aria-checked={isItemSelected}
                         tabIndex={-1}
-                        selected={isItemSelected}>
+                        selected={isItemSelected}
+                    >
                         <CustomTableCell padding="checkbox">
                             <CustomCheckbox
                                 color="primary"

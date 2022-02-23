@@ -25,7 +25,7 @@ const NestedTableOptionsList = ({
 }: NestedTableOptionsListProps) => {
   // single
   const visible_single_text = item.is_disabled ? `Показать` : `Скрыть`;
-  const remove_single_text = "Удалить";
+  const remove_single_text = !item.deleted_by ? "Удалить" : "Восстановить";
 
   // multiply
   const hidden = "Скрыть все";
@@ -38,7 +38,7 @@ const NestedTableOptionsList = ({
     }
   };
   const handleRemoveItem = () => {
-    if (deleteItem) {
+    if (deleteItem && !item.deleted_by) {
       deleteItem(item.id);
     }
   };

@@ -102,7 +102,7 @@ const SellingPointsContainer =
           renderRow={(row: any) => {
             return (
               <>
-                <CustomTableCell component="th" align="left" scope="row">
+                <CustomTableCell component="th" align="left" scope="row" className={row.deleted_by && 'disabled'}>
                   {editableRowId && editableRowId === row.id ? (
                     <TextField
                       id={String(row.id)}
@@ -114,7 +114,7 @@ const SellingPointsContainer =
                     formatToTableValue(row.title)
                   )}
                 </CustomTableCell>
-                <CustomTableCell align="left">
+                <CustomTableCell align="left" className={row.deleted_by && 'disabled'}>
                   {editableRowId && editableRowId === row.id ? (
                     <TextField
                       id={String(row.id) + row.description}
@@ -127,13 +127,13 @@ const SellingPointsContainer =
                   )}
                   {/* {formatToTableValue(row.description)} */}
                 </CustomTableCell>
-                <CustomTableCell align="center">
+                <CustomTableCell align="center" className={row.deleted_by && 'disabled'}>
                   {formatToTableValue(row.address)}
                 </CustomTableCell>
-                <CustomTableCell align="center">
+                <CustomTableCell align="center" className={row.deleted_by && 'disabled'}>
                   {formatValueToDate(row.created_at)}
                 </CustomTableCell>
-                <CustomTableCell align="center">
+                <CustomTableCell align="center" className={row.deleted_by && 'disabled'}>
                   {formatValueToDate(row.modified_at)}
                 </CustomTableCell>
                 <CustomTableCell>

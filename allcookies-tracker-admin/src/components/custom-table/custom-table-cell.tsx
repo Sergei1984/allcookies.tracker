@@ -5,6 +5,9 @@ import TableCell, { tableCellClasses } from "@mui/material/TableCell";
 
 const CustomTableCell = styled(TableCell)(({ theme }) => ({
   padding: "5px 0px",
+  '&.disabled': {
+    opacity: .5
+  },
   [`&.${tableCellClasses.head}`]: {
     backgroundColor: theme.palette.common.white,
     color: theme.palette.common.black,
