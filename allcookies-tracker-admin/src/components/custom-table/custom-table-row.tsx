@@ -4,6 +4,9 @@ import TableRow from "@mui/material/TableRow";
 
 const CustomTableRow = styled(TableRow)(({ theme }) => ({
   // hide last border
+  "&.disabled":{
+    opacity: 0.5
+  },
   "&.MuiTableRow-root:hover": {
     backgroundColor: "#E6F9F9",
   },
