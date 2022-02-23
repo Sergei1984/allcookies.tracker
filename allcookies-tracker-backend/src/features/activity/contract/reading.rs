@@ -15,6 +15,10 @@ pub enum ActivityInfo {
     SellingPointCheck(SellingPointCheckActivityInfo),
 }
 
+pub const ACTIVITY_TYPE_OPEN_DAY: &'static str = "open_day";
+pub const ACTIVITY_TYPE_CLOSE_DAY: &'static str = "close_day";
+pub const ACTIVITY_TYPE_POINT_CHECK: &'static str = "point_check";
+
 #[derive(Debug, Serialize, Deserialize)]
 pub struct OpenDayActivityInfo {
     pub id: i64,
@@ -77,4 +81,10 @@ pub struct UserActivityRef {
     pub login: String,
     pub name: String,
     pub at: DateTime<Utc>,
+}
+
+#[derive(Debug, Serialize)]
+pub struct DayStatus {
+    pub open_at: Option<DateTime<Utc>>,
+    pub closed_at: Option<DateTime<Utc>>
 }

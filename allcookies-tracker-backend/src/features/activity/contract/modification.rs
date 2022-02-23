@@ -5,14 +5,12 @@ use validator::Validate;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct NewOpenDayActivity {
-    pub location: Option<LatLonPoint>,
-    pub time: DateTime<Utc>,
+    pub location: Option<LatLonPoint>
 }
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct NewCloseDayActivity {
-    pub location: Option<LatLonPoint>,
-    pub time: DateTime<Utc>,
+    pub location: Option<LatLonPoint>
 }
 
 #[derive(Debug, Serialize, Deserialize, Validate)]

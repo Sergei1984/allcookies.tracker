@@ -16,6 +16,11 @@ Content-Type: application/json
 
 ###
 # @name activity
+GET {{server}}/client/activity/status
+Authorization: {{auth.response.body.jwt}}
+
+###
+# @name activity
 GET {{server}}/client/activity
 Authorization: {{auth.response.body.jwt}}
 
@@ -33,8 +38,7 @@ Authorization: {{auth.response.body.jwt}}
     "location": {
         "lat": 22.2,
         "lon": 12.3
-    },
-    "time": "2022-01-04T17:17:20.372Z"
+    }
 }
 
 ###

@@ -1,11 +1,12 @@
 use crate::features::activity::repo::ActivityRepo;
 use crate::features::activity::svcs::utils::to_activity_info;
 use crate::features::{
-    ActiveUserInfo, ActivityInfo, ManagerUserInfo, NewCloseDayActivity, NewOpenDayActivity,
-    NewSellingPointCheckActivity, PagedResult,
+    ActiveUserInfo, ActivityInfo, DayStatus, ManagerUserInfo, NewCloseDayActivity,
+    NewOpenDayActivity, NewSellingPointCheckActivity, PagedResult, ACTIVITY_TYPE_CLOSE_DAY,
+    ACTIVITY_TYPE_OPEN_DAY,
 };
 use crate::AppError;
-use chrono::Utc;
+use chrono::{Local, Utc};
 use validator::Validate;
 
 pub struct ClientActivityService<TActivityRepo>
@@ -25,6 +26,31 @@ where
             current_user: current_user,
             repo: repo,
         }
+    }
+
+    pub async fn my_status(&mut self) -> Result<DayStatus, AppError> {
+        let activity = self
+            .repo
+            .get_open_close_day_activity(self.current_user.id(), Local::now().naive_local().date())
+            .await
+            .map_err(|e| AppError::internal_server_err(Some(&e.to_string())))?;
+
+        let last_open_day = activity
+            .iter()
+            .filter(|a| a.activity_type == ACTIVITY_TYPE_OPEN_DAY)
+            .next()
+            .clone();
+
+        let last_close_day = activity
+            .iter()
+            .filter(|a| a.activity_type == ACTIVITY_TYPE_CLOSE_DAY)
+            .next()
+            .clone();
+
+        Ok(DayStatus {
+            open_at: last_open_day.map(|a| a.at),
+            closed_at: last_close_day.map(|a| a.at),
+        })
     }
 
     pub async fn get_my_activity(
@@ -75,7 +101,7 @@ where
             .repo
             .create_activity(
                 "open_day",
-                open_day.time,
+                Utc::now(),
                 open_day.location,
                 None,
                 self.current_user.id(),
@@ -101,7 +127,7 @@ where
             .repo
             .create_activity(
                 "close_day",
-                close_day.time,
+                Utc::now(),
                 close_day.location,
                 None,
                 self.current_user.id(),

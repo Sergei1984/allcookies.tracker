@@ -178,6 +178,12 @@ pub trait ActivityRepo {
         take: i64,
     ) -> Result<(PagedResult<Activity>, ActivityExtraData), AnError>;
 
+    async fn get_open_close_day_activity(
+        &mut self,
+        current_user_id: i64,
+        date: NaiveDate,
+    ) -> Result<Vec<Activity>, AnError>;
+
     async fn get_all_activity(
         &mut self,
         date: Option<NaiveDate>,
@@ -199,7 +205,7 @@ pub trait ActivityRepo {
         activity_id: i64,
         product_id: i64,
         remaining_quantity: Option<i32>,
-        order_quantity: i32
+        order_quantity: i32,
     ) -> Result<(), AnError>;
 
     async fn create_photo(&mut self, activity_id: i64, photo_bytes: &[u8]) -> Result<(), AnError>;
@@ -331,6 +337,40 @@ impl<'a, 'c> ActivityRepo for PersistentActivityRepo<'a, 'c> {
             },
             extra,
         ))
+    }
+
+    async fn get_open_close_day_activity(
+        &mut self,
+        current_user_id: i64,
+        date: NaiveDate,
+    ) -> Result<Vec<Activity>, AnError> {
+        let activity = sqlx::query_as!(
+            Activity,
+            r#"
+        select
+                id,
+                activity_type,
+                at,
+                location as "location!: _",
+                selling_point_id,
+                amend_by_activity_id,
+                created_by,
+                created_at,
+                deleted_by,
+                deleted_at
+            from
+                activity
+            where
+                at::date = $2 and created_by = $1
+            order by at desc
+        "#,
+            current_user_id,
+            date
+        )
+        .fetch_all(&mut *self.db)
+        .await?;
+
+        Ok(activity)
     }
 
     async fn get_all_activity(

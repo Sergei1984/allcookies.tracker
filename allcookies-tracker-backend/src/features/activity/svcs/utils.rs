@@ -2,7 +2,7 @@ use crate::features::activity::repo::ActivityExtraData;
 use crate::features::{
     ActiveUserInfo, Activity, ActivityInfo, CloseDayActivityInfo, OpenDayActivityInfo, Photo,
     PhotoSigningInfo, ProductCheckInfo, ProductRef, SellingPointCheckActivityInfo, SellingPointRef,
-    UserActivityRef,
+    UserActivityRef, ACTIVITY_TYPE_CLOSE_DAY, ACTIVITY_TYPE_OPEN_DAY,
 };
 
 pub fn to_activity_info<TUserInfo>(
@@ -18,7 +18,7 @@ where
         .map(|i| {
             let user = extra.users.iter().find(|u| u.id == i.created_by).unwrap();
             match i.activity_type.as_str() {
-                "open_day" => ActivityInfo::OpenDay(OpenDayActivityInfo {
+                ACTIVITY_TYPE_OPEN_DAY => ActivityInfo::OpenDay(OpenDayActivityInfo {
                     id: i.id,
                     location: i.location,
                     time: i.created_at,
@@ -29,7 +29,7 @@ where
                         name: user.name.clone(),
                     },
                 }),
-                "close_day" => ActivityInfo::CloseDay(CloseDayActivityInfo {
+                ACTIVITY_TYPE_CLOSE_DAY => ActivityInfo::CloseDay(CloseDayActivityInfo {
                     id: i.id,
                     location: i.location,
                     time: i.created_at,

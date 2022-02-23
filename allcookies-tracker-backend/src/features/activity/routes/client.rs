@@ -1,7 +1,7 @@
 use crate::features::activity::repo::PersistentActivityRepo;
 use crate::features::{
-    ActivityInfo, ClientActivityService, ManagerUserInfo, NewCloseDayActivity, NewOpenDayActivity,
-    NewSellingPointCheckActivity, PagedResult, PhotoSigningInfo, SkipTake,
+    ActivityInfo, ClientActivityService, DayStatus, ManagerUserInfo, NewCloseDayActivity,
+    NewOpenDayActivity, NewSellingPointCheckActivity, PagedResult, PhotoSigningInfo, SkipTake,
 };
 use actix_web::{
     dev::HttpResponseBuilder, error, get, http::StatusCode, post, web, web::Bytes, Responder, Scope,
@@ -12,12 +12,44 @@ use serde::{Deserialize, Serialize};
 pub fn activity_client_route() -> Scope {
     web::scope("/client/activity")
         .service(get_my_activity)
+        .service(get_status)
         .service(open_day)
         .service(close_day)
         .service(check_selling_point)
         // .service(add_photo)
         .service(add_photo_form)
         .service(get_photo)
+}
+
+#[get("status")]
+pub async fn get_status(
+    current_user: ManagerUserInfo,
+    pool: web::Data<sqlx::Pool<sqlx::Postgres>>,
+) -> Result<web::Json<DayStatus>, actix_web::Error> {
+    let mut trans = pool.begin().await.map_err(|e| error::ErrorBadRequest(e))?;
+
+    let result: Result<web::Json<DayStatus>, actix_web::Error>;
+
+    {
+        let mut svc =
+            ClientActivityService::new(current_user, PersistentActivityRepo::new(&mut trans));
+
+        let data = svc
+            .my_status()
+            .await
+            .map_err(|e| error::ErrorBadRequest(e))?;
+
+        result = Ok(web::Json(data));
+
+        drop(svc);
+    }
+
+    trans
+        .commit()
+        .await
+        .map_err(|e| error::ErrorBadRequest(e))?;
+
+    return result;
 }
 
 #[derive(Serialize, Deserialize)]
