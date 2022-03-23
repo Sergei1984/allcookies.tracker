@@ -56,3 +56,13 @@ export const uploadPhotoThunk = createAsyncThunk('user/uploadPhoto', async (data
         return thunkAPI.rejectWithValue(e.message)
     }
 })
+
+export const getActivityStatusThunk = createAsyncThunk('user/activityStatus', async (_, thunkAPI) => {
+    try {
+        const response = await UserAPI.getActivityStatus();
+        console.log(response);
+        return response;
+    } catch (e) {
+        return thunkAPI.rejectWithValue(e.message)
+    }
+})

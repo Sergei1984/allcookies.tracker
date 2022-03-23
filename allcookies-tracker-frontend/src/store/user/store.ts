@@ -6,5 +6,6 @@ export const initialState: UserState = {
     isAuthorized: false,
     error: '',
     isLogout: false,
-    activity: null
+    activity: null,
+    activityStatus: null
 }

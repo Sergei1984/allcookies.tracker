@@ -2,7 +2,7 @@ import AsyncStorageLib from "@react-native-async-storage/async-storage";
 import React from "react";
 import { AppState } from "react-native";
 import { userSlice } from "../store/user/slice";
-import { closeDayThunk, openDayThunk } from "../store/user/thunk";
+import { closeDayThunk, getActivityStatusThunk, openDayThunk } from "../store/user/thunk";
 import { useAppDispatch } from "./useAppDispatch";
 import { useAppSelector } from "./useAppSelector";
 import useLocation from "./useLocation";
@@ -10,18 +10,19 @@ import useLocation from "./useLocation";
 export const useTimer = () => {
     const [timer, setTimer] = React.useState(0);
     const [toggle, setToggle] = React.useState(false);
-    const activity = useAppSelector((state) => state.userReducer.activity);
+    const {activity, activityStatus} = useAppSelector((state) => state.userReducer);
     const { setCurrentActivity } = userSlice.actions;
     const location = useLocation();
     const dispatch = useAppDispatch();
 
     React.useEffect(() => {
         (async () => {
+            dispatch(getActivityStatusThunk());
             let isActiveTimer = await AsyncStorageLib.getItem("isActiveTimer");
             let currentActivity = await AsyncStorageLib.getItem('currentActivity');
             let date = await AsyncStorageLib.getItem('date');
             let getActualDate = date && new Date(JSON.parse(date)).getDate() === new Date().getDate();
-            console.log('asdds', isActiveTimer && JSON.parse(isActiveTimer) === true && getActualDate)
+            console.log('activityStatus', activityStatus)
             if (isActiveTimer && JSON.parse(isActiveTimer) === true && getActualDate) {
                 setToggle(true);
                 await dispatch(setCurrentActivity(currentActivity && JSON.parse(currentActivity)))

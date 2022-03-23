@@ -15,6 +15,11 @@ class UserService {
         return response.data
     }
 
+    public getActivityStatus = async () => {
+        const response = await axiosInstance.get('client/activity/status');
+        return response.data
+    }
+
     public uploadPhoto = async (id: number, data: any) => {
         const headers = {
             'Content-Type': 'multipart/form-data',

@@ -21,6 +21,7 @@ export interface UserState {
     isAuthorized: boolean;
     isLogout: boolean;
     activity: any;
+    activityStatus: any;
 }
 
 export interface IOpenCloseDay {

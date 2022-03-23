@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { initialState } from "./store"
-import { getProfileThunk, openDayThunk, signInThunk } from "./thunk"
+import { getActivityStatusThunk, getProfileThunk, openDayThunk, signInThunk } from "./thunk"
 import { IUser } from "./types"
 
 export const userSlice = createSlice({
@@ -42,6 +42,9 @@ export const userSlice = createSlice({
         },
         [openDayThunk.fulfilled.type]: (state, action: PayloadAction<any>) => {
             state.activity = action.payload
+        },
+        [getActivityStatusThunk.fulfilled.type]: (state, action: PayloadAction<any>) => {
+            state.activityStatus = action.payload
         }
     }
 })
